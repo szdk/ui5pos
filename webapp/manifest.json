@@ -33,6 +33,12 @@
         "contentDensities": {
             "compact": true,
             "cozy": true
+        },
+        "rootView" : {
+            "viewName": "ui5pos.szdk.view.App",
+            "type": "XML",
+            "async": true,
+            "id": "appview"
         }
     }
 }
