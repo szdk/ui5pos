@@ -1,5 +1,6 @@
 sap.ui.define([
     "sap/ui/core/UIComponent",
+    "ui5pos/szdk/models/models"
 ],
 function (UIComponent, models) {
     "use strict";
@@ -18,7 +19,8 @@ function (UIComponent, models) {
             // call the base component's init function
             UIComponent.prototype.init.apply(this, arguments);
 
-            alert("Component loaded");
+            this.setModel(models.createDeviceModel(), "device");
+            
         }
     });
 }
