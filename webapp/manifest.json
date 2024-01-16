@@ -7,5 +7,32 @@
         "i18n" : "i18n/i18n.properties",
         "title" : "{{appTitle}}",
         "description" : "{{appDescription}}"
+    },
+    "sap.ui" : {
+        "technology": "UI5",
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        },
+        "fullWidth": true
+    },
+    "sap.ui5" : {
+        "handleValidation": true,
+        "comment-handelValidatoin" : "Enable so that validation errors can be automatically shown on input fields",
+        "dependencies": {
+            "minUI5Version": "1.120.3",
+            "comment-minUI5Version" : "currently used version of UI5 can be retrived from sap.ui.version in debugger console",
+            "libs": {
+                "sap.f" : {},
+                "sap.m" : {},
+                "sap.ui.core" : {},
+                "sap.ui.layout" : {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        }
     }
 }
