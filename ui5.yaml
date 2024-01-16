@@ -1,0 +1,24 @@
+# This file has been created by "ui5 init" command, @ui5/cli is required to run the command
+# following 4 lines have been added automatically by running "ui5 init"
+specVersion: "3.2"
+metadata:
+  name: ui5pos
+type: application
+
+# following 3 lines generated automatically using "ui5 use OpenUI5" command
+# there are two available frameworks namely, OpenUI5 and SAPUI5
+# The difference betwene these two framework is that they both are available in different licence
+# and the SAPUI5 provides some additional and enhanced library support as compared to OpenUI5
+# The following framework property and sub-properties are required for "ui5 build" command which is used to compile the app and generate required script files based on the
+# included libraries
+framework:
+  name: OpenUI5
+  version: "1.120.3"
+  # following lines are generated using "ui5 add sap.f sap.m sap.tnt ... " command
+  libraries:
+    - name: sap.f
+    - name: sap.m
+    - name: sap.tnt
+    - name: sap.ui.core
+    - name: sap.ui.layout
+    - name: themelib_sap_horizon

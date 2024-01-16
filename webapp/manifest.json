@@ -1,0 +1,7 @@
+{
+    "comment-info" : "information about manifest.json configuration format is available at https://sapui5.hana.ondemand.com/sdk/#/topic/be0cf40f61184b358b5faedaec98b2da",
+    "_version": "1.60.0",
+    "sap.app": {
+        "id" : "ui5pos.szdk"
+    }
+}

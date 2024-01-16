@@ -1,0 +1,14 @@
+{
+  "name": "ui5pos",
+  "version": "1.0.0",
+  "description": "Sample POS app using SAPUI5",
+  "main": "webapp/index.html",
+  "scripts": {
+    "serve" : "ui5 serve -o index.html"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@ui5/cli": "^3.8.0"
+  }
+}
