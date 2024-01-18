@@ -1,0 +1,6 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+>
+    <IllustratedMessage title="Not Found" description="Sorry the resource is not available."></IllustratedMessage>
+</mvc:View>

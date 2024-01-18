@@ -2,6 +2,7 @@
     "comment-info" : "information about manifest.json configuration format is available at https://sapui5.hana.ondemand.com/sdk/#/topic/be0cf40f61184b358b5faedaec98b2da",
     "_version": "1.60.0",
     "sap.app": {
+        "type": "application",
         "id" : "ui5pos.szdk",
         "applicationVersion" : "1.0.0",
         "i18n" : "i18n/i18n.properties",
@@ -39,6 +40,46 @@
             "type": "XML",
             "async": true,
             "id": "appview"
+        },
+        "routing": {
+            "config" : {
+                "routerClass": "sap.m.routing.Router",
+                "viewPath": "ui5pos.szdk.view",
+                "viewType": "XML",
+                "async": true,
+                "controlId": "toolpage",
+                "controlAggregation": "mainContents",
+                "clearControlAggregation": true,
+                "transition" : "fade",
+                "bypassed": {
+                    "target" : [
+                        "notFound"
+                    ]
+                }
+            },
+
+            "routes" : [
+                {
+                    "name": "home",
+                    "pattern": "",
+                    "titleTarget": "home",
+                    "target" : [
+                        "home"
+                    ]
+                }
+            ],
+
+            "targets": {
+                "home" : {
+                    "title": "UI5 POS | Dashboard",
+                    "viewName": "Home",
+                    "viewId": "home"
+                },
+                "notFound" : {
+                    "viewName": "NotFound",
+                    "viewId": "notfound"
+                }
+            }
         }
     }
 }

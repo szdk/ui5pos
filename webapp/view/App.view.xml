@@ -1,10 +1,26 @@
 <mvc:View
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
+    xmlns:t="sap.tnt"
 >
     <Shell appWidthLimited="false">
         <App id="app">
-            
+            <t:ToolPage id="toolpage">
+                <t:header>
+                    <t:ToolHeader>
+                    
+                    </t:ToolHeader>
+                </t:header>
+                <t:sideContent>
+                    <t:SideNavigation >
+                        <t:NavigationList>
+                            <t:NavigationListItem text="Hello Side Nav">
+                                <t:NavigationListItem text="Hello Sub Side Nav"></t:NavigationListItem>
+                            </t:NavigationListItem>
+                        </t:NavigationList>
+                    </t:SideNavigation>
+                </t:sideContent>
+            </t:ToolPage>
         </App>
     </Shell>
 </mvc:View>
