@@ -1,0 +1,42 @@
+.bg-w {
+    background: white !important;
+}
+
+.disp-block {
+    display : block !important;
+}
+
+
+/**************** start border radius ****************************/
+@mixin border-radius($pref : null) {
+    @if ($pref) {
+        $pref : ".#{$pref}-";
+    } @else {
+        $pref : ".";
+    }
+
+    #{$pref}brad-s {border-radius: 0.3em};
+    #{$pref}brad-m {border-radius: 0.6em};
+    #{$pref}brad-l {border-radius: 0.1em};
+    #{$pref}brad-xl {border-radius: 1.5em};
+    
+}
+//all
+@include border-radius();
+//xl
+@media only screen and (min-width: 1600px){
+    @include border-radius($pref : "xl");
+}
+//l
+@media only screen and (min-width: 1000px) and (max-width: 1599px){
+    @include border-radius($pref: "l");
+}
+//m
+@media only screen and (min-width: 500px) and (max-width: 999px){
+    @include border-radius($pref: "m");
+}
+//s
+@media only screen and (max-width: 499px){
+    @include border-radius($pref: "s");
+}
+/**************** end border radius ****************************/

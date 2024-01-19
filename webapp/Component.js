@@ -1,8 +1,8 @@
 sap.ui.define([
     "sap/ui/core/UIComponent",
-    "ui5pos/szdk/models/models"
+    "ui5pos/szdk/models/models",
 ],
-function (UIComponent, models) {
+function (UIComponent, models, MockServer) {
     "use strict";
 
     return UIComponent.extend("ui5pos.szdk.Component", {
@@ -22,7 +22,13 @@ function (UIComponent, models) {
             this.getRouter().initialize();
 
             this.setModel(models.createDeviceModel(), "device");
-            
+            this.setModel(models.createSettingsModel(), "settings");
+
+            // change app title
+            this.getRouter().attachTitleChanged(function(oEvent) {
+                var title = oEvent.getParameter("title");
+                document.title = title;
+            });
         }
     });
 }

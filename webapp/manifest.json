@@ -19,6 +19,14 @@
         "fullWidth": true
     },
     "sap.ui5" : {
+        "resources": {
+            "css": [
+                {
+                    "id": "main",
+                    "uri": "css/style.css"
+                }
+            ]
+        },
         "handleValidation": true,
         "comment-handelValidatoin" : "Enable so that validation errors can be automatically shown on input fields",
         "dependencies": {
@@ -29,6 +37,16 @@
                 "sap.m" : {},
                 "sap.ui.core" : {},
                 "sap.ui.layout" : {}
+            }
+        },
+        "models": {
+            "" : {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleUrl": "i18n/i18n.properties",
+                    "supportedLocales": [],
+                    "fallbackLocale": ""
+                }
             }
         },
         "contentDensities": {
@@ -66,18 +84,31 @@
                     "target" : [
                         "home"
                     ]
+                },
+                {
+                    "name": "setup",
+                    "pattern": "setup",
+                    "target" : [
+                        "setup"
+                    ]
                 }
             ],
 
             "targets": {
                 "home" : {
-                    "title": "UI5 POS | Dashboard",
+                    "title": "{{home_title}}",
                     "viewName": "Home",
                     "viewId": "home"
                 },
                 "notFound" : {
+                    "title": "{{notfound_title}}",
                     "viewName": "NotFound",
                     "viewId": "notfound"
+                },
+                "setup" : {
+                    "title": "{{setup_title}}",
+                    "viewName": "Setup",
+                    "viewId": "setup"
                 }
             }
         }

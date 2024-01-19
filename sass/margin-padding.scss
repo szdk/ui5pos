@@ -1,0 +1,70 @@
+@use "sass:string";
+// @use 'sass:math';
+
+//margins, paddings
+@mixin build-mp ($pref : null) {
+    @if ($pref) {
+        $pref : ".#{$pref}-";
+    } @else {
+        $pref : ".";
+    }
+    @for $i from 0 through 5 {
+        $size : $i * 0.3;
+        @if ($i > 4) {
+            $size : $i * 0.4;
+        }
+        @if ($size > 0) {
+            $size : #{$size}em;
+        }
+
+        //margins
+        #{$pref}m-t-#{$i}, #{$pref}m-tb-#{$i}, #{$pref}m-#{$i} {
+            margin-top : $size;
+        }
+        #{$pref}m-b-#{$i}, #{$pref}m-tb-#{$i}, #{$pref}m-#{$i} {
+            margin-bottom : $size;
+        }
+        #{$pref}m-l-#{$i}, #{$pref}m-lr-#{$i}, #{$pref}m-#{$i} {
+            margin-left : $size;
+        }
+        #{$pref}m-r-#{$i}, #{$pref}m-lr-#{$i}, #{$pref}m-#{$i} {
+            margin-right : $size;
+        }
+        //paddings
+        #{$pref}p-t-#{$i}, #{$pref}p-tb-#{$i}, #{$pref}p-#{$i} {
+            padding-top : $size;
+        }
+        #{$pref}p-b-#{$i}, #{$pref}p-tb-#{$i}, #{$pref}p-#{$i} {
+            padding-bottom : $size;
+        }
+        #{$pref}p-l-#{$i}, #{$pref}p-lr-#{$i}, #{$pref}p-#{$i} {
+            padding-left : $size;
+        }
+        #{$pref}p-r-#{$i}, #{$pref}p-lr-#{$i}, #{$pref}p-#{$i} {
+            padding-right : $size;
+        }
+    }
+}
+
+//all
+@include build-mp();
+
+//xl
+@media only screen and (min-width: 1600px){
+    @include build-mp($pref : "xl");
+}
+
+//l
+@media only screen and (min-width: 1000px) and (max-width: 1599px){
+    @include build-mp($pref: "l");
+}
+
+//m
+@media only screen and (min-width: 500px) and (max-width: 999px){
+    @include build-mp($pref: "m");
+}
+
+//s
+@media only screen and (max-width: 499px){
+    @include build-mp($pref: "s");
+}

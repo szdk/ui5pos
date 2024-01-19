@@ -4,11 +4,16 @@
   "description": "Sample POS app using SAPUI5",
   "main": "webapp/index.html",
   "scripts": {
-    "serve" : "ui5 serve -o index.html"
+    "serve": "ws",
+    "build": "(npm run build-sass -- --no-source-map --style=compressed) && (ui5 build)",
+    "build-sass" : "sass sass/index.scss webapp/css/style.css",
+    "test" : "sass --help"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@ui5/cli": "^3.8.0"
+    "@ui5/cli": "^3.8.0",
+    "local-web-server": "^5.3.1",
+    "sass": "^1.70.0"
   }
 }

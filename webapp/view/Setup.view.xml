@@ -1,0 +1,48 @@
+<mvc:XMLView controllerName="ui5pos.szdk.controller.Setup"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:mvc="sap.ui.core.mvc" 
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:core="sap.ui.core"
+>
+    <App>
+        <Page title="{setup_title}" class="sapUiResponsivePadding--header sm-p">
+            <content>
+                <l:BlockLayout background="Default">
+                    <l:BlockLayoutRow>
+                        <l:BlockLayoutCell class="m-2 bg-w brad-m">
+                            <Text class="disp-block" text="{setup_pleaseSelect}"></Text>
+                            <List>
+                                <StandardListItem icon="sap-icon://broken-link"
+                                    title="{setup_typeMock}"
+                                    description="{setup_desMock}"
+                                ></StandardListItem>
+                                <StandardListItem icon="sap-icon://chain-link"
+                                    title="{setup_typeOdata}"
+                                    description="{setup_desOdata}"
+                                ></StandardListItem>
+                            </List>
+                            <HBox class="disp-block m-t-5">
+                                <Select 
+                                    id="odataType"
+                                    selectedKey="{local>/odataType}"
+                                    change=".temp"
+                                >
+                                    <core:ListItem key="1" icon="sap-icon://broken-link" text="{setup_typeMock}"></core:ListItem>
+                                    <core:ListItem key="2" icon="sap-icon://chain-link" text="{setup_typeOdata}"></core:ListItem>
+                                </Select>
+                            </HBox>
+                            <MessageStrip
+                                class="m-t-2"
+                                text="{= ${local>/odataType} === '1' ? ${setup_strip1} : ${setup_strip2} }"
+                                type="Information"
+                                showIcon="true"
+                                enableFormattedText="true"
+                            />
+                        </l:BlockLayoutCell>
+                    </l:BlockLayoutRow>
+                </l:BlockLayout>
+            </content>
+        </Page>
+    </App>
+</mvc:XMLView>
