@@ -1,4 +1,5 @@
 <mvc:View
+    controllerName="ui5pos.szdk.controller.App"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:t="sap.tnt"
@@ -13,14 +14,17 @@
                     </t:ToolHeader>
                 </t:header>
                 <t:sideContent>
-                    <t:SideNavigation >
+                    <t:SideNavigation visible="{nav>/sideNav/visible}" id="app_side_nav_list" selectedKey="{nav>/sideNav/selectedKey}">
                         <t:NavigationList>
-                            <t:NavigationListItem text="Hello Side Nav">
-                                <t:NavigationListItem text="Hello Sub Side Nav"></t:NavigationListItem>
+                            <t:NavigationListItem key="nav_item_home" id="app_nav_home" text="{dashboard}" icon="sap-icon://bbyd-dashboard"/>
+                            <t:NavigationListItem text="{products}" icon="sap-icon://product" selectable="false">
+                                <t:NavigationListItem key="nav_item_products" id="app_nav_products" text="{app_nav_all_products}" icon="sap-icon://activity-items"></t:NavigationListItem>
                             </t:NavigationListItem>
                         </t:NavigationList>
                     </t:SideNavigation>
                 </t:sideContent>
+                <t:mainContents>
+                </t:mainContents>
             </t:ToolPage>
         </App>
     </Shell>

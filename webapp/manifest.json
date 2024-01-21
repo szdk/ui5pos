@@ -86,6 +86,13 @@
                     ]
                 },
                 {
+                    "name": "products",
+                    "pattern": "products",
+                    "target" : [
+                        "products"
+                    ]
+                },
+                {
                     "name": "setup",
                     "pattern": "setup",
                     "target" : [
@@ -100,15 +107,20 @@
                     "viewName": "Home",
                     "viewId": "home"
                 },
-                "notFound" : {
-                    "title": "{{notfound_title}}",
-                    "viewName": "NotFound",
-                    "viewId": "notfound"
+                "products" : {
+                    "title": "{{products_title}}",
+                    "viewName": "product.Products",
+                    "viewId": "products"
                 },
                 "setup" : {
                     "title": "{{setup_title}}",
                     "viewName": "Setup",
                     "viewId": "setup"
+                },
+                "notFound" : {
+                    "title": "{{notfound_title}}",
+                    "viewName": "NotFound",
+                    "viewId": "notfound"
                 }
             }
         }

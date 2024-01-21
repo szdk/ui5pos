@@ -21,6 +21,7 @@ function (UIComponent, models, MockServer) {
 
             this.getRouter().initialize();
 
+            //models
             this.setModel(models.createDeviceModel(), "device");
             this.setModel(models.createSettingsModel(), "settings");
 

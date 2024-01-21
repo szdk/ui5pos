@@ -8,11 +8,16 @@
     } @else {
         $pref : ".";
     }
-    @for $i from 0 through 5 {
+    @for $i from 0 through 6 {
         $size : $i * 0.3;
-        @if ($i > 4) {
-            $size : $i * 0.4;
+        
+        @if ($i > 2) {
+            $size : $i * 0.4
         }
+        @if ($i > 4) {
+            $size : $i * 0.5;
+        }
+
         @if ($size > 0) {
             $size : #{$size}em;
         }
@@ -49,22 +54,22 @@
 //all
 @include build-mp();
 
-//xl
-@media only screen and (min-width: 1600px){
-    @include build-mp($pref : "xl");
-}
-
 //l
-@media only screen and (min-width: 1000px) and (max-width: 1599px){
+@media only screen and (max-width: 1467px){
     @include build-mp($pref: "l");
 }
 
 //m
-@media only screen and (min-width: 500px) and (max-width: 999px){
+@media only screen and (max-width: 1051px){
     @include build-mp($pref: "m");
 }
 
 //s
-@media only screen and (max-width: 499px){
+@media only screen and (max-width: 615px){
     @include build-mp($pref: "s");
+}
+
+//xs
+@media only screen and (max-width: 340px){
+    @include build-mp($pref: "xs");
 }

@@ -4,7 +4,7 @@ sap.ui.define([
     function (Controller) {
         "use strict";
 
-        return Controller.extend("ui5pos.szdk.controller.XXXXXX", {
+        return Controller.extend("ui5pos.szdk.controller.Products", {
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
 

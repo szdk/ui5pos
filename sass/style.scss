@@ -1,10 +1,9 @@
-.bg-w {
-    background: white !important;
-}
+.bg-w {background: white !important;}
+.bg-success {background: rgb(63, 189, 14) !important};
 
-.disp-block {
-    display : block !important;
-}
+.disp-block {display : block !important;}
+
+.font-style-i {font-style: italic}
 
 
 /**************** start border radius ****************************/
@@ -19,6 +18,7 @@
     #{$pref}brad-m {border-radius: 0.6em};
     #{$pref}brad-l {border-radius: 0.1em};
     #{$pref}brad-xl {border-radius: 1.5em};
+    #{$pref}brad-round {border-radius: 999999px}
     
 }
 //all

@@ -4,8 +4,10 @@
     xmlns="sap.m"
     xmlns:l="sap.ui.layout"
     xmlns:core="sap.ui.core"
+    
+    height="100%"
 >
-    <App>
+    <!-- <App> -->
         <Page title="{setup_title}" class="sapUiResponsivePadding--header sm-p">
             <content>
                 <l:BlockLayout background="Default">
@@ -26,12 +28,30 @@
                                 <Select 
                                     id="odataType"
                                     selectedKey="{local>/odataType}"
-                                    change=".temp"
+                                    enabled="{local>/inputEnabled}"
                                 >
                                     <core:ListItem key="1" icon="sap-icon://broken-link" text="{setup_typeMock}"></core:ListItem>
                                     <core:ListItem key="2" icon="sap-icon://chain-link" text="{setup_typeOdata}"></core:ListItem>
                                 </Select>
                             </HBox>
+                            <!-- Input Delay -->
+                            <VBox visible="{= ${local>/odataType} === '1' }" class="m-t-3 m-b-2">
+                                <Text text="{setup_delayDescription}" class="m-t-2 m-b-3 font-style-i"></Text>
+                                <HBox alignContent="Center" justifyContent="Start" wrap="Wrap">
+                                    <HBox alignContent="Center" wrap="Wrap" class="m-r-2"><Label labelFor="setup_odataDelay" text="{setup_odataDelay}"></Label></HBox>
+                                    <HBox alignContent="Center">
+                                        <Input
+                                            enabled="{local>/inputEnabled}" valueLiveUpdate="true" required="true" id="setup_odataDelay" value="{local>/odataDelay}" type="Number"
+                                        ></Input>
+                                    </HBox>
+                                </HBox>
+                            </VBox>
+                            <!-- Input URL -->
+                            <VBox visible="{= ${local>/odataType} === '2' }" class="m-t-3 m-b-2">
+                                <Label labelFor="setup_odataUrl" text="{setup_odataUrl}"></Label>
+                                <Input enabled="{local>/inputEnabled}" valueLiveUpdate="true" required="true" id="setup_odataUrl" value="{local>/odataUrl}" type="Url" placeholder="https://services.odata.org/V3/Northwind/Northwind.svc/"></Input>
+                            </VBox>
+                            <!-- Message Strip -->
                             <MessageStrip
                                 class="m-t-2"
                                 text="{= ${local>/odataType} === '1' ? ${setup_strip1} : ${setup_strip2} }"
@@ -42,7 +62,45 @@
                         </l:BlockLayoutCell>
                     </l:BlockLayoutRow>
                 </l:BlockLayout>
+
+                <!-- Service created Success message -->
+                <HBox visible="{local>/ServiceCreated}" class="bg-w brad-m m-2 p-lr-6 p-tb-3 m-p-lr-4 s-p-lr-3 xs-p-lr-2" alignItems="Center" justifyContent="Start">
+                    <VBox alignContent="Center" justifyContent="Center" class="bg-success brad-round">
+                        <core:Icon src="sap-icon://accept" size="2em" color="white" width="1.25em" height="1.25em"></core:Icon>
+                    </VBox>
+                    <VBox alignContent="Center" class="m-l-4 s-m-l-2">
+                        <Title text="{setup_serviceCreated}" titleStyle="H4"></Title>
+                        <Text text="{setup_navigateToHome}"></Text>
+                    </VBox>
+                </HBox>
+                
+                <!-- loading block -->
+                <HBox id="setup-loading" visible="false" justifyContent="Center" alignItems="Center" class="m-lr-2 m-tb-5">
+                    <BusyIndicator text="{= ${local>/odataType} === '1' ? ${setup_loadingMock} : ${setup_loadingOdata} }" />
+                </HBox>
+
+                <!-- dialog for Error initializing odata -->
+                <Dialog visible="false" id="setup-error-dialog" title="{error}" type="Message" state="Error">
+                    <Text id="setup-error-dialog-text" text="{setup_loadingError}"/>
+                    <beginButton><Button id="setup-error-dialog-close" text="{close}" type="Ghost"></Button></beginButton>
+                </Dialog>
             </content>
+
+            <footer>
+                <OverflowToolbar>
+                    <!-- <ToolbarSpacer/> -->
+                    <Button id="setup-continue" press=".onCreateService" type="Emphasized"
+                        icon="{= ${local>/ServiceCreated} ? 'sap-icon://accept' : 'sap-icon://lab' }"
+                        enabled="{=
+                            ${local>/ServiceCreated} || ${local>/inputEnabled} &amp;&amp; (
+                                ${local>/odataType} === '1' &amp;&amp; ${local>/odataDelay} >= 0
+                                ||
+                                ${local>/odataType} === '2' &amp;&amp; ${local>/odataUrl}.length > 0
+                            )
+                        }"
+                        text="{continue}"/>
+                </OverflowToolbar>
+            </footer>
         </Page>
-    </App>
+    <!-- </App> -->
 </mvc:XMLView>
