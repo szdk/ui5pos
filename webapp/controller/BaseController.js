@@ -12,7 +12,7 @@ sap.ui.define([
             onInit: function () {
                 // methods/properties which are used too often can be defined here, so that all child controllers will inherit the same by default
                 this.comp = this.getOwnerComponent();
-                this.i18n = this.comp.getModel().getResourceBundle();
+                this.i18n = this.comp.getModel('lang').getResourceBundle();
             },
 
             goBack: function (defaultPage = "home", parameters = {}) {

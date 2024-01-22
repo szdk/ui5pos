@@ -7,8 +7,78 @@
     
     height="100%"
 >
-    <Page title="{products_title}" class="sapUiResponsivePadding--header sm-p">
-        <Text text="product page"/>
+    <Page title="{lang>products_title}" class="">
+    <headerContent>
+        <Button icon="sap-icon://add-document" type="Transparent" text="{lang>create_product}" press="onPressCreateProduct"></Button>
+    </headerContent>
+        <Table
+            id="products_table"
+            items="{service>/Products}"
+            busyIndicatorDelay="0"
+            mode="{table>/mode}"
+            sticky="HeaderToolbar,ColumnHeaders"
+        >
+            <headerToolbar>
+                <OverflowToolbar >
+                    <OverflowToolbarToggleButton tooltip="Toggle Select" type="Transparent" text="Select" icon="sap-icon://multi-select" press="onToggleSelect"/>
+                    
+                    <ToolbarSpacer/>
+                    <core:InvisibleText id="product_search_lable" text="Label text"/>
+                    <SearchField placeholder="Search Products" ariaLabelledBy="product_search_lable" id="product_search" search="onSearchProduct">
+                        <layoutData><OverflowToolbarLayoutData maxWidth="300px" shrinkable="true" priority="NeverOverflow"/></layoutData>
+                    </SearchField>
+
+                    <ToolbarSpacer/>
+                    <OverflowToolbarButton tooltip="Filter" type="Transparent" text="Filter" icon="sap-icon://filter" press="onPressFilter"/>
+                    <OverflowToolbarButton tooltip="Sort" type="Transparent" text="Sort" icon="sap-icon://sort" press="onPressSort"/>
+                    <OverflowToolbarButton tooltip="Group" type="Transparent" text="Group" icon="sap-icon://group-2" press="onPressGroup"/>
+                    <OverflowToolbarButton tooltip="Delete Selected" enabled="false" type="Transparent" text="Delete" icon="sap-icon://delete" press="onDeleteSelected"/>
+                    <!-- //items per page  -->
+                    <MenuButton tooltip="Items Count" type="Transparent" text="100" icon="sap-icon://documents">
+                        <menu>
+                            <Menu itemSelected="onItemsPerPage">
+                                <MenuItem key="20" text="20" />
+                                <MenuItem key="50" text="50" />
+                                <MenuItem key="100" text="100" />
+                                <MenuItem key="1000" text="1000" />
+                                <MenuItem key="nl" text="{lang>All}" />
+                            </Menu>
+                        </menu>
+                    </MenuButton>
+                    <OverflowToolbarMenuButton tooltip="Toggle Pin" text="Pin" type="Transparent" icon="sap-icon://pushpin-on">
+                        <menu>
+                            <Menu itemSelected="onPinHeader">
+                                <MenuItem text="Toolbar" icon="sap-icon://complete"></MenuItem>
+                                <MenuItem text="Column Header" icon="sap-icon://border"></MenuItem>
+                            </Menu>
+                        </menu>
+                    </OverflowToolbarMenuButton>
+                    
+                    <OverflowToolbarMenuButton tooltip="Download" text="Download" type="Transparent" icon="sap-icon://download">
+                        <menu>
+                            <Menu itemSelected="onTableDownload">
+                                <MenuItem text="Export PDF" icon="sap-icon://pdf-attachment"></MenuItem>
+                                <MenuItem text="Export Excel" icon="sap-icon://excel-attachment"></MenuItem>
+                            </Menu>
+                        </menu>
+                    </OverflowToolbarMenuButton>
+
+                    
+                </OverflowToolbar>
+            </headerToolbar>
+            <columns>
+                <Column>
+                    <Text text="Todo Name"/>
+                </Column>
+            </columns>
+            <items>
+                <ColumnListItem>
+                    <cells>
+                        <Text text="{service>ProductName}"></Text>
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
     </Page>
 
 </mvc:XMLView>

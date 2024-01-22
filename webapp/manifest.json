@@ -40,7 +40,7 @@
             }
         },
         "models": {
-            "" : {
+            "lang" : {
                 "type": "sap.ui.model.resource.ResourceModel",
                 "settings": {
                     "bundleUrl": "i18n/i18n.properties",
