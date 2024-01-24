@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/core/ComponentContainer"],function(n){"use strict";new n({name:"ui5pos.szdk",settings:{id:"ui5pos-component"},async:true}).placeAt("content")});
+//# sourceMappingURL=index.js.map

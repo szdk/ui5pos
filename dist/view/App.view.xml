@@ -1,0 +1,31 @@
+<mvc:View
+    controllerName="ui5pos.szdk.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:t="sap.tnt"
+    displayBlock="true"
+>
+    <Shell appWidthLimited="false">
+        <App id="app">
+            <t:ToolPage id="toolpage" sideExpanded='{= ${device>/resize/width} > 1023 }'>
+                <t:header>
+                    <t:ToolHeader>
+                    
+                    </t:ToolHeader>
+                </t:header>
+                <t:sideContent>
+                    <t:SideNavigation  visible="{nav>/sideNav/visible}" id="app_side_nav_list" selectedKey="{nav>/sideNav/selectedKey}">
+                        <t:NavigationList>
+                            <t:NavigationListItem key="nav_item_home" id="app_nav_home" text="{lang>dashboard}" icon="sap-icon://bbyd-dashboard"/>
+                            <t:NavigationListItem text="{lang>products}" icon="sap-icon://product" selectable="false">
+                                <t:NavigationListItem key="nav_item_products" id="app_nav_products" text="{lang>app_nav_all_products}" icon="sap-icon://activity-items"></t:NavigationListItem>
+                            </t:NavigationListItem>
+                        </t:NavigationList>
+                    </t:SideNavigation>
+                </t:sideContent>
+                <t:mainContents>
+                </t:mainContents>
+            </t:ToolPage>
+        </App>
+    </Shell>
+</mvc:View>

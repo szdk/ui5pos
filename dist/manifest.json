@@ -1,0 +1,128 @@
+{
+    "comment-info" : "information about manifest.json configuration format is available at https://sapui5.hana.ondemand.com/sdk/#/topic/be0cf40f61184b358b5faedaec98b2da",
+    "_version": "1.60.0",
+    "sap.app": {
+        "type": "application",
+        "id" : "ui5pos.szdk",
+        "applicationVersion" : "1.0.0",
+        "i18n" : "i18n/i18n.properties",
+        "title" : "{{appTitle}}",
+        "description" : "{{appDescription}}"
+    },
+    "sap.ui" : {
+        "technology": "UI5",
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        },
+        "fullWidth": true
+    },
+    "sap.ui5" : {
+        "resources": {
+            "css": [
+                {
+                    "id": "main",
+                    "uri": "css/style.css"
+                }
+            ]
+        },
+        "handleValidation": true,
+        "comment-handelValidatoin" : "Enable so that validation errors can be automatically shown on input fields",
+        "dependencies": {
+            "minUI5Version": "1.120.3",
+            "comment-minUI5Version" : "currently used version of UI5 can be retrived from sap.ui.version in debugger console",
+            "libs": {
+                "sap.f" : {},
+                "sap.m" : {},
+                "sap.ui.core" : {},
+                "sap.ui.layout" : {}
+            }
+        },
+        "models": {
+            "lang" : {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleUrl": "i18n/i18n.properties",
+                    "supportedLocales": [],
+                    "fallbackLocale": ""
+                }
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "rootView" : {
+            "viewName": "ui5pos.szdk.view.App",
+            "type": "XML",
+            "async": true,
+            "id": "appview"
+        },
+        "routing": {
+            "config" : {
+                "routerClass": "sap.m.routing.Router",
+                "viewPath": "ui5pos.szdk.view",
+                "viewType": "XML",
+                "async": true,
+                "controlId": "toolpage",
+                "controlAggregation": "mainContents",
+                "clearControlAggregation": true,
+                "transition" : "fade",
+                "bypassed": {
+                    "target" : [
+                        "notFound"
+                    ]
+                }
+            },
+
+            "routes" : [
+                {
+                    "name": "home",
+                    "pattern": "",
+                    "titleTarget": "home",
+                    "target" : [
+                        "home"
+                    ]
+                },
+                {
+                    "name": "products",
+                    "pattern": "products",
+                    "target" : [
+                        "products"
+                    ]
+                },
+                {
+                    "name": "setup",
+                    "pattern": "setup",
+                    "target" : [
+                        "setup"
+                    ]
+                }
+            ],
+
+            "targets": {
+                "home" : {
+                    "title": "{{home_title}}",
+                    "viewName": "Home",
+                    "viewId": "home"
+                },
+                "products" : {
+                    "title": "{{products_title}}",
+                    "viewName": "product.Products",
+                    "viewId": "products"
+                },
+                "setup" : {
+                    "title": "{{setup_title}}",
+                    "viewName": "Setup",
+                    "viewId": "setup"
+                },
+                "notFound" : {
+                    "title": "{{notfound_title}}",
+                    "viewName": "NotFound",
+                    "viewId": "notfound"
+                }
+            }
+        }
+    }
+}

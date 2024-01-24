@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/core/mvc/Controller","sap/ui/core/routing/History"],function(e,o){"use strict";return e.extend("ui5pos.szdk.controller.BaseController",{onInit:function(){this.comp=this.getOwnerComponent();this.i18n=this.comp.getModel("lang").getResourceBundle()},goBack:function(e="home",t={}){let n=o.getInstance().getPreviousHash();if(n!==undefined)window.history.go(-1);else this.comp.getRouter().navTo(e,t,true)}})});
+//# sourceMappingURL=BaseController.js.map

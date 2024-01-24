@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/core/UIComponent","ui5pos/szdk/models/models"],function(t,e,i){"use strict";return t.extend("ui5pos.szdk.Component",{metadata:{manifest:"json"},init:function(){t.prototype.init.apply(this,arguments);this.getRouter().initialize();this.setModel(e.createDeviceModel(),"device");this.setModel(e.createSettingsModel(),"settings");this.getRouter().attachTitleChanged(function(t){var e=t.getParameter("title");document.title=e})}})});
+//# sourceMappingURL=Component.js.map

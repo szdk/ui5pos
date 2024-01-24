@@ -1,0 +1,119 @@
+<mvc:XMLView controllerName="ui5pos.szdk.controller.product.Products"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:mvc="sap.ui.core.mvc" 
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:core="sap.ui.core"
+    
+    height="100%"
+>
+    <Page title="{lang>products_title}">
+    <headerContent>
+        <Button icon="sap-icon://add-document" type="Transparent" text="{lang>product_create}" press=".onPressCreateProduct"></Button>
+    </headerContent>
+        <Table
+            id="products_table"
+            items="{
+                path: 'service>/Products',
+                parameters: {
+                    expand : 'Category'
+                }
+            }"
+            busyIndicatorDelay="0"
+            mode="{table>/mode}"
+            growing="{= ${table>/grow/size} > 0 }"
+            growingThreshold="{table>/grow/size}"
+            sticky="{table>/sticky}"
+            popinLayout="Block"
+            alternateRowColors="false"
+        >
+            <headerToolbar>
+                <OverflowToolbar >
+                    <!-- <OverflowToolbarToggleButton tooltip="{lang>toggle_select}" text="{lang>toggle_select}" press=".onToggleSelect" type="Transparent" icon="sap-icon://multi-select" />
+                    <MenuButton tooltip="{lang>action}" text="{lang>action}" type="Transparent">
+                        <menu>
+                            <Menu>
+                                <MenuItem press=".onDeleteSelected" text="{lang>delete_selected}" enabled="{= ${table>/mode} === 'MultiSelect' }" icon="sap-icon://delete"/>
+                            </Menu>
+                        </menu>
+                    </MenuButton> -->
+
+                    <ToolbarSpacer/>
+                    <core:InvisibleText id="product_search_lable" text="{lang>products_search}"/>
+                    <SearchField placeholder="{lang>products_search}" ariaLabelledBy="product_search_lable" id="product_search" search="onSearchProduct">
+                        <layoutData><OverflowToolbarLayoutData maxWidth="300px" shrinkable="true" priority="NeverOverflow"/></layoutData>
+                    </SearchField>
+
+                    <ToolbarSpacer/>
+                    <OverflowToolbarButton tooltip="{lang>filter}" type="Transparent" text="{lang>filter}" icon="sap-icon://filter" press="onPressFilter"/>
+                    <OverflowToolbarButton tooltip="{lang>sort}" type="Transparent" text="{lang>sort}" icon="sap-icon://sort" press="onPressSort"/>
+                    <OverflowToolbarButton tooltip="{lang>group}" type="Transparent" text="{lang>group}" icon="sap-icon://group-2" press="onPressGroup"/>
+                    
+                    <!-- Export Excel -->
+                    <OverflowToolbarButton tooltip="{lang>export_excel}" text="{lang>export_excel}" enabled="{table>/canExport}" type="Transparent" icon="sap-icon://excel-attachment" press=".onExportExcel"/>
+
+                    <MenuButton tooltip="{lang>items_count}" type="Transparent" text="{table>/grow/text}" icon="sap-icon://documents">
+                        <menu>
+                            <Menu itemSelected=".onItemsPerPage">
+                                <MenuItem key="20" text="{lang>20}" />
+                                <MenuItem key="50" text="{lang>50}" />
+                                <MenuItem key="100" text="{lang>100}" />
+                                <MenuItem key="1000" text="{lang>1000}" />
+                                <MenuItem key="0" text="{lang>all}" />
+                            </Menu>
+                        </menu>
+                    </MenuButton>
+                    <OverflowToolbarMenuButton tooltip="{lang>pin}" text="{lang>pin}" type="Transparent" icon="sap-icon://pushpin-on">
+                        <menu>
+                            <Menu itemSelected=".onPinHeader">
+                                <MenuItem text="{lang>toolbar}" key="HeaderToolbar" icon="{= ${table>/sticky}.indexOf('HeaderToolbar') > -1 ? 'sap-icon://complete' : 'sap-icon://border' }"></MenuItem>
+                                <MenuItem text="{lang>column_header}" key="ColumnHeaders" icon="{= ${table>/sticky}.indexOf('ColumnHeaders') > -1 ? 'sap-icon://complete' : 'sap-icon://border' }"></MenuItem>
+                            </Menu>
+                        </menu>
+                    </OverflowToolbarMenuButton>
+                    
+                </OverflowToolbar>
+            </headerToolbar>
+            <columns>
+                <Column minScreenWidth="XXLarge" width="5em">
+                    <Text text="{lang>id}"/>
+                </Column>
+                <Column>
+                    <Text  text="{lang>product}"/>
+                </Column>
+                <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="WithoutHeader">
+                    <Text text="{lang>category}"/>
+                </Column>
+                <Column minScreenWidth="XXLarge" demandPopin="true" popinDisplay="Inline">
+                    <Text text="{lang>product_instock}"/>
+                </Column>
+                <Column minScreenWidth="XXLarge" demandPopin="true" popinDisplay="Inline">
+                    <Text text="{lang>product_quantityPerUnit}"/>
+                </Column>
+                <Column hAlign="End">
+                    <Text text="{lang>product_unitPrice}"/>
+                </Column>
+            </columns>
+            <items>
+                <ColumnListItem type="Navigation">
+                    <cells>
+                        <ObjectIdentifier  title="{service>ProductID}"></ObjectIdentifier>
+                        <Title titleStyle="H6"  wrapping="true" wrappingType="Normal" text="{service>ProductName}" />
+                        <Text text="{service>Category/CategoryName}"/>
+                        <Text text="{service>UnitsInStock}"/>
+                        <Text text="{service>QuantityPerUnit}"/>
+                        <ObjectNumber number="{
+                            parts:[
+                                {path:'service>UnitPrice'},
+                                {value: 'USD'}
+                            ],
+                            type: 'sap.ui.model.type.Currency',
+                            formatOptions: {showMeasure:false}
+                        }" unit="USD" ></ObjectNumber>
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+    </Page>
+
+</mvc:XMLView>

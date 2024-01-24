@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>UI5 POS</title>
+        <!-- 
+            info about following bootstrap script tag
+            id : required for identification of this script by ui5
+            src: path to sap-ui-core library (it is set to resources/sap-ui-core.js, if the current application is served using "UI5 serve" command,
+                    the resources/.. path is automatically resolved by ui5 server in the backend and all of the required files are provided to the request)
+            data-sap-ui-onInit: the script that needs to be run once sap.ui.core library is loaded
+            data-sap-ui-resourceroots: provide an alias name (in our case, ui5pos.szdk) to the specified directory (in our case it is current directory)
+                                        this alias name will be used everywhere inside our html as well as js files
+                                        one example is the data-sap-ui-onInit parameter, which uses the alias name to access index.js file in current directory
+
+        -->
+        <script
+            id="sap-ui-bootstrap"
+            src="resources/sap-ui-core.js"
+            data-sap-ui-theme="sap_horizon"
+            data-sap-ui-compatVersion="edge"
+            data-sap-ui-async="true"
+            data-sap-ui-onInit="module:ui5pos/szdk/index"
+            data-sap-ui-resourceroots='{
+                "ui5pos.szdk": "./"
+            }'>
+
+        </script>
+    </head>
+    <body class="sapUiBody" id = "content">
+        
+    </body>
+</html>

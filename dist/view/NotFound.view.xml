@@ -1,0 +1,9 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    height="100%"
+>
+    <VBox height="100%" justifyContent="Center">
+        <IllustratedMessage illustrationSize="Spot" title="{lang>notfound_title}" description="{lang>notfound_descrption}"></IllustratedMessage>
+    </VBox>
+</mvc:View>

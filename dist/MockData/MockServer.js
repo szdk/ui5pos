@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/core/util/MockServer","sap/base/Log","sap/ui/model/odata/v2/ODataModel"],function(a,t,e){"use strict";return{init:function(){var i=new a({rootUri:"/MockData/"});i.simulate("MockData/metadata.xml",{sMockdataBaseUrl:"MockData/data/",bGenerateMissingMockData:true});i.start();t.info("Running the app with mock data");let o=new e({serviceUrl:"/MockData/"});return o}}});
+//# sourceMappingURL=MockServer.js.map

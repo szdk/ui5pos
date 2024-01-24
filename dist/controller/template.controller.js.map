@@ -1,0 +1,1 @@
+{"version":3,"file":"template.controller.js","names":["sap","ui","define","Controller","extend","onInit","prototype","apply","this","arguments"],"sources":["template-dbg.controller.js"],"mappings":"AAAAA,IAAIC,GAAGC,OAAO,CACV,yCAEA,SAAUC,GACN,aAEA,OAAOA,EAAWC,OAAO,gCAAiC,CACtDC,OAAQ,WACJF,EAAWG,UAAUD,OAAOE,MAAMC,KAAMC,UAG5C,GAER"}
