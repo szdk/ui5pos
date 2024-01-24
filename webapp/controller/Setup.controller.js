@@ -57,6 +57,7 @@ sap.ui.define([
                         return model.metadataLoaded(true);
                     }).then(() => {
                         //service creation successfull, attach the main service model to root component    
+                        window.sm = serviceModel;
                         this.comp.setModel(serviceModel, "service");
 
                         //update local modle "ServiceCreated" property to true, so that continue button can be enabled

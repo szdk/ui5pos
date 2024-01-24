@@ -1,4 +1,28 @@
-
+// All screens
 .sapTntToolPageAside {
     z-index : 2;
+}
+
+header.sapMPageHeader .sapMTitle {
+    padding-left : 1em;
+}
+
+
+//l
+@media only screen and (max-width: 1467px){
+}
+
+//m
+@media only screen and (max-width: 1051px){
+}
+
+//s
+@media only screen and (max-width: 615px){
+    header.sapMPageHeader .sapMTitle {
+        padding-left : 0.5em;
+    }
+}
+
+//xs
+@media only screen and (max-width: 340px){
 }

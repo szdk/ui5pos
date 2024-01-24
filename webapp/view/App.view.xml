@@ -7,14 +7,14 @@
 >
     <Shell appWidthLimited="false">
         <App id="app">
-            <t:ToolPage id="toolpage">
+            <t:ToolPage id="toolpage" sideExpanded='{= ${device>/resize/width} > 1023 }'>
                 <t:header>
                     <t:ToolHeader>
                     
                     </t:ToolHeader>
                 </t:header>
                 <t:sideContent>
-                    <t:SideNavigation visible="{nav>/sideNav/visible}" id="app_side_nav_list" selectedKey="{nav>/sideNav/selectedKey}">
+                    <t:SideNavigation  visible="{nav>/sideNav/visible}" id="app_side_nav_list" selectedKey="{nav>/sideNav/selectedKey}">
                         <t:NavigationList>
                             <t:NavigationListItem key="nav_item_home" id="app_nav_home" text="{lang>dashboard}" icon="sap-icon://bbyd-dashboard"/>
                             <t:NavigationListItem text="{lang>products}" icon="sap-icon://product" selectable="false">

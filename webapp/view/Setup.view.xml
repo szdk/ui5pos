@@ -8,7 +8,7 @@
     height="100%"
 >
     <!-- <App> -->
-        <Page title="{lang>setup_title}" class="sapUiResponsivePadding--header sm-p">
+        <Page title="{lang>setup_title}">
             <content>
                 <l:BlockLayout background="Default">
                     <l:BlockLayoutRow>
