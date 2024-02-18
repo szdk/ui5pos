@@ -46,7 +46,12 @@ sap.ui.define([
                     }
                     if (!this._services) this._services = {};
                     if (!this._services[settings.odata.serviceUrl]) {
-                        this._services[settings.odata.serviceUrl] = new ODataModel(settings.odata.serviceUrl);
+                        //create ODataModel
+                        this._services[settings.odata.serviceUrl] = new ODataModel(
+                            settings.odata.serviceUrl, {
+                                // defaultOperationMode : settings.odata.useMock ? sap.ui.model.odata.OperationMode.Client : sap.ui.model.odata.OperationMode.Server
+                            }
+                        );
                         console.log(`Created new Service "${settings.odata.serviceUrl}"`);
                     } else {
                         console.log(`Service "${settings.odata.serviceUrl}" alread exists`);

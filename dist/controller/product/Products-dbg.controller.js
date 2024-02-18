@@ -4,7 +4,9 @@ sap.ui.define([
         'sap/ui/export/Spreadsheet',
         'sap/m/Dialog',
         "sap/m/Button",
-        "sap/m/Text"
+        "sap/m/Text",
+        "sap/ui/model/Filter",
+        "sap/ui/model/FilterOperator",
     ],
     function (
         Controller,
@@ -13,13 +15,34 @@ sap.ui.define([
         Dialog,
         Button,
         Text,
+        Filter,
+        FilterOperator,
     ) {
         "use strict";
         //nav Toolbar functions
         let navToolbar = {
-            onToggleSelect : function (e) {
-                this.tableModel.setProperty('/mode', e.getSource().getPressed() ? 'MultiSelect' : 'SingleSelectMaster');
+            onSearchProduct : function (e) {
+                let searchValue = e.getParameter('query').trim();
+                let binding = this._tableMain.getBinding('items');
+
+                //===================== search filters
+                let filter = searchValue.length == 0 ? [] : new Filter({
+                    filters : [
+                        new Filter({path: 'ProductID', operator: FilterOperator.EQ, value1: searchValue}),
+                        new Filter({path: 'ProductName', operator: FilterOperator.Contains, value1: searchValue}),
+                        // new Filter({path: 'CategoryName', operator: FilterOperator.Contains, value1: searchValue}),
+                        new Filter({path: 'QuantityPerUnit', operator: FilterOperator.Contains, value1: searchValue}),
+                    ],
+                    and : false
+                });
+
+                // if (binding.hasPendingChanges(true))
+                //     binding.resetChanges();
+
+                binding.filter(filter);
+
             },
+            
             onRefreshItems : function () {
                 this._tableMain.refreshItems();
             },
@@ -131,16 +154,12 @@ sap.ui.define([
                 } else {
                     startExport(this._tableMain.getBinding('items'), true);
                 }
-            },
-            
-            onDeleteSelected : function () {
-                alert('todo');
             }
-
+            
         }
 
         //controller
-        return Controller.extend("ui5pos.szdk.controller.Products", {
+        return Controller.extend("ui5pos.szdk.controller.product.Products", {
             ...navToolbar,
 
             onInit: function () {
@@ -161,10 +180,19 @@ sap.ui.define([
 
             },
 
+            //navigate to selected product
+            onSelectionChange: function (evt) {
+                let params = evt.getParameters();
+                if (!params.listItem || params.listItems && params.listItems.length != 1) return;
+
+                let bindingContext = params.listItem.getBindingContext('service');
+                let prodId = bindingContext ? bindingContext.getProperty('ProductID') : null;
+                if (prodId !== null)
+                    this.comp.getRouter().navTo("view_product", {id : prodId});
+            },
 
             onPressCreateProduct: function () {
-                alert("todo");
-                // this.comp.getRouter().navTo("");
+                this.comp.getRouter().navTo("create_product");
             }
         });
     }

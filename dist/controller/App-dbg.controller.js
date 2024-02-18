@@ -1,27 +1,29 @@
 sap.ui.define([
     "ui5pos/szdk/controller/BaseController",
-    "sap/ui/model/json/JSONModel"
+    "sap/ui/model/json/JSONModel",
+    "sap/ui/Device"
     ],
-    function (Controller, JSONModel) {
+    function (Controller, JSONModel, Device) {
         "use strict";
 
         return Controller.extend("ui5pos.szdk.controller.App", {
-            _routes : ["home", "products"],
+            _routes : ["home", "products", "create_product"],
 
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
 
-                // App model
-                let navModel = new JSONModel({
+                // ======================================= App model =========================================
+                this.appNavModel = new JSONModel({
                     sideNav : {
                         visible : true,
                         selectedKey : "home",
+                        expanded : Device.resize.width >= 1024,
                     }
                 });
                 //todo change binding mode, for bug fix
-                navModel.setDefaultBindingMode("OneWay");
+                this.appNavModel.setDefaultBindingMode("OneWay");
                 
-                this.getView().setModel(navModel, 'nav');
+                this.getView().setModel(this.appNavModel, 'nav');
 
                 this.attachPatternMatched();
 
@@ -54,7 +56,6 @@ sap.ui.define([
 
             attachPatternMatched : function () {
                 let router = this.comp.getRouter();
-                let navModel = this.getView().getModel('nav');
                 
                 //loop over each route (by route name) and attach patternMatched event handler to each rout
                 for (let routeName of this._routes) {
@@ -65,10 +66,10 @@ sap.ui.define([
                             return;
                         }
                         //show nav item list
-                        navModel.setProperty('/sideNav/visible', true);
+                        this.appNavModel.setProperty('/sideNav/visible', true);
 
                         //select relevent nav item with the help of navModel
-                        navModel.setProperty('/sideNav/selectedKey', `nav_item_${routeName}`);
+                        this.appNavModel.setProperty('/sideNav/selectedKey', `nav_item_${routeName}`);
                         
                     });
                 }
@@ -79,8 +80,12 @@ sap.ui.define([
                         this.goBack();
                     }
                     // hide side nav items
-                    navModel.setProperty('/sideNav/visible', false);
+                    this.appNavModel.setProperty('/sideNav/visible', false);
                 });
+            },
+
+            onSideNavButtonPress : function () {
+                this.appNavModel.setProperty('/sideNav/expanded', !this.appNavModel.getProperty('/sideNav/expanded'));
             }
         });
     }

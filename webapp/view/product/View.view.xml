@@ -1,0 +1,56 @@
+<mvc:View
+		controllerName="ui5pos.szdk.controller.product.View"
+		xmlns:mvc="sap.ui.core.mvc"
+		xmlns="sap.m"
+		xmlns:f="sap.f"
+		xmlns:layout="sap.ui.layout"
+		height="100%">
+		<f:DynamicPage id="product_view" headerExpanded="true">
+			<f:title>
+				<f:DynamicPageTitle>
+					<f:heading>
+						<Title text="product_name"/>
+					</f:heading>
+					
+					<f:content>
+						<GenericTag text="In Stock"
+							status="Success"
+							press="onPressOpenPopover"
+							design="StatusIconHidden">
+
+						</GenericTag>
+					</f:content>
+					
+					<f:actions>
+						<Button
+								text="Edit"
+								type="Transparent"
+								icon="sap-icon://edit"
+								press="toggleAreaPriority"/>
+					</f:actions>
+
+				</f:DynamicPageTitle>
+			</f:title>
+			<!-- DynamicPage Header -->
+			<f:header>
+				<f:DynamicPageHeader pinnable="true">
+					<layout:HorizontalLayout allowWrapping="true">
+						<layout:VerticalLayout class="sapUiMediumMarginEnd">
+							<ObjectAttribute title="Location" text="Warehouse A"/>
+							<ObjectAttribute title="Halway" text="23L"/>
+							<ObjectAttribute title="Rack" text="34"/>
+						</layout:VerticalLayout>
+
+						<layout:VerticalLayout>
+							<ObjectAttribute title="Availability"/>
+							<ObjectStatus text="In Stock" state="Success" />
+						</layout:VerticalLayout>
+					</layout:HorizontalLayout>
+				</f:DynamicPageHeader>
+			</f:header>
+			<f:content>
+				
+			</f:content>
+			
+		</f:DynamicPage>
+</mvc:View>

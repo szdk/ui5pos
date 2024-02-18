@@ -65,8 +65,8 @@
 
                 <!-- Service created Success message -->
                 <HBox visible="{local>/ServiceCreated}" class="bg-w brad-m m-2 p-lr-6 p-tb-3 m-p-lr-4 s-p-lr-3 xs-p-lr-2" alignItems="Center" justifyContent="Start">
-                    <VBox alignContent="Center" justifyContent="Center" class="bg-success brad-round">
-                        <core:Icon src="sap-icon://accept" size="2em" color="white" width="1.25em" height="1.25em"></core:Icon>
+                    <VBox alignContent="Center" justifyContent="Center">
+                        <core:Icon src="sap-icon://accept" size="3em" color="#4CAF50" width="1em" height="1em"></core:Icon>
                     </VBox>
                     <VBox alignContent="Center" class="m-l-4 s-m-l-2">
                         <Title text="{lang>setup_serviceCreated}" titleStyle="H4"></Title>

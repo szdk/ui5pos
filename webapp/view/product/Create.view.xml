@@ -1,0 +1,7 @@
+<mvc:XMLView xmlns:m="sap.m" controller="ui5pos.szdk.controller.product.Create"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:f="sap.f"
+
+    height="100%">
+    <m:Text text="todo"></m:Text>
+</mvc:XMLView>

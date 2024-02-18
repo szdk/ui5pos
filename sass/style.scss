@@ -5,6 +5,10 @@
 
 .font-style-i {font-style: italic}
 
+.border-top-lg {border-top-color: #e5e5e5 !important;}
+.border-left-lg {border-left-color: #e5e5e5 !important;}
+.border-bottom-lg {border-bottom-color: #e5e5e5 !important;}
+.border-right-lg {border-right-color: #e5e5e5 !important;}
 
 /**************** start border radius ****************************/
 @mixin border-radius($pref : null) {
