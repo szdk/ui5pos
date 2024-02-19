@@ -4,29 +4,41 @@
 		xmlns="sap.m"
 		xmlns:f="sap.f"
 		xmlns:layout="sap.ui.layout"
+		xmlns:core="sap.ui.core"
+		core:require="{formatMessage: 'sap/base/strings/formatMessage'}"
+
 		height="100%">
 		<f:DynamicPage id="product_view" headerExpanded="true">
 			<f:title>
 				<f:DynamicPageTitle>
 					<f:heading>
-						<Title text="product_name"/>
+						<Title text="{service>ProductName}"/>
 					</f:heading>
+
+					<f:expandedContent>
+						<Label text="{parts : [{path: 'lang>supplied_by'}, {path: 'service>Supplier/CompanyName'}], formatter : 'formatMessage' }"/>
+					</f:expandedContent>
+					<f:snappedContent>
+						<Label text="{parts : [{path: 'lang>supplied_by'}, {path: 'service>Supplier/CompanyName'}], formatter : 'formatMessage' }"/>
+					</f:snappedContent>
+					<f:snappedTitleOnMobile>
+						<Title text="{parts : [{path: 'lang>supplied_by'}, {path: 'service>Supplier/CompanyName'}], formatter : 'formatMessage' }"/>
+					</f:snappedTitleOnMobile>
 					
 					<f:content>
-						<GenericTag text="In Stock"
-							status="Success"
+						<GenericTag text="{= ${service>Discontinued} ? ${lang>discontinued} : (${service>UnitsInStock} &gt; 0 ? ${lang>in_stock} : ${lang>out_of_stock} ) }"
+							status="{= ${service>Discontinued} || ${service>UnitsInStock} === 0 ? 'Error' : 'Success' }"
 							press="onPressOpenPopover"
 							design="StatusIconHidden">
-
 						</GenericTag>
 					</f:content>
 					
 					<f:actions>
 						<Button
-								text="Edit"
+								text="{lang>edit}"
 								type="Transparent"
 								icon="sap-icon://edit"
-								press="toggleAreaPriority"/>
+								press=".onEditProduct"/>
 					</f:actions>
 
 				</f:DynamicPageTitle>
@@ -36,20 +48,32 @@
 				<f:DynamicPageHeader pinnable="true">
 					<layout:HorizontalLayout allowWrapping="true">
 						<layout:VerticalLayout class="sapUiMediumMarginEnd">
-							<ObjectAttribute title="Location" text="Warehouse A"/>
-							<ObjectAttribute title="Halway" text="23L"/>
-							<ObjectAttribute title="Rack" text="34"/>
+							<ObjectAttribute title="{lang>product_id}" text="{service>ProductID}"/>
+							<ObjectAttribute title="{lang>product_name}" text="{service>ProductName}"/>
+							<ObjectAttribute title="{lang>category}" text="{service>Category/CategoryName}" press=".onPressCategory"/>
 						</layout:VerticalLayout>
 
 						<layout:VerticalLayout>
-							<ObjectAttribute title="Availability"/>
-							<ObjectStatus text="In Stock" state="Success" />
+							<layout:HorizontalLayout allowWrapping="false">
+								<ObjectAttribute title="{lang>product_unitPrice}"/>
+								<ObjectNumber class="m-l-1" number="{
+									parts:[
+										{path:'service>UnitPrice'},
+										{value: 'USD'}
+									],
+									type: 'sap.ui.model.type.Currency',
+									formatOptions: {showMeasure:false}
+								}" unit="USD" ></ObjectNumber>
+							</layout:HorizontalLayout>
+							
+							<ObjectAttribute title="{lang>product_quantityPerUnit}" text="{service>QuantityPerUnit}"/>
+							<ObjectAttribute title="{lang>product_instock}" text="{service>UnitsInStock}"/>
 						</layout:VerticalLayout>
 					</layout:HorizontalLayout>
 				</f:DynamicPageHeader>
 			</f:header>
 			<f:content>
-				
+				<Text text="TODO, show sales orders containing this product"></Text>
 			</f:content>
 			
 		</f:DynamicPage>

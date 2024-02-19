@@ -30,10 +30,11 @@
                 <t:sideContent>
                     <t:SideNavigation  visible="{nav>/sideNav/visible}" id="app_side_nav_list" selectedKey="{nav>/sideNav/selectedKey}">
                         <t:NavigationList>
-                            <t:NavigationListItem key="nav_item_home" id="app_nav_home" text="{lang>dashboard}" icon="sap-icon://bbyd-dashboard"/>
+                            <t:NavigationListItem key="nav_item_route_home" id="app_nav_route_home" text="{lang>dashboard}" icon="sap-icon://bbyd-dashboard"/>
                             <t:NavigationListItem text="{lang>products}" icon="sap-icon://product" selectable="false">
-                                <t:NavigationListItem key="nav_item_products" id="app_nav_products" text="{lang>app_nav_all_products}" icon="sap-icon://activity-items"></t:NavigationListItem>
-                                <t:NavigationListItem key="nav_item_create_product" id="app_nva_create_product" text="{lang>product_create}"></t:NavigationListItem>
+                                <!-- <t:NavigationListItem key="nav_item_route_view_product" id="app_nav_route_view_product" text="{lang>view_product}"></t:NavigationListItem> -->
+                                <t:NavigationListItem key="nav_item_route_products" id="app_nav_route_products" text="{lang>app_nav_all_products}" icon="sap-icon://activity-items"></t:NavigationListItem>
+                                <t:NavigationListItem key="nav_item_route_create_product" id="app_nav_route_create_product" text="{lang>product_create}"></t:NavigationListItem>
                             </t:NavigationListItem>
                         </t:NavigationList>
                     </t:SideNavigation>

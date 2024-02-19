@@ -1,13 +1,14 @@
 sap.ui.define([
     "ui5pos/szdk/controller/BaseController",
     "sap/ui/model/json/JSONModel",
-    "sap/ui/Device"
+    "sap/ui/Device",
+    "ui5pos/szdk/controller/util/RouteEvent"
     ],
-    function (Controller, JSONModel, Device) {
+    function (Controller, JSONModel, Device, RouteEvent) {
         "use strict";
 
         return Controller.extend("ui5pos.szdk.controller.App", {
-            _routes : ["home", "products", "create_product"],
+            _routes : ["home", "products", "create_product", "view_product"],
 
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
@@ -40,12 +41,12 @@ sap.ui.define([
                             let item = e.getParameters().item;
                             if (!item) return;
                             let key = item.getKey();
-                            if (!key || !key.startsWith('nav_item_')) return;
-                            router.navTo(key.substring(9));
+                            if (!key || !key.startsWith('nav_item_route_')) return;
+                            router.navTo(key.substring(15));
                         });
                 } else {
-                    for (let routeName of this._routes) {
-                        let navItem = this.byId(`app_nav_${routeName}`);
+                    for (let routeName in RouteEvent.routes) {
+                        let navItem = this.byId(`app_nav_route_${routeName}`);
                         if (navItem)
                             navItem.attachSelect(() => {
                                 router.navTo(routeName);
@@ -58,30 +59,13 @@ sap.ui.define([
                 let router = this.comp.getRouter();
                 
                 //loop over each route (by route name) and attach patternMatched event handler to each rout
-                for (let routeName of this._routes) {
-                    router.getRoute(routeName).attachPatternMatched((e) => {
-                        //service not set yet, redirect to setup page
-                        if (!this.comp.getModel('service')) {
-                            router.navTo('setup');
-                            return;
-                        }
-                        //show nav item list
-                        this.appNavModel.setProperty('/sideNav/visible', true);
-
-                        //select relevent nav item with the help of navModel
-                        this.appNavModel.setProperty('/sideNav/selectedKey', `nav_item_${routeName}`);
-                        
-                    });
-                }
-                //remove sidenav selection if this is setup page
-                router.getRoute('setup').attachPatternMatched((e) => {
-                    //service already set, move to home page
-                    if (this.comp.getModel('service')) {
-                        this.goBack();
+                for (let routeName in RouteEvent.routes) {
+                    if (RouteEvent.routes[routeName].patternMatched) {
+                        router.getRoute(routeName).attachPatternMatched((e) => {
+                            RouteEvent.routes[routeName].patternMatched.apply(this, [e]);
+                        });
                     }
-                    // hide side nav items
-                    this.appNavModel.setProperty('/sideNav/visible', false);
-                });
+                }
             },
 
             onSideNavButtonPress : function () {
