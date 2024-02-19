@@ -28,7 +28,7 @@ sap.ui.define([
                     if (!this.productID) return;
                     
                     const enableEdit = (data) => {
-                        if (!data || parseInt(!data.ProductID) !== parseInt(this.productID)) {
+                        if (!data || parseInt(data.ProductID) !== parseInt(this.productID)) {
                             this.showErrorDialog();
                             return;
                         }
@@ -41,8 +41,8 @@ sap.ui.define([
                     };
 
 
-                    let data = false && this.comp.getModel('service').getObject('', this.getView().getBindingContext('service'));
-                    if (!data || parseInt(!data.ProductID) !== parseInt(this.productID))
+                    let data = this.comp.getModel('service').getObject('', this.getView().getBindingContext('service'));
+                    if (!data || parseInt(data.ProductID) !== parseInt(this.productID))
                         this.comp.getModel('service').read(`/Products(${this.productID})`, {
                             success : enableEdit,
                             error : (err) => {
