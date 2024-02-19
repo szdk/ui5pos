@@ -8,7 +8,7 @@
 		core:require="{formatMessage: 'sap/base/strings/formatMessage'}"
 
 		height="100%">
-		<f:DynamicPage id="product_view" headerExpanded="true">
+		<f:DynamicPage id="product_view_page" headerExpanded="true">
 			<f:title>
 				<f:DynamicPageTitle>
 					<f:heading>
@@ -26,8 +26,23 @@
 					</f:snappedTitleOnMobile>
 					
 					<f:content>
-						<GenericTag text="{= ${service>Discontinued} ? ${lang>discontinued} : (${service>UnitsInStock} &gt; 0 ? ${lang>in_stock} : ${lang>out_of_stock} ) }"
-							status="{= ${service>Discontinued} || ${service>UnitsInStock} === 0 ? 'Error' : 'Success' }"
+						<GenericTag
+							text="{= 
+								${service>Discontinued} ? ${lang>discontinued} : (
+									${service>UnitsInStock} &lt;= 0 ? ${lang>out_of_stock} : (
+										${service>UnitsInStock} &lt;= ${service>ReorderLevel} ?
+											${lang>few_left} + ' ( ' + ${service>UnitsInStock} + ' / ' + ${service>ReorderLevel} + ' ) '
+											: ${lang>in_stock} + ' ( ' + ${service>UnitsInStock} + ' / ' + ${service>ReorderLevel} + ' ) '
+									)
+								)
+							}"
+							status="{= 
+								${service>Discontinued} || ${service>UnitsInStock} === 0 ?
+									'Error'
+									: (
+										${service>UnitsInStock} &lt;= ${service>ReorderLevel} ? 'Warning' : 'Success'
+									)
+							}"
 							press="onPressOpenPopover"
 							design="StatusIconHidden">
 						</GenericTag>
@@ -35,10 +50,11 @@
 					
 					<f:actions>
 						<Button
-								text="{lang>edit}"
-								type="Transparent"
-								icon="sap-icon://edit"
-								press=".onEditProduct"/>
+								text="{= ${model>/editting} ? ${lang>cancel} : ${lang>edit} }"
+								type="{= ${model>/editting} ? 'Reject' : 'Transparent' }"
+								icon="{= ${model>/editting} ? 'sap-icon://sys-cancel' : 'sap-icon://edit'}"
+								
+								press=".onToggleEdit"/>
 					</f:actions>
 
 				</f:DynamicPageTitle>
@@ -46,7 +62,8 @@
 			<!-- DynamicPage Header -->
 			<f:header>
 				<f:DynamicPageHeader pinnable="true">
-					<layout:HorizontalLayout allowWrapping="true">
+					<!-- =========== VIEW MODE ============== -->
+					<layout:HorizontalLayout visible="{= ${model>/editting} === false }" allowWrapping="true">
 						<layout:VerticalLayout class="sapUiMediumMarginEnd">
 							<ObjectAttribute title="{lang>product_id}" text="{service>ProductID}"/>
 							<ObjectAttribute title="{lang>product_name}" text="{service>ProductName}"/>
@@ -70,6 +87,13 @@
 							<ObjectAttribute title="{lang>product_instock}" text="{service>UnitsInStock}"/>
 						</layout:VerticalLayout>
 					</layout:HorizontalLayout>
+
+					<!-- =========== VIEW MODE ============== -->
+					<layout:HorizontalLayout>
+
+					</layout:HorizontalLayout>
+
+
 				</f:DynamicPageHeader>
 			</f:header>
 			<f:content>
