@@ -21,6 +21,9 @@ function (UIComponent, models, MockServer) {
 
             this.getRouter().initialize();
 
+            // ========================================= Properties =================================
+            this.szdk_serviceCreated = new Promise((r) => this.szdk_resolve_serviceCreated = r);
+
             // ======================================== MODELS  ======================================== 
             this.setModel(models.createDeviceModel(), "device");
             this.setModel(models.createSettingsModel(), "settings");
@@ -30,7 +33,8 @@ function (UIComponent, models, MockServer) {
                 var title = oEvent.getParameter("title");
                 document.title = title;
             });
-        }
+        },
+
     });
 }
 );

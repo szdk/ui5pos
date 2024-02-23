@@ -1,10 +1,12 @@
-<mvc:View
+<mvc:View 
 		controllerName="ui5pos.szdk.controller.product.View"
 		xmlns:mvc="sap.ui.core.mvc"
 		xmlns="sap.m"
 		xmlns:f="sap.f"
 		xmlns:layout="sap.ui.layout"
 		xmlns:core="sap.ui.core"
+		xmlns:form="sap.ui.layout.form"
+
 		core:require="{formatMessage: 'sap/base/strings/formatMessage'}"
 
 		height="100%">
@@ -49,12 +51,35 @@
 					</f:content>
 					
 					<f:actions>
+						<Button 
+							text="{lang>save}"
+							visible="{model>/editting}"
+							type="Emphasized"
+							icon="sap-icon://save"
+							press=".onSave"/>
 						<Button
-								text="{= ${model>/editting} ? ${lang>cancel} : ${lang>edit} }"
-								type="{= ${model>/editting} ? 'Reject' : 'Transparent' }"
-								icon="{= ${model>/editting} ? 'sap-icon://sys-cancel' : 'sap-icon://edit'}"
-								
-								press=".onToggleEdit"/>
+							text="{= ${model>/editting} ? ${lang>cancel} : ${lang>edit} }"
+							type="Transparent"
+							icon="{= ${model>/editting} ? 'sap-icon://sys-cancel-2' : 'sap-icon://edit'}"
+							press=".onToggleEdit"/>
+
+						<Button visible="{= ${model>/editting} === false }" type="Ghost" press=".onOpenAction" text="{lang>action}">
+							<dependents>
+								<ActionSheet id="view_product_actionSheet" title="{lang>action}" placement="Bottom">
+									<Button
+										icon="{= ${service>Discontinued} ? 'sap-icon://media-play' : 'sap-icon://media-pause' }"
+										text="{= ${service>Discontinued} ? ${lang>product_unmark_discontinued} : ${lang>product_mark_discontinued} }"
+										press=".onToggleDiscontinue"
+										type="Ghost"
+									/>
+									<Button
+										icon="sap-icon://delete" text="{lang>delete}" press=".onDelete"
+										type="Ghost"
+									/>
+								</ActionSheet>
+							</dependents>
+						</Button>
+						
 					</f:actions>
 
 				</f:DynamicPageTitle>
@@ -88,16 +113,84 @@
 						</layout:VerticalLayout>
 					</layout:HorizontalLayout>
 
-					<!-- =========== VIEW MODE ============== -->
-					<layout:HorizontalLayout>
+					<!-- =========== Edit MODE ============== -->
+					<form:Form visible="{= ${model>/editting} === true }" editable="true">
+						<form:layout>
+							<form:ColumnLayout/>
+						</form:layout>
+						<form:formContainers>
+							<form:FormContainer>
+								<form:formElements>
+									
+									<form:FormElement label="{lang>product_id}">
+										<form:fields>
+											<Input value="{model>/productData/ProductID}" editable="false"/>
+										</form:fields>
+									</form:FormElement>
+									
+									<form:FormElement label="{lang>product_name}">
+										<form:fields>
+											<Input value="{model>/productData/ProductName}" id="test"></Input>
+										</form:fields>
+									</form:FormElement>
+									
+									<form:FormElement label="{lang>category_id}">
+										<form:fields>
+											<Input
+												value="{model>/productData/CategoryID}"
+												showValueHelp="true"
+												type="Number"
+											>
+												<layoutData><form:ColumnElementData cellsLarge="2" cellsSmall="12"/></layoutData>
+											</Input>
+											<Input value="model>/productData/CategoryName" editable="false"/>
+										</form:fields>
+									</form:FormElement>
+									
+									<form:FormElement label="{lang>supplier_id}">
+										<form:fields>
+											<Input
+												value="{model>/productData/SupplierID}"
+												showValueHelp="true"
+												type="Number"
+											>
+												<layoutData><form:ColumnElementData cellsLarge="2" cellsSmall="12"/></layoutData>
+											</Input>
+											<Input value="model>/productData/SupplierName" editable="false"/>
+										</form:fields>
+									</form:FormElement>
 
-					</layout:HorizontalLayout>
+									<form:FormElement label="{lang>product_quantityPerUnit}">
+										<Input value="{model>/productData/QuantityPerUnit}"></Input>
+									</form:FormElement>
 
+									<form:FormElement label="{lang>product_unitPrice}">
+										<form:fields>
+											<Input type="Number" value="{model>/productData/UnitPrice}" />
+											<Input value="AUD" editable="false">
+												<layoutData><form:ColumnElementData cellsLarge="2" cellsSmall="2"></form:ColumnElementData></layoutData>
+											</Input>
+										</form:fields> 
+									</form:FormElement>
+
+									<form:FormElement label="{lang>product_unit_in_stock}">
+										<Input value="{model>/productData/UnitsInStock}"/>
+									</form:FormElement>
+
+									<form:FormElement label="{lang>product_reorder_level}">
+										<Input value="{model>/productData/ReorderLevel}"></Input>
+									</form:FormElement>
+									
+								</form:formElements>
+							</form:FormContainer>
+						</form:formContainers>
+					</form:Form>
 
 				</f:DynamicPageHeader>
 			</f:header>
 			<f:content>
-				<Text text="TODO, show sales orders containing this product"></Text>
+
+				
 			</f:content>
 			
 		</f:DynamicPage>
