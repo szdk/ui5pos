@@ -3,5 +3,5 @@
     xmlns:f="sap.f"
 
     height="100%">
-    <m:Text text="todo"></m:Text>
+    <m:Text text="{service>/Products(1)/ProductName}"></m:Text>
 </mvc:XMLView>

@@ -27,7 +27,8 @@ sap.ui.define([
 				aEntitySetsNames: [
 					"Categories",
 					"Products",
-					"Suppliers"
+					"Suppliers",
+					"Order_Details"
 				]
 			});
 

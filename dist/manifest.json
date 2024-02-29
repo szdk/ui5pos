@@ -27,7 +27,7 @@
                 }
             ]
         },
-        "handleValidation": true,
+        "handleValidation": false,
         "comment-handelValidatoin" : "Enable so that validation errors can be automatically shown on input fields",
         "dependencies": {
             "minUI5Version": "1.120.3",

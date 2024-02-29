@@ -1,16 +1,23 @@
 sap.ui.define([
     "ui5pos/szdk/controller/BaseController",
     "ui5pos/szdk/controller/util/RouteEvent",
-    "sap/ui/model/json/JSONModel"
+    "sap/ui/model/json/JSONModel",
+    "sap/ui/model/SimpleType",
+    "sap/ui/model/ValidateException",
+    "sap/ui/core/Core",
     ],
-    function (Controller, RouteEvent, JSONModel) {
+    function (Controller, RouteEvent, JSONModel, SimpleType, ValidateException, Core) {
         "use strict";
+        var _this = null;
 
         return Controller.extend("ui5pos.szdk.controller.product.View", {
             productID: null,
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
+                
                 window.t = this.getView();
+                _this = this;
+
                 //========================= MODEL ============================================
                 this.mainModel = new JSONModel({
                     editting : false,
@@ -18,19 +25,192 @@ sap.ui.define([
                 });
                 this.getView().setModel(this.mainModel, 'model');
                 
+                //==================== set busy on server request =============================
                 this.getView().setBusyIndicatorDelay(0);
                 this.comp.szdk_serviceCreated.then((s) => s.attachRequestSent(() => this.getView().setBusy(true)));
                 this.comp.szdk_serviceCreated.then((s) => s.attachRequestCompleted(() => this.getView().setBusy(false)));
 
+                //======================== attach pattern =====================================
                 this.comp.getRouter().getRoute('view_product').attachPatternMatched(this.patternMatched.bind(this));
 
+                //======================== register input validation ===========================
+                let om = Core.getMessageManager();
+                om.registerObject(this.byId('product_input_name'), true);
+                om.registerObject(this.byId('product_input_category'), true);
+                om.registerObject(this.byId('product_input_supplier'), true);
+                om.registerObject(this.byId('product_input_qpu'), true);
+                om.registerObject(this.byId('product_input_unit_price'), true);
+                om.registerObject(this.byId('product_input_in_stock'), true);
+                om.registerObject(this.byId('product_input_reorder_level'), true);
+
             },
+            //============================================
+            onSave : function () {
+                if (!this.mainModel.getProperty('/editting')) return;
+                for (let id of [
+                    'product_input_name',
+                    'product_input_qpu',
+                    'product_input_unit_price',
+                    'product_input_in_stock',
+                    'product_input_reorder_level',
+                ]) {
+                    let el = this.byId(id);
+                    try {
+                        let binding = el.getBinding('value');
+                        let type = binding ? binding.getType() : null;
+                        if (type)
+                            type.validateValue(el.getValue());
+                    } catch (e) {
+                        el.setValueState(sap.ui.core.ValueState.Error);
+                        this.showErrorDialog({message : this.i18n.getText('input_submit_error')});
+                        return;
+                    }
+                }
+                this.categoryIDCheck()
+                    .then(() => this.supplierIDCheck())
+                    .then(() => {
+                        //validation success, save input
+                        let data = {
+                            ProductName: this.mainModel.getProperty('/productData/ProductName'),
+                            SupplierID: parseInt(this.mainModel.getProperty('/productData/SupplierID')),
+                            CategoryID: parseInt(this.mainModel.getProperty('/productData/CategoryID')),
+                            QuantityPerUnit: this.mainModel.getProperty('/productData/QuantityPerUnit'),
+                            UnitPrice: parseFloat(this.mainModel.getProperty('/productData/UnitPrice')),
+                            UnitsInStock: parseInt(this.mainModel.getProperty('/productData/UnitsInStock')),
+                            ReorderLevel: parseInt(this.mainModel.getProperty('/productData/ReorderLevel')),
+                        };
+                        
+                        let path = `/Products(${this.productID})`;
+                        console.log({action: 'update', path, data});
+
+                        this.comp.getModel('service').update(path, data, {
+                            success: () => {
+                                this.refreshBinding();
+                                this.showSuccessDialog({message: this.i18n.getText('data_saved_description')})
+                            },
+                            error : (err) => this.showErrorDialog({message : err.message})
+                        });
+                    })
+                    .catch(() => this.showErrorDialog({message : this.i18n.getText('input_submit_error')}));
+            },
+            //============================================
+            onCategoryChange: function () {
+                this.categoryIDCheck().catch(() => {});
+            },
+            //============================================
+            onSupplierChange: function () {
+                this.supplierIDCheck().catch(() => {});
+            },
+            //============================================
+            categoryIDCheck : function () {
+                let resolve = () => {}, reject = () => {};
+                let response = new Promise((p_resolve, p_reject) => {
+                    resolve = p_resolve;
+                    reject = p_reject;
+                });
+
+                const removeState = () => {
+                    el.setValueState(sap.ui.core.ValueState.None);
+                };
+                const setState = (text, param) => {
+                    el.setValueStateText(this.i18n.getText(text, param));
+                    el.setValueState(sap.ui.core.ValueState.Error);
+                }
+
+                //output name
+                let output = this.byId('product_category_name');
+                output.setValue('');
+
+                //input id
+                let el = this.byId('product_input_category');
+                let id = parseInt(el.getValue());
+
+                if (!id || id <= 0) {
+                    setState('input_invalid_category_id')
+                    reject(id);
+                    return response;
+                }
+
+                this.comp.getModel('service').read(`/Categories(${id})`, {success : (data) => {
+                    if (data && data.CategoryName)
+                        output.setValue(data.CategoryName);
+                    resolve(data);
+                    removeState();
+                }, error : (err) => {
+                    reject(id);
+                    setState('input_invalid_category_id');
+                }});
+
+                return response;
+            },
+            //============================================
+            supplierIDCheck : function () {
+                let resolve = () => {}, reject = () => {};
+                let response = new Promise((p_resolve, p_reject) => {
+                    resolve = p_resolve;
+                    reject = p_reject;
+                });
+
+                const removeState = () => {
+                    el.setValueState(sap.ui.core.ValueState.None);
+                };
+                const setState = (text, param) => {
+                    el.setValueStateText(this.i18n.getText(text, param));
+                    el.setValueState(sap.ui.core.ValueState.Error);
+                }
+
+                //output name
+                let output = this.byId('product_supplier_name');
+                output.setValue('');
+
+                //input id
+                let el = this.byId('product_input_supplier');
+                let id = parseInt(el.getValue());
+
+                if (!id || id <= 0) {
+                    setState('input_invalid_supplier_id')
+                    reject(id);
+                    return response;
+                }
+
+                this.comp.getModel('service').read(`/Suppliers(${id})`, {success : (data) => {
+                    if (data && data.CompanyName)
+                        output.setValue(data.CompanyName);
+                    resolve(data);
+                    removeState();
+                }, error : (err) => {
+                    reject(id);
+                    setState('input_invalid_supplier_id');
+                }});
+
+                return response;
+            },
+            
+            
+            //============================================
+            onToggleEdit: function (evt) {
+                if (!this.mainModel.getProperty('/editting')) {
+                    if (!this.productID) return;
+                    
+                    const enableEdit = (data) => {
+                        this.categoryIDCheck().catch(() => {});
+                        this.supplierIDCheck().catch(() => {});
+                        this.byId('product_view_page').setHeaderExpanded(true);
+                        this.mainModel.setProperty('/editting', true);
+                    };
+
+                    this.refreshBinding(enableEdit);
+
+                } else {
+                    this.mainModel.setProperty('/editting', false);
+                }
+            },
+
 
             //=============================================
             onToggleDiscontinue: function () {
                 let model = this.comp.getModel('service');
-                let data = {...this.mainModel.getProperty('/productData')};
-                data.Discontinued = !data.Discontinued;
+                let data = {Discontinued : !this.mainModel.getProperty('/productData/Discontinued')};
                 let path = `/Products(${this.productID})`;
                 console.log({action: 'update', path, data});
                 model.update(path, data, {
@@ -42,20 +222,40 @@ sap.ui.define([
             },
 
             //============================================
-            onToggleEdit: function (evt) {
-                if (!this.mainModel.getProperty('/editting')) {
-                    if (!this.productID) return;
-                    
-                    const enableEdit = (data) => {
-                        this.byId('product_view_page').setHeaderExpanded(true);
-                        this.mainModel.setProperty('/editting', true);
-                    };
+            onDelete: function () {
+                let model = this.comp.getModel('service');
 
-                    this.refreshBinding(enableEdit, true);
+                const deleteProduct = () => {
+                    model.remove(`/Products(${this.productID})`, {
+                        success : () => {
+                            this.showSuccessDialog({
+                                message : this.i18n.getText('product_has_been_deleted'),
+                                onClose : () => {
+                                    this.comp.getRouter().navTo('products');
+                                }
+                            });
+                        },
+                        error : this.showErrorDialog
+                    });
+                };
 
-                } else {
-                    this.mainModel.setProperty('/editting', false);
-                }
+                model.read(`/Products(${this.productID})/Order_Details/$count`, {
+                    success : (count) => {
+                        if (parseInt(count) > 0) {
+                            this.showInfoDialog({
+                                title: this.i18n.getText('product_in_use'),
+                                message: this.i18n.getText('product_cannot_delete_desc', [count])
+                            });
+                        } else {
+                            this.showErrorDialog({
+                                title: this.i18n.getText('confirm_delete'),
+                                message: this.i18n.getText('product_confirm_delete'),
+                                onConfirm: deleteProduct
+                            });
+                        }
+                    },
+                    error: (e) => this.showErrorDialog({message : e.message}),
+                });
             },
 
             //=========================================================
@@ -117,7 +317,7 @@ sap.ui.define([
                 if (id) {
                     
                     this.comp.getModel('service').createBindingContext(`/Products(${id})`, {
-                        expand : 'Category,Supplier'
+                        expand : 'Category,Supplier,Order_Details'
                     },
                     (context) => {
                         if (!context) {

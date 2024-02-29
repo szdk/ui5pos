@@ -73,7 +73,9 @@
 										type="Ghost"
 									/>
 									<Button
-										icon="sap-icon://delete" text="{lang>delete}" press=".onDelete"
+										icon="sap-icon://delete"
+										text="{lang>delete}"
+										press=".onDelete"
 										type="Ghost"
 									/>
 								</ActionSheet>
@@ -93,6 +95,7 @@
 							<ObjectAttribute title="{lang>product_id}" text="{service>ProductID}"/>
 							<ObjectAttribute title="{lang>product_name}" text="{service>ProductName}"/>
 							<ObjectAttribute title="{lang>category}" text="{service>Category/CategoryName}" press=".onPressCategory"/>
+							<ObjectAttribute title="{lang>discontinued}" text="{= ${service>Discontinued} ? ${lang>yes} : ${lang>no} }"/>
 						</layout:VerticalLayout>
 
 						<layout:VerticalLayout>
@@ -110,13 +113,23 @@
 							
 							<ObjectAttribute title="{lang>product_quantityPerUnit}" text="{service>QuantityPerUnit}"/>
 							<ObjectAttribute title="{lang>product_instock}" text="{service>UnitsInStock}"/>
+							<ObjectAttribute title="{lang>product_reorder_level}" text="{service>ReorderLevel}"/>
 						</layout:VerticalLayout>
 					</layout:HorizontalLayout>
 
 					<!-- =========== Edit MODE ============== -->
 					<form:Form visible="{= ${model>/editting} === true }" editable="true">
 						<form:layout>
-							<form:ColumnLayout/>
+							<form:ResponsiveGridLayout
+								columnsL="2"
+								columnsM="2"
+								columnsXL="2"
+								labelSpanS="12"
+								labelSpanM="12"
+								labelSpanL="4"
+								labelSpanXL="3"
+								adjustLabelSpan="false"
+							/>
 						</form:layout>
 						<form:formContainers>
 							<form:FormContainer>
@@ -130,7 +143,10 @@
 									
 									<form:FormElement label="{lang>product_name}">
 										<form:fields>
-											<Input value="{model>/productData/ProductName}" id="test"></Input>
+											<Input value="{
+												path : 'model>/productData/ProductName',
+												type : '.inputCheck.product.name'
+											}" required="true" id="product_input_name"></Input>
 										</form:fields>
 									</form:FormElement>
 									
@@ -138,12 +154,15 @@
 										<form:fields>
 											<Input
 												value="{model>/productData/CategoryID}"
+												type = "Number"
 												showValueHelp="true"
-												type="Number"
+												required="true"
+												id="product_input_category"
+												change=".onCategoryChange"
 											>
-												<layoutData><form:ColumnElementData cellsLarge="2" cellsSmall="12"/></layoutData>
+												<layoutData><layout:GridData span="XL2 L2 M4 S12" /></layoutData>
 											</Input>
-											<Input value="model>/productData/CategoryName" editable="false"/>
+											<Input id="product_category_name" value="" editable="false"/>
 										</form:fields>
 									</form:FormElement>
 									
@@ -153,32 +172,55 @@
 												value="{model>/productData/SupplierID}"
 												showValueHelp="true"
 												type="Number"
+												required="true"
+												id="product_input_supplier"
+												change=".onSupplierChange"
 											>
-												<layoutData><form:ColumnElementData cellsLarge="2" cellsSmall="12"/></layoutData>
+												<layoutData><layout:GridData span="XL2 L2 M4 S12" /></layoutData>
 											</Input>
-											<Input value="model>/productData/SupplierName" editable="false"/>
+											<Input id="product_supplier_name" value="" editable="false"/>
 										</form:fields>
 									</form:FormElement>
+								</form:formElements>
+							</form:FormContainer>
 
+							<form:FormContainer>
+								<form:formElements>
 									<form:FormElement label="{lang>product_quantityPerUnit}">
-										<Input value="{model>/productData/QuantityPerUnit}"></Input>
+										<Input value="{
+											path : 'model>/productData/QuantityPerUnit',
+											type : '.inputCheck.product.quantityPerUnit'
+										}"
+										required="true" id="product_input_qpu"></Input>
 									</form:FormElement>
 
 									<form:FormElement label="{lang>product_unitPrice}">
 										<form:fields>
-											<Input type="Number" value="{model>/productData/UnitPrice}" />
+											<Input type="Number" value="{
+												path : 'model>/productData/UnitPrice',
+												type : '.inputCheck.product.unitPrice'
+											}"
+											required="true" id="product_input_unit_price">
+												<layoutData><layout:GridData span="XL8 L6 M9 S6" /></layoutData>
+											</Input>
 											<Input value="AUD" editable="false">
-												<layoutData><form:ColumnElementData cellsLarge="2" cellsSmall="2"></form:ColumnElementData></layoutData>
+												<layoutData><layout:GridData span="XL1 L2 M3 S6" /></layoutData>
 											</Input>
 										</form:fields> 
 									</form:FormElement>
 
 									<form:FormElement label="{lang>product_unit_in_stock}">
-										<Input value="{model>/productData/UnitsInStock}"/>
+										<Input value="{
+											path : 'model>/productData/UnitsInStock',
+											type : '.inputCheck.product.unitInStock'
+										}" required="true" id="product_input_in_stock"/>
 									</form:FormElement>
 
 									<form:FormElement label="{lang>product_reorder_level}">
-										<Input value="{model>/productData/ReorderLevel}"></Input>
+										<Input value="{
+											path : 'model>/productData/ReorderLevel',
+											type : '.inputCheck.product.unitInStock'
+										}" required="true" id="product_input_reorder_level"></Input>
 									</form:FormElement>
 									
 								</form:formElements>
@@ -190,6 +232,18 @@
 			</f:header>
 			<f:content>
 
+				<Table items="{service>Order_Details}" growing="true" growingThreshold="5">
+					<columns>
+						<Column><Text text="id"/></Column>
+					</columns>
+					<items>
+						<ColumnListItem >
+							<cells>
+								<Text text="{service>OrderID}"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
 				
 			</f:content>
 			
