@@ -1,12 +1,15 @@
 sap.ui.define([
     "ui5pos/szdk/controller/BaseController",
     "ui5pos/szdk/controller/util/RouteEvent",
+    "ui5pos/szdk/controller/util/F4Help",
     "sap/ui/model/json/JSONModel",
-    "sap/ui/model/SimpleType",
-    "sap/ui/model/ValidateException",
     "sap/ui/core/Core",
     ],
-    function (Controller, RouteEvent, JSONModel, SimpleType, ValidateException, Core) {
+    function (Controller,
+        RouteEvent,
+        F4Help,
+        JSONModel,
+        Core) {
         "use strict";
         var _this = null;
 
@@ -43,6 +46,42 @@ sap.ui.define([
                 om.registerObject(this.byId('product_input_in_stock'), true);
                 om.registerObject(this.byId('product_input_reorder_level'), true);
 
+            },
+            //===========================================
+            onValueHelpCategory: function () {
+                (F4Help.f4Table.bind(this))(
+                    this.comp.getModel('service'),
+                    '/Categories',
+                    [],
+                    {CategoryID : this.i18n.getText('category_id'), CategoryName: this.i18n.getText('name')},
+                    ['CategoryID', 'CategoryName'],
+                    this.i18n.getText('category_select_single')
+                ).then((selected) => {
+                    if (!selected || selected.length == 0) return;
+                    let id = parseInt(selected[0].CategoryID);
+                    if (id) {
+                        this.byId('product_input_category').setValue(id);
+                        this.byId('product_category_name').setValue(selected[0].CategoryName);
+                    }
+                });
+            },
+            //===========================================
+            onValueHelpSupplier: function () {
+                (F4Help.f4Table.bind(this))(
+                    this.comp.getModel('service'),
+                    '/Suppliers',
+                    [],
+                    {SupplierID : this.i18n.getText('supplier_id'), CompanyName: this.i18n.getText('supplier_company_name')},
+                    ['SupplierID', 'CompanyName'],
+                    this.i18n.getText('supplier_select_single')
+                ).then((selected) => {
+                    if (!selected || selected.length == 0) return;
+                    let id = parseInt(selected[0].SupplierID);
+                    if (id) {
+                        this.byId('product_input_supplier').setValue(id);
+                        this.byId('product_supplier_name').setValue(selected[0].CompanyName);
+                    }
+                });
             },
             //============================================
             onSave : function () {

@@ -107,8 +107,7 @@ sap.ui.define([
                     }
                 });
 
-
-
+                
                 if (!this._Dialog) {
                     this._Dialog = new Dialog({
                         type: sap.m.DialogType.Message,

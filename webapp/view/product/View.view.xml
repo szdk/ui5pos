@@ -156,6 +156,7 @@
 												value="{model>/productData/CategoryID}"
 												type = "Number"
 												showValueHelp="true"
+												valueHelpRequest=".onValueHelpCategory"
 												required="true"
 												id="product_input_category"
 												change=".onCategoryChange"
@@ -171,6 +172,7 @@
 											<Input
 												value="{model>/productData/SupplierID}"
 												showValueHelp="true"
+												valueHelpRequest=".onValueHelpSupplier"
 												type="Number"
 												required="true"
 												id="product_input_supplier"
@@ -232,18 +234,6 @@
 			</f:header>
 			<f:content>
 
-				<Table items="{service>Order_Details}" growing="true" growingThreshold="5">
-					<columns>
-						<Column><Text text="id"/></Column>
-					</columns>
-					<items>
-						<ColumnListItem >
-							<cells>
-								<Text text="{service>OrderID}"/>
-							</cells>
-						</ColumnListItem>
-					</items>
-				</Table>
 				
 			</f:content>
 			
