@@ -52,7 +52,7 @@ sap.ui.define([
                 (F4Help.f4Table.bind(this))(
                     this.comp.getModel('service'),
                     '/Categories',
-                    [],
+                    {CategoryName: this.i18n.getText('category_name')},
                     {CategoryID : this.i18n.getText('category_id'), CategoryName: this.i18n.getText('name')},
                     ['CategoryID', 'CategoryName'],
                     this.i18n.getText('category_select_single')
@@ -60,7 +60,7 @@ sap.ui.define([
                     if (!selected || selected.length == 0) return;
                     let id = parseInt(selected[0].CategoryID);
                     if (id) {
-                        this.byId('product_input_category').setValue(id);
+                        this.byId('product_input_category').setValue(id).setValueState(sap.ui.core.ValueState.None);
                         this.byId('product_category_name').setValue(selected[0].CategoryName);
                     }
                 });
@@ -70,7 +70,7 @@ sap.ui.define([
                 (F4Help.f4Table.bind(this))(
                     this.comp.getModel('service'),
                     '/Suppliers',
-                    [],
+                    {CompanyName: this.i18n.getText('supplier_company_name')},
                     {SupplierID : this.i18n.getText('supplier_id'), CompanyName: this.i18n.getText('supplier_company_name')},
                     ['SupplierID', 'CompanyName'],
                     this.i18n.getText('supplier_select_single')
@@ -78,7 +78,7 @@ sap.ui.define([
                     if (!selected || selected.length == 0) return;
                     let id = parseInt(selected[0].SupplierID);
                     if (id) {
-                        this.byId('product_input_supplier').setValue(id);
+                        this.byId('product_input_supplier').setValue(id).setValueState(sap.ui.core.ValueState.None);
                         this.byId('product_supplier_name').setValue(selected[0].CompanyName);
                     }
                 });

@@ -215,14 +215,14 @@
 										<Input value="{
 											path : 'model>/productData/UnitsInStock',
 											type : '.inputCheck.product.unitInStock'
-										}" required="true" id="product_input_in_stock"/>
+										}" type="Number" required="true" id="product_input_in_stock"/>
 									</form:FormElement>
 
 									<form:FormElement label="{lang>product_reorder_level}">
 										<Input value="{
 											path : 'model>/productData/ReorderLevel',
 											type : '.inputCheck.product.unitInStock'
-										}" required="true" id="product_input_reorder_level"></Input>
+										}" type="Number" required="true" id="product_input_reorder_level"></Input>
 									</form:FormElement>
 									
 								</form:formElements>
@@ -233,7 +233,7 @@
 				</f:DynamicPageHeader>
 			</f:header>
 			<f:content>
-
+				<Table noDataText="Todo: List of orders containing this product."></Table>
 				
 			</f:content>
 			

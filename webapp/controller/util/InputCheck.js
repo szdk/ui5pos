@@ -24,8 +24,14 @@ sap.ui.define([
                 },
             }),
             unitPrice : SimpleType.extend('product.unitPrice', {
-                formatValue : (raw) => Math.round(parseFloat(raw) * 100) / 100,
-                parseValue : (input) => Math.round(parseFloat(input) * 100) / 100,
+                formatValue : (raw) => {
+                    let result = Math.round(parseFloat(raw) * 100) / 100;
+                    if (!isNaN(result) && typeof result == 'number') return result;
+                },
+                parseValue : (input) => {
+                    let result = Math.round(parseFloat(input) * 100) / 100;
+                    if (!isNaN(result) && typeof result == 'number') return result;
+                },
                 validateValue : function (input) {
                     input = parseFloat(input);
                     if (input !== 0 && !input || input < 0)
@@ -33,8 +39,14 @@ sap.ui.define([
                 }
             }),
             unitInStock : SimpleType.extend('product.unitInStock', {
-                formatValue : (raw) => parseInt(raw),
-                parseValue : (input) => parseInt(input),
+                formatValue : (raw) =>  {
+                    let result = parseInt(raw);
+                    if (!isNaN(result) && typeof result == 'number') return result;
+                },
+                parseValue : (input) => {
+                    let result = parseInt(input);
+                    if (!isNaN(result) && typeof result == 'number') return result;
+                },
                 validateValue : function (input) {
                     input = parseInt(input);
                     if (input !== 0 && !input)
@@ -54,8 +66,14 @@ sap.ui.define([
         },
         category : {
             id : SimpleType.extend('category.id', {
-                formatValue : (raw) => parseInt(raw),
-                parseValue: (input) => parseInt(input),
+                formatValue : (raw) => {
+                    let result = parseInt(raw);
+                    if (!isNaN(result) && typeof result == 'number') return result;
+                },
+                parseValue: (input) => {
+                    let result = parseInt(input);
+                    if (!isNaN(result) && typeof result == 'number') return result;
+                },
                 validateValue: function (input) {
                     if (input) input = parseInt(input);
                     if (!input || input <= 0)
@@ -65,8 +83,14 @@ sap.ui.define([
         },
         supplier : {
             id : SimpleType.extend('supplier.id', {
-                formatValue : (raw) => parseInt(raw),
-                parseValue: (input) => parseInt(input),
+                formatValue : (raw) => {
+                    let result = parseInt(raw);
+                    if (!isNaN(result) && typeof result == 'number') return result;
+                },
+                parseValue: (input) => {
+                    let result = parseInt(input);
+                    if (!isNaN(result) && typeof result == 'number') return result;
+                },
                 validateValue: function (input) {
                     if (input) input = parseInt(input);
                     if (!input || input <= 0)

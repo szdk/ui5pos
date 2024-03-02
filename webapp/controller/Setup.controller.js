@@ -13,7 +13,7 @@ sap.ui.define([
                 let localModel = new JSONModel({
                     odataType : "1",
                     odataUrl : "",
-                    odataDelay : 10,
+                    odataDelay : 100,
                     inputEnabled : true,
                     ServiceCreated : false,
                 });

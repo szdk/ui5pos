@@ -5,6 +5,10 @@ sap.ui.define([
         "sap/m/Text",
         "sap/m/ColumnListItem",
         "sap/m/Button",
+        "sap/m/SearchField",
+        "sap/m/Panel",
+        "sap/ui/model/Filter",
+        "sap/ui/model/FilterOperator",
     ],
     function (
         Dialog,
@@ -12,7 +16,11 @@ sap.ui.define([
         Column,
         Text,
         ColumnListItem,
-        Button
+        Button,
+        SearchField,
+        Panel,
+        Filter,
+        FilterOperator,
     ) {
         "use strict";
         return {
@@ -67,7 +75,34 @@ sap.ui.define([
                     template: new ColumnListItem({cells : items})
                 });
 
+                //search
+                let searchFieldElements = [];
+                let searchPanel = null;
+                var searchValues = {};
+                if (filterFields && Object.keys(filterFields).length > 0) {
+                    for (let fieldName in filterFields) {
+                        let el = new SearchField({placeholder: filterFields[fieldName], change: (e) => {
+                            searchValues[fieldName] = e.getParameter('value').trim();
+                        }, search : (e) => {
+                            searchValues[fieldName] = e.getParameter('query').trim();
+                            applyFilter(searchValues);
+                        }});
+                        searchFieldElements.push(el);
+                    }
+                    searchPanel = new Panel({content: searchFieldElements});
+                }
+
                 //action
+                let applyFilter = (searchValues) => {
+                    let binding = table.getBinding('items');
+                    let filters = [];
+                    for (let fieldName in searchValues) {
+                        if (!searchValues[fieldName] || searchValues[fieldName].length == 0) continue;
+                        filters.push(new Filter({path: fieldName, operator: FilterOperator.Contains, value1: searchValues[fieldName]}));
+                    }
+                    binding.filter(filters.length > 0 ? new Filter({filters: filters, and : true}) : []);
+                };
+
                 table.attachSelectionChange((evt) => {
                     let params = evt.getParameters();
                     if (!params.listItems || params.listItems.length == 0) return;
@@ -96,7 +131,7 @@ sap.ui.define([
                     type: sap.m.DialogType.Standard,
                     icon: 'sap-icon://value-help',
                     title: title,
-                    content: [table],
+                    content: searchPanel ? [searchPanel, table] : [table],
                     endButton: cancelButton,
                     contentWidth: width,
                     resizable: true,

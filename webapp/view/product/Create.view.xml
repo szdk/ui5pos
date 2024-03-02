@@ -1,7 +1,141 @@
-<mvc:XMLView xmlns:m="sap.m" controller="ui5pos.szdk.controller.product.Create"
+<mvc:XMLView
+    controllerName="ui5pos.szdk.controller.product.Create"
     xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
     xmlns:f="sap.f"
+    xmlns:layout="sap.ui.layout"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
 
     height="100%">
-    <m:Text text="{service>/Products(1)/ProductName}"></m:Text>
+    <Page title="{lang>create_product_title}">
+        <VBox height="100%" backgroundDesign="Solid" alignContent="Center" alignItems="Center" class="p-5 s-p-0">
+            <VBox alignItems="Start" justifyContent="Start">
+                <form:Form editable="true">
+                    <form:toolbar>
+                        <Toolbar>
+                            <Title text="{lang>create_product_enter_details}"/>
+                            <ToolbarSpacer />
+                            <Button text="{lang>clear}" press=".onClearInput"/>
+                        </Toolbar>
+                    </form:toolbar>
+                    <!-- <form:title>
+                        <core:Title text="{lang>create_product_enter_details}" />
+                    </form:title> -->
+                    <form:layout>
+                        <form:ResponsiveGridLayout
+                            columnsL="2"
+                            columnsM="2"
+                            columnsXL="2"
+                            labelSpanS="12"
+                            labelSpanM="12"
+                            labelSpanL="4"
+                            labelSpanXL="3"
+                            adjustLabelSpan="false"
+                        />
+                    </form:layout>
+                    <form:formContainers>
+                        <form:FormContainer>
+                            <form:formElements>
+                                
+                                <form:FormElement label="{lang>product_id}">
+                                    <form:fields>
+                                        <Input editable="false"/>
+                                    </form:fields>
+                                </form:FormElement>
+                                
+                                <form:FormElement label="{lang>product_name}">
+                                    <form:fields>
+                                        <Input value="{
+                                            path : 'model>/productData/ProductName',
+                                            type : '.inputCheck.product.name'
+                                        }" required="true" id="create_product_input_name"></Input>
+                                    </form:fields>
+                                </form:FormElement>
+                                
+                                <form:FormElement label="{lang>category_id}">
+                                    <form:fields>
+                                        <Input
+                                            value="{model>/productData/CategoryID}"
+                                            type = "Number"
+                                            showValueHelp="true"
+                                            valueHelpRequest=".onValueHelpCategory"
+                                            required="true"
+                                            id="create_product_input_category"
+                                            change=".onCategoryChange"
+                                        >
+                                            <layoutData><layout:GridData span="XL2 L2 M4 S12" /></layoutData>
+                                        </Input>
+                                        <Input id="create_product_category_name" value="" editable="false"/>
+                                    </form:fields>
+                                </form:FormElement>
+                                
+                                <form:FormElement label="{lang>supplier_id}">
+                                    <form:fields>
+                                        <Input
+                                            value="{model>/productData/SupplierID}"
+                                            showValueHelp="true"
+                                            valueHelpRequest=".onValueHelpSupplier"
+                                            type="Number"
+                                            required="true"
+                                            id="create_product_input_supplier"
+                                            change=".onSupplierChange"
+                                        >
+                                            <layoutData><layout:GridData span="XL2 L2 M4 S12" /></layoutData>
+                                        </Input>
+                                        <Input id="create_product_supplier_name" value="" editable="false"/>
+                                    </form:fields>
+                                </form:FormElement>
+                            </form:formElements>
+                        </form:FormContainer>
+
+                        <form:FormContainer>
+                            <form:formElements>
+                                <form:FormElement label="{lang>product_quantityPerUnit}">
+                                    <Input value="{
+                                        path : 'model>/productData/QuantityPerUnit',
+                                        type : '.inputCheck.product.quantityPerUnit'
+                                    }"
+                                    required="true" id="create_product_input_qpu"></Input>
+                                </form:FormElement>
+
+                                <form:FormElement label="{lang>product_unitPrice}">
+                                    <form:fields>
+                                        <Input type="Number" value="{
+                                            path : 'model>/productData/UnitPrice',
+                                            type : '.inputCheck.product.unitPrice'
+                                        }"
+                                        required="true" id="create_product_input_unit_price">
+                                            <layoutData><layout:GridData span="XL8 L6 M9 S6" /></layoutData>
+                                        </Input>
+                                        <Input value="AUD" editable="false">
+                                            <layoutData><layout:GridData span="XL1 L2 M3 S6" /></layoutData>
+                                        </Input>
+                                    </form:fields> 
+                                </form:FormElement>
+
+                                <form:FormElement label="{lang>product_unit_in_stock}">
+                                    <Input value="{
+                                        path : 'model>/productData/UnitsInStock',
+                                        type : '.inputCheck.product.unitInStock'
+                                    }" type="Number" required="true" id="create_product_input_in_stock"/>
+                                </form:FormElement>
+
+                                <form:FormElement label="{lang>product_reorder_level}">
+                                    <Input value="{
+                                        path : 'model>/productData/ReorderLevel',
+                                        type : '.inputCheck.product.unitInStock'
+                                    }" type="Number" required="true" id="create_product_input_reorder_level"></Input>
+                                </form:FormElement>
+                                
+                            </form:formElements>
+                        </form:FormContainer>
+                    </form:formContainers>
+                </form:Form>
+                <HBox alignContent="Center" alignItems="Start" class="p-l-3">
+                    <Button icon="sap-icon://add-document" type="Emphasized" text="{lang>product_create}" press=".onSave"></Button>
+                </HBox>
+            </VBox>
+        </VBox>
+    </Page>
 </mvc:XMLView>
