@@ -16,6 +16,8 @@ sap.ui.define([
                     odataDelay : 100,
                     inputEnabled : true,
                     ServiceCreated : false,
+                    generateID: false,
+                    updateMethod: "MERGE",
                 });
                 this.getView().setModel(localModel, 'local');
             },
@@ -41,10 +43,12 @@ sap.ui.define([
                 let settings = this.comp.getModel('settings').getData();
                 settings.odata.useMock = localModel.getProperty("/odataType") === "1";
                 settings.odata.serviceUrl = settings.odata.useMock ? "/ui5pos/szdk/mockService.svc/" : localModel.getProperty("/odataUrl");
-                let responseDelay = localModel.getProperty("/odataDelay");
-                if (!responseDelay || parseInt(responseDelay) <= 0)
-                    localModel.setProperty("/odataDelay", 0);
-                settings.odata.delay = parseInt(localModel.getProperty("/odataDelay")) || 0;
+                let responseDelay = parseInt(localModel.getProperty("/odataDelay"));
+                if (!responseDelay) responseDelay = 0;
+                localModel.setProperty("/odataDelay", responseDelay);
+                settings.odata.delay = responseDelay;
+                settings.odata.generateID = settings.odata.useMock ? true : localModel.getProperty("/generateID");
+                settings.odata.updateMethod = localModel.getProperty("/updateMethod");
                 //set the modified global settings back to root component
                 this.comp.getModel('settings').setData(settings);
 

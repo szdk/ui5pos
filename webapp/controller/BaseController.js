@@ -5,7 +5,7 @@ sap.ui.define([
         "sap/m/Button",
         "sap/m/Text",
         "ui5pos/szdk/controller/util/InputCheck",
-        "sap/ui/model/SimpleType"
+        "sap/ui/model/Sorter",
     ],
     function (
             Controller,
@@ -14,7 +14,7 @@ sap.ui.define([
             Button,
             Text,
             InputCheck,
-            SimpleType
+            Sorter
         ) {
         "use strict";
 
@@ -34,6 +34,33 @@ sap.ui.define([
                     window.history.go(-1);
                 else
                     this.comp.getRouter().navTo(defaultPage, parameters, true);
+            },
+
+            getMaxValue: function (entitySetPath, idField) {
+                let res = () => {}, rej = () => {};
+                let prom = new Promise((s, e) => {
+                    res = s; rej = e;
+                });
+
+                this.comp.getModel('service').read(entitySetPath, {
+                    sorters: [new Sorter(idField, /*descending*/ true)],
+                    urlParameters: {
+                        "$select": idField,
+                        "$top": 1,
+                    },
+                    success: (d) => {
+                        if (!d || !d.results || d.results.length == 0)
+                            res(0);
+                        else
+                            res(d.results[0][idField]);
+                    },
+                    error: (e) => {
+                        rej(e);
+                    }
+                });
+
+
+                return prom;
             },
 
             

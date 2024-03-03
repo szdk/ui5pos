@@ -38,6 +38,7 @@ sap.ui.define([
             onClearInput : function () {
                 let data = {...this.mainModel.getProperty('/productData')};
                 for (let prop in data) {
+                    this.mainModel.setProperty(`/productData/${prop}`, "0");
                     this.mainModel.setProperty(`/productData/${prop}`, "");
                 }
                 this.byId('create_product_input_name').setValueState(sap.ui.core.ValueState.None);
@@ -74,11 +75,48 @@ sap.ui.define([
                 this.categoryIDCheck()
                     .then(() => this.supplierIDCheck())
                     .then(() => {
-                        let s = () => {}, e = () => {};
-                        let p = new Promise((res, rej) => {
-                            s = res; e = rej;
-                        });
-                        //todo create id's on backend/client side
+                        let createProduct = (id) => {
+                            let data = {
+                                ProductName: this.mainModel.getProperty('/productData/ProductName'),
+                                SupplierID: parseInt(this.mainModel.getProperty('/productData/SupplierID')),
+                                CategoryID: parseInt(this.mainModel.getProperty('/productData/CategoryID')),
+                                QuantityPerUnit: this.mainModel.getProperty('/productData/QuantityPerUnit'),
+                                UnitPrice: parseFloat(this.mainModel.getProperty('/productData/UnitPrice')),
+                                UnitsInStock: parseInt(this.mainModel.getProperty('/productData/UnitsInStock')),
+                                ReorderLevel: parseInt(this.mainModel.getProperty('/productData/ReorderLevel')),
+                                Discontinued: false,
+                                UnitsOnOrder: 0
+                            };
+                            if (id)
+                                data.ProductID = id;
+                            console.log({action: 'create product', data});
+                            this.comp.getModel('service').create('/Products', data, {
+                                success: (data) => {
+                                    console.log({message: 'production created', data});
+                                    this.onClearInput();
+                                    if (data && data.ProductID) {
+                                        //navigate to view product
+                                        this.comp.getRouter().navTo('view_product', {id : data.ProductID});
+                                    } else {
+                                        this.showSuccessDialog({message: this.i18n.getText('create_product_creation_success')});
+                                    }
+                                },
+                                error: () => {
+                                    this.showErrorDialog();
+                                },
+                            });
+
+                        };
+
+                        if (this.comp.getModel('settings').getProperty('/odata/useMock') || this.comp.getModel('settings').getProperty('/odata/generateID')) {
+                            this.getMaxValue('/Products', 'ProductID').then((maxID) => {
+                                createProduct(maxID + 1);
+                            }).catch(() => {
+                                this.showErrorDialog();
+                            });
+                        } else {
+                            createProduct();
+                        }
                     })
                     .catch(() => this.showErrorDialog({message : this.i18n.getText('input_submit_error')}));
             },

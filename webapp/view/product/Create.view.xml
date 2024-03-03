@@ -9,7 +9,7 @@
 
     height="100%">
     <Page title="{lang>create_product_title}">
-        <VBox height="100%" backgroundDesign="Solid" alignContent="Center" alignItems="Center" class="p-5 s-p-0">
+        <VBox backgroundDesign="Solid" alignContent="Center" alignItems="Center" class="min-height-100 p-5 s-p-0">
             <VBox alignItems="Start" justifyContent="Start">
                 <form:Form editable="true">
                     <form:toolbar>

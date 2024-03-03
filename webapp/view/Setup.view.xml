@@ -50,6 +50,13 @@
                             <VBox visible="{= ${local>/odataType} === '2' }" class="m-t-3 m-b-2">
                                 <Label labelFor="setup_odataUrl" text="{lang>setup_odataUrl}"></Label>
                                 <Input enabled="{local>/inputEnabled}" valueLiveUpdate="true" required="true" id="setup_odataUrl" value="{local>/odataUrl}" type="Url" placeholder="https://services.odata.org/V3/Northwind/Northwind.svc/"></Input>
+                                <Label labelFor="setup_generateId" text="{lang>setup_generate_id_label}" class="m-t-3"/>
+                                <CheckBox enabled="{local>/inputEnabled}" selected="{local>/generateID}" text="{lang>setup_generate_id_input}" id="setup_generateId" wrapping="true"></CheckBox>
+                                <Label labelFor="setup_updateMethod" text="{lang>setup_update_method_label}" class="m-t-3" required="true"/>
+                                <Select id="setup_updateMethod" selectedKey="{local>/updateMethod}" enabled="{local>/inputEnabled}">
+                                    <core:ListItem key="MERGE" text="MERGE"/>
+                                    <core:ListItem key="PUT" text="PUT"/>
+                                </Select>
                             </VBox>
                             <!-- Message Strip -->
                             <MessageStrip

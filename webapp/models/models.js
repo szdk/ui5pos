@@ -39,7 +39,8 @@ sap.ui.define([
                             this._mock = {};
                         if (!this._mock[settings.odata.serviceUrl]) {
                             this._mock[settings.odata.serviceUrl] = MockServer.init(settings);
-                            console.log(`Created new Mock Server for "${settings.odata.serviceUrl}"`);
+                            console.log(`Created new Mock Server for "${settings.odata.serviceUrl}" with settings:`);
+                            console.log(settings);
                         } else {
                             console.log(`Mock Server already exists for "${settings.odata.serviceUrl}"`);
                         }
@@ -47,11 +48,12 @@ sap.ui.define([
                     if (!this._services) this._services = {};
                     if (!this._services[settings.odata.serviceUrl]) {
                         //create ODataModel
-                        this._services[settings.odata.serviceUrl] = new ODataModel(
-                            settings.odata.serviceUrl, {
-                                // defaultOperationMode : settings.odata.useMock ? sap.ui.model.odata.OperationMode.Client : sap.ui.model.odata.OperationMode.Server
-                            }
-                        );
+                        let props = {
+                            // defaultOperationMode : settings.odata.useMock ? sap.ui.model.odata.OperationMode.Client : sap.ui.model.odata.OperationMode.Server
+                        };
+                        if (!settings.odata.useMock)
+                            props.defaultUpdateMethod = settings.odata.updateMethod == "MERGE" ? sap.ui.model.odata.UpdateMethod.Merge : sap.ui.model.odata.UpdateMethod.Put;
+                        this._services[settings.odata.serviceUrl] = new ODataModel(settings.odata.serviceUrl, props);
                         console.log(`Created new Service "${settings.odata.serviceUrl}"`);
                     } else {
                         console.log(`Service "${settings.odata.serviceUrl}" alread exists`);
