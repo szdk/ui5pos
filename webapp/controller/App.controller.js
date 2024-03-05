@@ -40,7 +40,8 @@ sap.ui.define([
                             if (!item) return;
                             let key = item.getKey();
                             if (!key || !key.startsWith('nav_item_route_')) return;
-                            this.appNavModel.setProperty('/sideNav/expanded', false);
+                            if (!Device.system.desktop)
+                                this.appNavModel.setProperty('/sideNav/expanded', false);
                             router.navTo(key.substring(15));
                         });
                 } else {
@@ -48,7 +49,8 @@ sap.ui.define([
                         let navItem = this.byId(`app_nav_route_${routeName}`);
                         if (navItem)
                             navItem.attachSelect(() => {
-                                this.appNavModel.setProperty('/sideNav/expanded', false);
+                                if (!Device.system.desktop)
+                                    this.appNavModel.setProperty('/sideNav/expanded', false);
                                 router.navTo(routeName);
                             });
                     }
