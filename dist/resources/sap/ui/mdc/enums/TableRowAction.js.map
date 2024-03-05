@@ -1,0 +1,1 @@
+{"version":3,"file":"TableRowAction.js","names":["sap","ui","define","DataType","TableRowAction","Navigation","registerEnum"],"sources":["TableRowAction-dbg.js"],"mappings":";;;;;AAMAA,IAAIC,GAAGC,OAAO,CAAC,wBAAyB,SAASC,GAC7C,aAWA,MAAMC,EAAiB,CAMnBC,WAAY,cAGhBF,EAASG,aAAa,kCAAmCF,GAEzD,OAAOA,CAEX,EAAkB"}

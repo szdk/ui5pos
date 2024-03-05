@@ -1,0 +1,34 @@
+<mvc:XMLView controllerName="ui5pos.szdk.controller.order.Orders"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:mvc="sap.ui.core.mvc" 
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:core="sap.ui.core"
+    xmlns:plugins="sap.m.plugins"
+    xmlns:columnmenu="sap.m.table.columnmenu"
+    xmlns:dnd="sap.ui.core.dnd"
+    
+    height="100%"
+>
+    <Page title="{lang>orders_title}">
+        <Table
+            id="orders_table"
+            items="{
+                path: 'service>/Orders',
+                parameters: {
+                    expand : 'Category'
+                }
+            }"
+            busyIndicatorDelay="0"
+            mode="{table>/mode}"
+            selectionChange=".onSelectionChange"
+            rememberSelections="true"
+            growing="{= ${table>/grow/size} > 0 }"
+            growingThreshold="{table>/grow/size}"
+            sticky="{table>/sticky}"
+            popinLayout="Block"
+            alternateRowColors="false"
+        >
+        </Table>
+    </Page>
+</mvc:XMLView>

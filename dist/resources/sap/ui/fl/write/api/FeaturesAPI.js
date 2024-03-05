@@ -1,0 +1,7 @@
+/*!
+ * OpenUI5
+ * (c) Copyright 2009-2024 SAP SE or an SAP affiliate company.
+ * Licensed under the Apache License, Version 2.0 - see LICENSE.txt.
+ */
+sap.ui.define(["sap/ui/fl/registry/Settings","sap/ui/fl/Layer","sap/ui/fl/Utils"],function(e,n,t){"use strict";var r={isPublishAvailable(){return e.getInstance().then(function(e){return e.isPublishAvailable()||!e.isProductiveSystem()&&e.isSystemWithTransports()})},isSaveAsAvailable(r){return Promise.all([e.getInstance(),t.getUShellService("CrossApplicationNavigation")]).then(function(e){var t=e[0];var i=e[1];return t.isAppVariantSaveAsEnabled()&&r===n.CUSTOMER&&i!==undefined}).catch(function(){return false})},isContextBasedAdaptationAvailable(t){return e.getInstance().then(function(e){if(e.isContextBasedAdaptationEnabled()&&t===n.CUSTOMER){return true}return false})},isKeyUser(){return e.getInstance().then(function(e){return e.isKeyUser()})},isVersioningEnabled(n){return e.getInstance().then(function(e){return e.isVersioningEnabled(n)})},isKeyUserTranslationEnabled(t){if(t===n.CUSTOMER){return e.getInstance().then(function(e){return e.isKeyUserTranslationEnabled()})}return Promise.resolve(false)},isContextSharingEnabled(t){if(t!==n.CUSTOMER){return Promise.resolve(false)}return e.getInstance().then(function(e){return e.isContextSharingEnabled({layer:t})})}};return r});
+//# sourceMappingURL=FeaturesAPI.js.map

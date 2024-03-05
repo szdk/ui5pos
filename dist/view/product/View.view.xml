@@ -1,0 +1,241 @@
+<mvc:View 
+		controllerName="ui5pos.szdk.controller.product.View"
+		xmlns:mvc="sap.ui.core.mvc"
+		xmlns="sap.m"
+		xmlns:f="sap.f"
+		xmlns:layout="sap.ui.layout"
+		xmlns:core="sap.ui.core"
+		xmlns:form="sap.ui.layout.form"
+
+		core:require="{formatMessage: 'sap/base/strings/formatMessage'}"
+
+		height="100%">
+		<f:DynamicPage id="product_view_page" headerExpanded="true">
+			<f:title>
+				<f:DynamicPageTitle>
+					<f:heading>
+						<Title text="{service>ProductName}"/>
+					</f:heading>
+
+					<f:expandedContent>
+						<Label text="{parts : [{path: 'lang>supplied_by'}, {path: 'service>Supplier/CompanyName'}], formatter : 'formatMessage' }"/>
+					</f:expandedContent>
+					<f:snappedContent>
+						<Label text="{parts : [{path: 'lang>supplied_by'}, {path: 'service>Supplier/CompanyName'}], formatter : 'formatMessage' }"/>
+					</f:snappedContent>
+					<f:snappedTitleOnMobile>
+						<Title text="{parts : [{path: 'lang>supplied_by'}, {path: 'service>Supplier/CompanyName'}], formatter : 'formatMessage' }"/>
+					</f:snappedTitleOnMobile>
+					
+					<f:content>
+						<GenericTag
+							text="{= 
+								${service>Discontinued} ? ${lang>discontinued} : (
+									${service>UnitsInStock} &lt;= 0 ? ${lang>out_of_stock} : (
+										${service>UnitsInStock} &lt;= ${service>ReorderLevel} ?
+											${lang>few_left} + ' ( ' + ${service>UnitsInStock} + ' / ' + ${service>ReorderLevel} + ' ) '
+											: ${lang>in_stock} + ' ( ' + ${service>UnitsInStock} + ' / ' + ${service>ReorderLevel} + ' ) '
+									)
+								)
+							}"
+							status="{= 
+								${service>Discontinued} || ${service>UnitsInStock} === 0 ?
+									'Error'
+									: (
+										${service>UnitsInStock} &lt;= ${service>ReorderLevel} ? 'Warning' : 'Success'
+									)
+							}"
+							press="onPressOpenPopover"
+							design="StatusIconHidden">
+						</GenericTag>
+					</f:content>
+					
+					<f:actions>
+						<Button 
+							text="{lang>save}"
+							visible="{model>/editting}"
+							type="Emphasized"
+							icon="sap-icon://save"
+							press=".onSave"/>
+						<Button
+							text="{= ${model>/editting} ? ${lang>cancel} : ${lang>edit} }"
+							type="Transparent"
+							icon="{= ${model>/editting} ? 'sap-icon://sys-cancel-2' : 'sap-icon://edit'}"
+							press=".onToggleEdit"/>
+
+						<Button visible="{= ${model>/editting} === false }" type="Ghost" press=".onOpenAction" text="{lang>action}">
+							<dependents>
+								<ActionSheet id="view_product_actionSheet" title="{lang>action}" placement="Bottom">
+									<Button
+										icon="{= ${service>Discontinued} ? 'sap-icon://media-play' : 'sap-icon://media-pause' }"
+										text="{= ${service>Discontinued} ? ${lang>product_unmark_discontinued} : ${lang>product_mark_discontinued} }"
+										press=".onToggleDiscontinue"
+										type="Ghost"
+									/>
+									<Button
+										icon="sap-icon://delete"
+										text="{lang>delete}"
+										press=".onDelete"
+										type="Ghost"
+									/>
+								</ActionSheet>
+							</dependents>
+						</Button>
+						
+					</f:actions>
+
+				</f:DynamicPageTitle>
+			</f:title>
+			<!-- DynamicPage Header -->
+			<f:header>
+				<f:DynamicPageHeader pinnable="true">
+					<!-- =========== VIEW MODE ============== -->
+					<layout:HorizontalLayout visible="{= ${model>/editting} === false }" allowWrapping="true">
+						<layout:VerticalLayout class="sapUiMediumMarginEnd">
+							<ObjectAttribute title="{lang>product_id}" text="{service>ProductID}"/>
+							<ObjectAttribute title="{lang>product_name}" text="{service>ProductName}"/>
+							<ObjectAttribute title="{lang>category}" text="{service>Category/CategoryName}" press=".onPressCategory"/>
+							<ObjectAttribute title="{lang>discontinued}" text="{= ${service>Discontinued} ? ${lang>yes} : ${lang>no} }"/>
+						</layout:VerticalLayout>
+
+						<layout:VerticalLayout>
+							<layout:HorizontalLayout allowWrapping="false">
+								<ObjectAttribute title="{lang>product_unitPrice}"/>
+								<ObjectNumber class="m-l-1" number="{
+									parts:[
+										{path:'service>UnitPrice'},
+										{value: 'USD'}
+									],
+									type: 'sap.ui.model.type.Currency',
+									formatOptions: {showMeasure:false}
+								}" unit="USD" ></ObjectNumber>
+							</layout:HorizontalLayout>
+							
+							<ObjectAttribute title="{lang>product_quantityPerUnit}" text="{service>QuantityPerUnit}"/>
+							<ObjectAttribute title="{lang>product_instock}" text="{service>UnitsInStock}"/>
+							<ObjectAttribute title="{lang>product_reorder_level}" text="{service>ReorderLevel}"/>
+						</layout:VerticalLayout>
+					</layout:HorizontalLayout>
+
+					<!-- =========== Edit MODE ============== -->
+					<form:Form visible="{= ${model>/editting} === true }" editable="true">
+						<form:layout>
+							<form:ResponsiveGridLayout
+								columnsL="2"
+								columnsM="2"
+								columnsXL="2"
+								labelSpanS="12"
+								labelSpanM="12"
+								labelSpanL="4"
+								labelSpanXL="3"
+								adjustLabelSpan="false"
+							/>
+						</form:layout>
+						<form:formContainers>
+							<form:FormContainer>
+								<form:formElements>
+									
+									<form:FormElement label="{lang>product_id}">
+										<form:fields>
+											<Input value="{model>/productData/ProductID}" editable="false"/>
+										</form:fields>
+									</form:FormElement>
+									
+									<form:FormElement label="{lang>product_name}">
+										<form:fields>
+											<Input value="{
+												path : 'model>/productData/ProductName',
+												type : '.inputCheck.product.name'
+											}" required="true" id="product_input_name"></Input>
+										</form:fields>
+									</form:FormElement>
+									
+									<form:FormElement label="{lang>category_id}">
+										<form:fields>
+											<Input
+												value="{model>/productData/CategoryID}"
+												type = "Number"
+												showValueHelp="true"
+												valueHelpRequest=".onValueHelpCategory"
+												required="true"
+												id="product_input_category"
+												change=".onCategoryChange"
+											>
+												<layoutData><layout:GridData span="XL2 L2 M4 S12" /></layoutData>
+											</Input>
+											<Input id="product_category_name" value="" editable="false"/>
+										</form:fields>
+									</form:FormElement>
+									
+									<form:FormElement label="{lang>supplier_id}">
+										<form:fields>
+											<Input
+												value="{model>/productData/SupplierID}"
+												showValueHelp="true"
+												valueHelpRequest=".onValueHelpSupplier"
+												type="Number"
+												required="true"
+												id="product_input_supplier"
+												change=".onSupplierChange"
+											>
+												<layoutData><layout:GridData span="XL2 L2 M4 S12" /></layoutData>
+											</Input>
+											<Input id="product_supplier_name" value="" editable="false"/>
+										</form:fields>
+									</form:FormElement>
+								</form:formElements>
+							</form:FormContainer>
+
+							<form:FormContainer>
+								<form:formElements>
+									<form:FormElement label="{lang>product_quantityPerUnit}">
+										<Input value="{
+											path : 'model>/productData/QuantityPerUnit',
+											type : '.inputCheck.product.quantityPerUnit'
+										}"
+										required="true" id="product_input_qpu"></Input>
+									</form:FormElement>
+
+									<form:FormElement label="{lang>product_unitPrice}">
+										<form:fields>
+											<Input type="Number" value="{
+												path : 'model>/productData/UnitPrice',
+												type : '.inputCheck.product.unitPrice'
+											}"
+											required="true" id="product_input_unit_price">
+												<layoutData><layout:GridData span="XL8 L6 M9 S6" /></layoutData>
+											</Input>
+											<Input value="AUD" editable="false">
+												<layoutData><layout:GridData span="XL1 L2 M3 S6" /></layoutData>
+											</Input>
+										</form:fields> 
+									</form:FormElement>
+
+									<form:FormElement label="{lang>product_unit_in_stock}">
+										<Input value="{
+											path : 'model>/productData/UnitsInStock',
+											type : '.inputCheck.product.unitInStock'
+										}" type="Number" required="true" id="product_input_in_stock"/>
+									</form:FormElement>
+
+									<form:FormElement label="{lang>product_reorder_level}">
+										<Input value="{
+											path : 'model>/productData/ReorderLevel',
+											type : '.inputCheck.product.unitInStock'
+										}" type="Number" required="true" id="product_input_reorder_level"></Input>
+									</form:FormElement>
+									
+								</form:formElements>
+							</form:FormContainer>
+						</form:formContainers>
+					</form:Form>
+
+				</f:DynamicPageHeader>
+			</f:header>
+			<f:content>
+				<Table noDataText="Todo: List of orders containing this product."></Table>
+				
+			</f:content>
+			
+		</f:DynamicPage>
+</mvc:View>

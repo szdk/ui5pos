@@ -8,8 +8,6 @@ sap.ui.define([
         "use strict";
 
         return Controller.extend("ui5pos.szdk.controller.App", {
-            _routes : ["home", "products", "create_product", "view_product"],
-
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
 

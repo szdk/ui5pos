@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/model/SimpleType","sap/ui/model/ValidateException"],function(e,t){"use strict";return{category:{categoryId:e.extend("category.categoryID",{formatValue:e=>parseInt(e),parseValue:e=>parseInt(e),validateValue:function(e){e=parseInt(e);if(!e||e==0)throw new t(this.i18n.getText("input_invalid_category_id",[e]))}})}}});
+//# sourceMappingURL=InputType.js.map

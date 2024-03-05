@@ -1,0 +1,7 @@
+/*!
+ * OpenUI5
+ * (c) Copyright 2009-2024 SAP SE or an SAP affiliate company.
+ * Licensed under the Apache License, Version 2.0 - see LICENSE.txt.
+ */
+sap.ui.define(["sap/ui/mdc/filterbar/IFilterContainer","sap/ui/layout/AlignedFlowLayout","sap/ui/layout/VerticalLayout","sap/ui/layout/HorizontalLayout","sap/m/Text","sap/ui/core/Configuration"],function(t,o,i,e,n,a){"use strict";const u=t.extend("sap.ui.mdc.filterbar.aligned.FilterContainer");u.prototype.init=function(){t.prototype.init.apply(this,arguments);this.oLayout=new o};u.prototype.exit=function(){t.prototype.exit.apply(this,arguments);if(this._oButtonsLayout){this._oButtonsLayout=null}};u.prototype.addButton=function(t){if(!this._oButtonsLayout){this._oButtonsLayout=new i;if(a.getRTL()){this._oButtonsLayout.addStyleClass("sapUiMdcFilterBarBaseFloatLeft")}else{this._oButtonsLayout.addStyleClass("sapUiMdcFilterBarBaseFloatRight")}this._oButtonsLayout.addContent(new n);this._oButtonsLayout.addContent(new e);this.oLayout.addEndContent(this._oButtonsLayout)}this._oButtonsLayout.getContent()[1].addContent(t)};u.prototype.insertFilterField=function(t,o){this.oLayout.insertContent(t,o)};u.prototype.removeFilterField=function(t){this.oLayout.removeContent(t)};u.prototype.getFilterFields=function(){return this.oLayout.getContent()};return u});
+//# sourceMappingURL=FilterContainer.js.map

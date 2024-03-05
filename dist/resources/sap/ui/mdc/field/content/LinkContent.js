@@ -1,0 +1,7 @@
+/*!
+ * OpenUI5
+ * (c) Copyright 2009-2024 SAP SE or an SAP affiliate company.
+ * Licensed under the Apache License, Version 2.0 - see LICENSE.txt.
+ */
+sap.ui.define(["sap/ui/mdc/field/content/DefaultContent","sap/m/library"],function(t,e){"use strict";const n=e.EmptyIndicatorMode;const i=Object.assign({},t,{getDisplay:function(){return["sap/m/Link"]},getDisplayMultiValue:function(){return[null]},getDisplayMultiLine:function(){return["sap/m/Link"]},getUseDefaultValueHelp:function(){return false},createDisplay:function(t,e,i){const l=e[0];const a=t.getConditionsType();const o=new l(i,{text:{path:"$field>/conditions",type:a},textAlign:"{$field>/textAlign}",textDirection:"{$field>/textDirection}",tooltip:"{$field>/tooltip}",press:t.getHandleContentPress(),wrapping:"{$field>/multipleLines}",emptyIndicatorMode:n.Auto});const r=t.getField().getFieldInfo();if(r){r.getDirectLinkHrefAndTarget().then(function(e){t.getMetadata()._oClass._updateLink(o,e)})}t.setAriaLabelledBy(o);return[o]},createDisplayMultiValue:function(){throw new Error("sap.ui.mdc.field.content.LinkContent - createDisplayMultiValue not defined!")},createDisplayMultiLine:function(t,e,n){return i.createDisplay(t,e,n)}});return i});
+//# sourceMappingURL=LinkContent.js.map

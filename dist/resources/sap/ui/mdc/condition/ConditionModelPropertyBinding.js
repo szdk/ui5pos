@@ -1,0 +1,7 @@
+/*!
+ * OpenUI5
+ * (c) Copyright 2009-2024 SAP SE or an SAP affiliate company.
+ * Licensed under the Apache License, Version 2.0 - see LICENSE.txt.
+ */
+sap.ui.define(["sap/ui/model/ChangeReason","sap/ui/model/json/JSONPropertyBinding","sap/base/util/merge","sap/base/util/deepEqual","sap/ui/core/date/UI5Date"],function(t,e,i,s,a){"use strict";const o=e.extend("sap.ui.mdc.condition.ConditionModelPropertyBinding",{constructor:function(t,i,s,a){e.apply(this,arguments);this.oValue=n.call(this,this._getValue())}});o.prototype.getValue=function(){return n.call(this,this.oValue)};o.prototype.setValue=function(e){if(this.bSuspended){return}if(!s(this.oValue,e)){if(this.oModel.setProperty(this.sPath,e,this.oContext,true)){this.oValue=n.call(this,e);this.getDataState().setValue(this.oValue);this.oModel.firePropertyChange({reason:t.Binding,path:this._sOriginapPath,context:this.oContext,value:e})}}};o.prototype.checkUpdate=function(e){if(this.bSuspended&&!e){return}const i=this._getValue();if(!s(i,this.oValue)||e){this.oValue=n.call(this,i);this.getDataState().setValue(this.oValue);this.checkDataState();this._fireChange({reason:t.Change})}};function n(t){let e;if(!t){e=t}else if(Array.isArray(t)){e=i([],t)}else if(t instanceof Date){e=a.getInstance(t)}else if(typeof t==="object"){e=i({},t)}else{e=t}return e}return o});
+//# sourceMappingURL=ConditionModelPropertyBinding.js.map

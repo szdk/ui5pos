@@ -1,0 +1,7 @@
+/*!
+ * OpenUI5
+ * (c) Copyright 2009-2024 SAP SE or an SAP affiliate company.
+ * Licensed under the Apache License, Version 2.0 - see LICENSE.txt.
+ */
+sap.ui.define(["sap/m/Tokenizer","sap/ui/mdc/field/TokenizerDisplayRenderer","sap/ui/events/KeyCodes","sap/m/library"],function(t,e,n,o){"use strict";const i=o.EmptyIndicatorMode;const r=t.extend("sap.ui.mdc.field.TokenizerDisplay",{metadata:{library:"sap.ui.mdc",properties:{emptyIndicatorMode:{type:"sap.m.EmptyIndicatorMode",group:"Appearance",defaultValue:i.Off}}},renderer:e});r.prototype.init=function(){t.prototype.init.apply(this,arguments);this.setShouldRenderTabIndex(false);this.allowTextSelection(true);this.addStyleClass("sapUiMdcTokenizerDisplay")};r.prototype.onkeydown=function(e){t.prototype.onkeydown.call(this,e);if(!this.getEnabled()){return}if(e.which===n.ENTER){if(this.getHiddenTokensCount()>0){this._handleNMoreIndicatorPress()}}};r.prototype.ontouchstart=function(e){if(!this.hasOneTruncatedToken()&&!e.target.classList.contains("sapMTokenizerIndicator")){return}t.prototype.ontouchstart.apply(this,arguments)};r.prototype.ontap=function(e){const n=e.getMark("tokenTap");if(n&&!this.hasOneTruncatedToken()){return}t.prototype.ontap.apply(this,arguments)};r.prototype.getAccessibilityInfo=function(){const t=this.getTokens().map(function(t){return t.getText()}).join(" ");return{description:t}};return r});
+//# sourceMappingURL=TokenizerDisplay.js.map

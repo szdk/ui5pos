@@ -86,6 +86,13 @@
                     ]
                 },
                 {
+                    "name" : "orders",
+                    "pattern" : "orders",
+                    "target" : [
+                        "orders"
+                    ]
+                },
+                {
                     "name": "products",
                     "pattern": "products",
                     "target" : [
@@ -120,6 +127,11 @@
                     "title": "{{home_title}}",
                     "viewName": "Home",
                     "viewId": "home"
+                },
+                "orders" : {
+                    "title" : "{{orders_title}}",
+                    "viewName": "order.Orders",
+                    "viewId": "orders"
                 },
                 "products" : {
                     "title": "{{products_title}}",

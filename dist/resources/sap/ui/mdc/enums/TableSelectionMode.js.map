@@ -1,0 +1,1 @@
+{"version":3,"file":"TableSelectionMode.js","names":["sap","ui","define","DataType","TableSelectionMode","None","Single","SingleMaster","Multi","registerEnum"],"sources":["TableSelectionMode-dbg.js"],"mappings":";;;;;AAMAA,IAAIC,GAAGC,OAAO,CAAC,wBAAyB,SAASC,GAC7C,aAWA,MAAMC,EAAqB,CAKvBC,KAAM,OAKNC,OAAQ,SAMRC,aAAc,eAKdC,MAAO,SAGXL,EAASM,aAAa,sCAAuCL,GAE7D,OAAOA,CAEX,EAAkB"}

@@ -1,6 +1,10 @@
 <mvc:XMLView controllerName="ui5pos.szdk.controller.Home"
     xmlns:mvc="sap.ui.core.mvc" 
     xmlns="sap.m"
+
+    height="100%"
 >
-    <Text text="This is home page test"></Text>
+        <VBox height="100%" justifyContent="Center">
+            <IllustratedMessage illustrationSize="Spot" title="Not Implemented" description="This page has not yet been implemented."></IllustratedMessage>
+        </VBox>
 </mvc:XMLView>

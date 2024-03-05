@@ -1,0 +1,7 @@
+/*!
+ * OpenUI5
+ * (c) Copyright 2009-2024 SAP SE or an SAP affiliate company.
+ * Licensed under the Apache License, Version 2.0 - see LICENSE.txt.
+ */
+sap.ui.define(["sap/ui/core/Core","sap/ui/fl/apply/_internal/controlVariants/Utils","sap/ui/fl/apply/_internal/flexObjects/Variant"],function(e,t,n){"use strict";var i=n.extend("sap.ui.fl.apply._internal.flexObjects.FlVariant",{metadata:{properties:{variantReference:{type:"string"},variantManagementReference:{type:"string"}}},constructor:function(...e){let[i,a]=e;if(typeof i!=="string"&&i!==undefined){a=i;i=a&&a.id}a.fileType="ctrl_variant";if(a.favorite===undefined){a.favorite=true}n.apply(this,e);if(!this.getName()&&a.content&&a.content.title){this.setName(a.content.title)}var r=this.getSupportInformation();if(this.getId()===this.getVariantManagementReference()){this.setStandardVariant(true);if(!r.user){r.user=t.DEFAULT_AUTHOR;this.setSupportInformation(r)}}}});i.getMappingInfo=function(){return Object.assign(n.getMappingInfo(),{variantReference:"variantReference",variantManagementReference:"variantManagementReference"})};i.prototype.getMappingInfo=function(){return i.getMappingInfo()};i.prototype.cloneFileContentWithNewId=function(...e){var t=n.prototype.cloneFileContentWithNewId.apply(this,e);return t};return i});
+//# sourceMappingURL=FlVariant.js.map

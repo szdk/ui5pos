@@ -24,7 +24,7 @@ sap.ui.define([
             onSearchProduct : function (e) {
                 let searchValue = e.getParameter('query').trim();
                 let binding = this._tableMain.getBinding('items');
-
+                
                 //===================== search filters
                 let filter = searchValue.length == 0 ? [] : new Filter({
                     filters : [

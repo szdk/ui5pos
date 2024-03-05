@@ -1,0 +1,7 @@
+/*!
+ * OpenUI5
+ * (c) Copyright 2009-2024 SAP SE or an SAP affiliate company.
+ * Licensed under the Apache License, Version 2.0 - see LICENSE.txt.
+ */
+sap.ui.define(["sap/ui/core/Component","sap/ui/fl/apply/_internal/flexState/ManifestUtils","sap/ui/fl/ChangePersistenceFactory","sap/ui/fl/Utils","sap/base/Log"],function(e,n,t,o,r){"use strict";var i=function(){};function s(e){return e.getChangeType()==="codeExt"}function a(e,n){var t=n.getSelector().controllerName;return e===t}function u(e){if(e.length===0){return Promise.resolve([])}return new Promise(function(n){sap.ui.require(e,function(...e){n(e)},function(e){r.error("Code Extension not found",e.message);n([])})})}i.prototype.getControllerExtensions=function(i,f,c){if(c){if(!f){r.warning("No component ID for determining the anchor of the code extensions was passed.");return Promise.resolve([])}var p=e.getComponentById(f);var l=o.getAppComponentForControl(p);if(!l){r.warning("No application component for determining the anchor of the code extensions was identified.");return Promise.resolve([])}if(!o.isApplication(l.getManifestObject())){return Promise.resolve([])}var g=n.getFlexReferenceForControl(l);var m=t.getChangePersistenceForComponent(g);return m.getChangesForComponent().then(function(e){var n=e.filter(function(e){return s(e)&&a(i,e)}).map(function(e){return e.getModuleName()});return u(n)})}r.warning("Synchronous extensions are not supported via UI5 Flexibility");return[]};return i});
+//# sourceMappingURL=ControllerExtension.js.map
