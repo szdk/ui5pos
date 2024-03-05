@@ -29,7 +29,7 @@ sap.ui.define([
 
                 //if service already exists, navigate to home page
                 if (localModel.getProperty('/ServiceCreated') && this.comp.getModel('service')) {
-                    this.goBack('home');
+                    this.goBack('products');
                     return;
                 }
 

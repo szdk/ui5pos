@@ -24,7 +24,7 @@
 						<Label text="{parts : [{path: 'lang>supplied_by'}, {path: 'service>Supplier/CompanyName'}], formatter : 'formatMessage' }"/>
 					</f:snappedContent>
 					<f:snappedTitleOnMobile>
-						<Title text="{parts : [{path: 'lang>supplied_by'}, {path: 'service>Supplier/CompanyName'}], formatter : 'formatMessage' }"/>
+						<Title text="{service>ProductName}"/>
 					</f:snappedTitleOnMobile>
 					
 					<f:content>

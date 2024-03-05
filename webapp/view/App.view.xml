@@ -7,13 +7,11 @@
 >
     <Shell appWidthLimited="false">
         <App id="app">
-            <!-- <t:ToolPage id="toolpage" sideExpanded='{= ${device>/resize/width} > 859 &amp;&amp; ${nav>/sideNav/expanded} }'> -->
-            <t:ToolPage id="toolpage" sideExpanded='{= ${nav>/sideNav/expanded} }'>
+            <t:ToolPage id="toolpage" sideExpanded='{nav>/sideNav/expanded}'>
                 <t:header>
                     <t:ToolHeader>
-                            <!-- visible="{= ${nav>/sideNav/visible} &amp;&amp; ${device>/resize/width} > 859 }" -->
                         <Button
-                            visible="{= ${nav>/sideNav/visible} }"
+                            visible="{nav>/sideNav/visible}"
                             id="app_side_nav_toggle_button"
                             icon="sap-icon://menu2"
                             type="Transparent"

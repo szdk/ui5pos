@@ -16,10 +16,10 @@ sap.ui.define([
                     sideNav : {
                         visible : true,
                         selectedKey : "home",
-                        expanded : Device.resize.width >= 1024,
+                        expanded : Device.system.desktop,
                     }
                 });
-                //todo change binding mode, for bug fix
+
                 this.appNavModel.setDefaultBindingMode("OneWay");
                 
                 this.getView().setModel(this.appNavModel, 'nav');
@@ -40,6 +40,7 @@ sap.ui.define([
                             if (!item) return;
                             let key = item.getKey();
                             if (!key || !key.startsWith('nav_item_route_')) return;
+                            this.appNavModel.setProperty('/sideNav/expanded', false);
                             router.navTo(key.substring(15));
                         });
                 } else {
@@ -47,6 +48,7 @@ sap.ui.define([
                         let navItem = this.byId(`app_nav_route_${routeName}`);
                         if (navItem)
                             navItem.attachSelect(() => {
+                                this.appNavModel.setProperty('/sideNav/expanded', false);
                                 router.navTo(routeName);
                             });
                     }
