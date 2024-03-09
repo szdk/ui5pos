@@ -8,6 +8,11 @@ sap.ui.define([
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
 
+                window.orders = this;
+
+                this.comp.szdk_serviceCreated.then((model) => {
+
+                });
                 
             }
         });

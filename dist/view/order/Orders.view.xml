@@ -10,25 +10,7 @@
     
     height="100%"
 >
-    <Page title="{lang>orders_title}">
-        <Table
-            id="orders_table"
-            items="{
-                path: 'service>/Orders',
-                parameters: {
-                    expand : 'Category'
-                }
-            }"
-            busyIndicatorDelay="0"
-            mode="{table>/mode}"
-            selectionChange=".onSelectionChange"
-            rememberSelections="true"
-            growing="{= ${table>/grow/size} > 0 }"
-            growingThreshold="{table>/grow/size}"
-            sticky="{table>/sticky}"
-            popinLayout="Block"
-            alternateRowColors="false"
-        >
-        </Table>
+    <Page id="orders_page" title="{lang>orders_title}">
+        
     </Page>
 </mvc:XMLView>

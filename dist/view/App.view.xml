@@ -30,7 +30,7 @@
                 <t:sideContent>
                     <t:SideNavigation  visible="{nav>/sideNav/visible}" id="app_side_nav_list" selectedKey="{nav>/sideNav/selectedKey}">
                         <t:NavigationList>
-                            <t:NavigationListItem visible="false" key="nav_item_route_orders" id="app_nav_route_orders" text="{lang>orders}" icon="sap-icon://sales-order-item" />
+                            <t:NavigationListItem key="nav_item_route_orders" id="app_nav_route_orders" text="{lang>orders}" icon="sap-icon://sales-order-item" />
                             <t:NavigationListItem key="nav_item_route_home" id="app_nav_route_home" text="{lang>dashboard}" icon="sap-icon://bbyd-dashboard"/>
                             <t:NavigationListItem text="{lang>products}" icon="sap-icon://product" selectable="false">
                                 <!-- <t:NavigationListItem key="nav_item_route_view_product" id="app_nav_route_view_product" text="{lang>view_product}"></t:NavigationListItem> -->
