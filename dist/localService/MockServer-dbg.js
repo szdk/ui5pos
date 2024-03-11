@@ -28,7 +28,9 @@ sap.ui.define([
 					"Categories",
 					"Products",
 					"Suppliers",
-					"Order_Details"
+					"Order_Details",
+					"Orders",
+					"Customers"
 				]
 			});
 

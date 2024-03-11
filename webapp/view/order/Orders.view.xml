@@ -11,6 +11,10 @@
     height="100%"
 >
     <Page id="orders_page" title="{lang>orders_title}">
-        
+        <HBox>
+            <VBox width="45%" id="temp1">
+            </VBox>
+            <VBox width="45%" id="temp2"></VBox>
+        </HBox>
     </Page>
 </mvc:XMLView>

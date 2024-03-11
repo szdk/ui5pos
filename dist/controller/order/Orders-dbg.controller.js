@@ -1,7 +1,8 @@
 sap.ui.define([
-    "ui5pos/szdk/controller/BaseController"
+    "ui5pos/szdk/controller/BaseController",
+    "ui5pos/szdk/controller/util/Table"
     ],
-    function (Controller) {
+    function (Controller, myTable) {
         "use strict";
 
         return Controller.extend("ui5pos.szdk.controller.order.Orders", {
@@ -9,6 +10,82 @@ sap.ui.define([
                 Controller.prototype.onInit.apply(this, arguments);
 
                 window.orders = this;
+
+                this.comp.szdk_serviceCreated.then((model) => {
+                    this.tableGenerator = new myTable({
+                        i18n : this.i18n,
+                        model,
+                        id : this.getView().createId('orders_main_table'),
+                        properties : {
+                            growing : true,
+                            mode : sap.m.ListMode.SingleSelectMaster,
+                        },
+                        itemsBinding : {
+                            path : '/Orders'
+                        },
+                        toolbar : {
+                            p13n : {
+                                Columns : true,
+                                Sorter : true,
+                                Groups : true,
+                            },
+                            growSize : true,
+                            pin : true,
+                        },
+                        columns : [
+                            ['OrderID', 'Order ID'],
+                            ['OrderDate', 'Order Date'],
+                            ['Freight', 'Total'],
+                            ['CustomerID', 'Customer ID'],
+                        ].map((val) => {
+                            return {
+                                id : this.getView().createId(val[0]),
+                                p13n : {key : val[0], label : val[1], path : val[0]},
+                                cell : {bindingPath : val[0]},
+                                header : {header : val[1]}
+                            };
+                        }),
+                    });
+                    
+                    this.tableGenerator2 = new myTable({
+                        i18n : this.i18n,
+                        model,
+                        id : this.getView().createId('orders_main_table2'),
+                        properties : {
+                            growing : false,
+                            mode : sap.m.ListMode.SingleSelectMaster,
+                            sticky : ['HeaderToolbar']
+                        },
+                        itemsBinding : {
+                            path : '/Orders'
+                        },
+                        toolbar : {
+                            p13n : {
+                                Columns : true,
+                                Sorter : true,
+                                Groups : true,
+                            },
+                            growSize : true,
+                            pin : true,
+                        },
+                        columns : [
+                            ['OrderID', 'Order ID'],
+                            ['OrderDate', 'Order Date'],
+                            ['Freight', 'Total'],
+                            ['CustomerID', 'Customer ID'],
+                        ].map((val) => {
+                            return {
+                                id : this.getView().createId(val[0] + '2'),
+                                p13n : {key : val[0] + '2', label : val[1], path : val[0]},
+                                cell : {bindingPath : val[0]},
+                                header : {header : val[1]}
+                            };
+                        }),
+                    });
+
+                    this.byId('temp1').addItem(this.tableGenerator.getTable());
+                    this.byId('temp2').addItem(this.tableGenerator2.getTable());
+                });
                 
             }
         });
