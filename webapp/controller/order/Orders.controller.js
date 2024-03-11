@@ -52,12 +52,12 @@ sap.ui.define([
                         model,
                         id : this.getView().createId('orders_main_table2'),
                         properties : {
-                            growing : false,
                             mode : sap.m.ListMode.SingleSelectMaster,
                             sticky : ['HeaderToolbar']
                         },
                         itemsBinding : {
-                            path : '/Orders'
+                            path : '/Products',
+                            parameters : {expand : 'Category'}
                         },
                         toolbar : {
                             p13n : {
@@ -65,20 +65,21 @@ sap.ui.define([
                                 Sorter : true,
                                 Groups : true,
                             },
+                            excel : true,
                             growSize : true,
                             pin : true,
                         },
                         columns : [
-                            ['OrderID', 'Order ID'],
-                            ['OrderDate', 'Order Date'],
-                            ['Freight', 'Total'],
-                            ['CustomerID', 'Customer ID'],
+                            ['ProductID', 'Product ID'],
+                            ['CategoryName', 'Category', 'Category/CategoryName'],
+                            ['UnitPrice', 'Price'],
                         ].map((val) => {
                             return {
                                 id : this.getView().createId(val[0] + '2'),
-                                p13n : {key : val[0] + '2', label : val[1], path : val[0]},
-                                cell : {bindingPath : val[0]},
-                                header : {header : val[1]}
+                                p13n : {key : val[0] + '2', label : val[1], path : val[2] || val[0]},
+                                cell : {bindingPath : val[2] || val[0]},
+                                header : {header : val[1]},
+                                excel : {label : val[1], property : val[2] || val[0]}
                             };
                         }),
                     });

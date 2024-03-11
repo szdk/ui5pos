@@ -51,7 +51,8 @@ sap.ui.define([
             itemsBinding : {
                 path : String,
                 parameters? : {
-
+                    expand : 'Path'
+                    ...
                 }
             },
             toolbar : {
@@ -68,19 +69,24 @@ sap.ui.define([
                 {
                     id : String | the id of the column, so that column is identified by p13n (has to be equal to the key of p13n preffixed by view generated id)
                     groupFunction? : function to be used when grouping this column
+                    cell : {
+                        bindingPath? : String
+                        control? : properly binded sap.ui.core.Control (eg. Text control)
+                    },
+                    header : {
+                        header : String OR sap.ui.core.Control (eg. Text control)
+                        ...properties of sap.m.Column
+                    },
                     p13n? : {
                         key : String,
                         label : String,
                         path : String,
                         ...properties of sap.m.p13n.MetadataHelper
                     },
-                    cell : {
-                        bindingPath? : String,
-                        control? : properly binded sap.ui.core.Control (eg. Text control)
-                    },
-                    header : {
-                        header : String OR sap.ui.core.Control (eg. Text control)
-                        ...properties of sap.m.Column
+                    excel? : {
+                        label : String,
+                        property : String,
+                        ... workbook.columns configurations (see sap.ui.export.Spreadsheet)
                     }
                 },
                 ...
@@ -116,6 +122,21 @@ sap.ui.define([
                             this.showP13n();
                         }
                 }));
+            }
+            if (data.toolbar.excel) {
+                let button = new Button({
+                    text : this.i18n.getText('export_excel'),
+                    tooltip : this.i18n.getText('export_excel'),
+                    type : sap.m.ButtonType.Transparent,
+                    icon : 'sap-icon://excel-attachment',
+                    press : () => {
+                        button.setEnabled(false);
+                        this.exportExcel()
+                            .catch(() => {})
+                            .finally(() => button.setEnabled(true));
+                    }
+                });
+                this.toolbar.addContent(button);
             }
             if (data.toolbar.growSize) {
                 let menus = [];
@@ -184,6 +205,24 @@ sap.ui.define([
             this.table.setHeaderToolbar(this.toolbar);
         }
 
+        exportExcel = () => {
+            let resolve, reject;
+            let result = new Promise((res, rej) => {
+                resolve = res; reject = rej;
+            });
+            let cols = [];
+            for (let col of this.table.getColumns()) {
+                let obj = col.data('key') ? this.colP13nMap[col.data('key')] : this.colNonP13n[parseInt(col.data('idx'))];
+                if (obj && obj.columnData && obj.columnData.excel)
+                    cols.push({...obj.columnData.excel});
+            }
+
+            let dialog = new Dialog();//todo
+
+
+            return result;
+        }
+
         generateTable = () => {
             let data = this.data;
 
@@ -194,7 +233,7 @@ sap.ui.define([
             for (let col of data.columns) {
                 let obj = {
                     columnData : col,
-                    columnElement : this.generateColumn(col),
+                    columnElement : this.generateColumn(col, this.colNonP13n.length),
                     cellElement : this.genereateCell(col),
                 };
                 this.columnElements.push(obj.columnElement);
@@ -340,22 +379,24 @@ sap.ui.define([
             return eng;
         }
 
-        generateColumn = (colData) => {
+        generateColumn = (colData, idx) => {
             if (typeof colData.header.header == 'string')
                 colData.header.header = new Text({text : colData.header.header});
             let el = new Column(colData.id, colData.header);
             el.data('default-width', colData.header.width);
             if (colData.p13n && colData.p13n.key)
                 el.data('key', colData.p13n.key);
+            else
+                el.data('index', idx);
             return el;
         }
         genereateCell = (colData) => {
             let el = null;
-            if (colData.cell.bindingPath) {
+            if (colData.cell.control) {
+                el = colData.cell.control;
+            } else {
                 el = new Text();
                 el.bindText(colData.cell.bindingPath);
-            } else {
-                el = colData.cell.control;
             }
             return el;
         }
