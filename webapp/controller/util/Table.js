@@ -18,6 +18,9 @@ sap.ui.define([
     'sap/m/MenuButton',
     'sap/m/Menu',
     'sap/m/MenuItem',
+    'sap/ui/export/Spreadsheet',
+    'sap/m/MessageBox',
+    'sap/m/ToolbarSeparator',
 ], function (
     Table,
     Column,
@@ -38,15 +41,18 @@ sap.ui.define([
     MenuButton,
     Menu,
     MenuItem,
+    Spreadsheet,
+    MessageBox,
+    ToolbarSeparator,
 ) {
     "use strict";
 
     return class {
         /**
          data = {
+            id : String,
             i18n,
             model,
-            id : String,
             properties : {sap.m.Table properties}
             itemsBinding : {
                 path : String,
@@ -55,13 +61,18 @@ sap.ui.define([
                     ...
                 }
             },
+            customToolbar : {
+                start : [control elements],
+                mid : [control elements],
+                end : [control elements],
+            }
             toolbar : {
                 p13n : null OR Object({
                     Columns : Boolean,
                     Sorter : Boolean,
                     Groups : Boolean,
                 }),
-                excel : Boolean,
+                excel : "false" OR "1" to use list binding OR "2" download data first then export (for MockServer),
                 growSize : Boolean,
                 pin: Boolean,
             },
@@ -111,7 +122,35 @@ sap.ui.define([
             if (!data.toolbar || !Object.keys(data.toolbar).find(val => !!val))
                 return;
             this.toolbar = new OverflowToolbar();
+
+            //start
+            if (this.data.customToolbar &&
+            this.data.customToolbar.start && 
+            this.data.customToolbar.start.length > 0) {
+                for (let control of this.data.customToolbar.start)
+                    this.toolbar.addContent(control);
+            }
+
+            //mid
+            if (this.data.customToolbar &&
+            this.data.customToolbar.mid && 
+            this.data.customToolbar.mid.length > 0) {
+                this.toolbar.addContent(new ToolbarSpacer());
+                for (let control of this.data.customToolbar.mid)
+                    this.toolbar.addContent(control);
+            }
+
             this.toolbar.addContent(new ToolbarSpacer());
+
+            //end
+            if (this.data.customToolbar &&
+            this.data.customToolbar.end && 
+            this.data.customToolbar.end.length > 0) {
+                this.toolbar.addContent(new ToolbarSeparator());
+                for (let control of this.data.customToolbar.end)
+                    this.toolbar.addContent(control);
+                this.toolbar.addContent();
+            }
             if (data.toolbar.p13n) {
                 this.toolbar.addContent(
                     new Button({
@@ -217,9 +256,44 @@ sap.ui.define([
                     cols.push({...obj.columnData.excel});
             }
 
-            let dialog = new Dialog();//todo
+            const startExport = (dataSource, useWorker = false) => {
+                let config = {
+                    workbook: {columns: cols},
+                    dataSource: dataSource,
+                    fileName: `export.xlsx`,
+                    worker: useWorker
+                };
+                let sheet = new Spreadsheet(config);
+                sheet.build()
+                    .then(() => resolve(null))
+                    .catch((e) => {
+                        MessageBox.error(this.i18n.getText('export_failed'));
+                        reject(e);
+                    })
+                    .finally(() => sheet.destroy());
+            }
 
-
+            if (this.data.toolbar.excel == 1)
+                startExport(this.table.getBinding('items'), true);
+            else {
+                let urlParameters = {};
+                for (let key in this.data.itemsBinding.parameters)
+                    urlParameters['$' + key] = this.data.itemsBinding.parameters[key];
+                this.data.model.read(
+                    this.data.itemsBinding.path,
+                    {
+                        urlParameters,
+                        filters : this.filters,
+                        sorters : this.sorter,
+                        success : e => startExport(e.results),
+                        error : (e) => {
+                            MessageBox.error(this.i18n.getText('export_failed'));
+                            reject(e);
+                        }
+                    },
+                );
+            }
+            
             return result;
         }
 

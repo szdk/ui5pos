@@ -29,6 +29,7 @@ sap.ui.define([
                                 Sorter : true,
                                 Groups : true,
                             },
+                            excel : 2,
                             growSize : true,
                             pin : true,
                         },
@@ -42,7 +43,8 @@ sap.ui.define([
                                 id : this.getView().createId(val[0]),
                                 p13n : {key : val[0], label : val[1], path : val[0]},
                                 cell : {bindingPath : val[0]},
-                                header : {header : val[1]}
+                                header : {header : val[1]},
+                                excel : {label : val[1], property : val[2] || val[0]}
                             };
                         }),
                     });
@@ -65,7 +67,7 @@ sap.ui.define([
                                 Sorter : true,
                                 Groups : true,
                             },
-                            excel : true,
+                            excel : 2,
                             growSize : true,
                             pin : true,
                         },

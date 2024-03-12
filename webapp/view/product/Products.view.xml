@@ -10,7 +10,7 @@
     
     height="100%"
 >
-    <Page title="{lang>products_title}">
+    <Page id='products_main_page' title="{lang>products_title}">
     <headerContent>
         <Button icon="sap-icon://add-document" type="Transparent" text="{lang>product_create}" press=".onPressCreateProduct"></Button>
     </headerContent>
@@ -26,8 +26,8 @@
             mode="{table>/mode}"
             selectionChange=".onSelectionChange"
             rememberSelections="true"
-            growing="{= ${table>/grow/size} > 0 }"
-            growingThreshold="{table>/grow/size}"
+            growing="true"
+            growingThreshold="2"
             sticky="{table>/sticky}"
             popinLayout="Block"
             alternateRowColors="false"

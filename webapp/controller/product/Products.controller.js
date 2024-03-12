@@ -1,5 +1,6 @@
 sap.ui.define([
         "ui5pos/szdk/controller/BaseController",
+        'ui5pos/szdk/controller/util/Table',
         "sap/ui/model/json/JSONModel",
         'sap/ui/export/Spreadsheet',
         'sap/m/Dialog',
@@ -10,6 +11,7 @@ sap.ui.define([
     ],
     function (
         Controller,
+        Table,
         JSONModel,
         Spreadsheet,
         Dialog,
@@ -165,19 +167,80 @@ sap.ui.define([
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
                 
-                // ===================== table model =================================
-                this.tableModel = new JSONModel({
-                    mode : "SingleSelectMaster",
-                    grow : {size: 50, text:this.i18n.getText('50')},
-                    sticky : ['HeaderToolbar','ColumnHeaders'],
-                    canExport : true,
-                });
-                this.tableModel.setDefaultBindingMode('OneWay');
-                this.getView().setModel(this.tableModel, 'table');
+                // // ===================== table model =================================
+                // this.tableModel = new JSONModel({
+                //     mode : "SingleSelectMaster",
+                //     grow : {size: 50, text:this.i18n.getText('50')},
+                //     sticky : ['HeaderToolbar','ColumnHeaders'],
+                //     canExport : true,
+                // });
+                // this.tableModel.setDefaultBindingMode('OneWay');
+                // this.getView().setModel(this.tableModel, 'table');
                 
-                this._tableMain = window.temp = this.byId('products_table');
+                // this._tableMain = window.temp = this.byId('products_table');
+
+                let columns = [
+                    {id : 'ProductID', label : this.i18n.getText('id'), path : 'ProductID'},
+                    {id : 'ProductName', label : this.i18n.getText('product'), path : 'ProductName'},
+                    {id : 'CategoryName', label : this.i18n.getText('category'), path : 'Category/CategoryName'},
+                    {id : 'UnitsInStock', label : this.i18n.getText('product_instock'), path : 'UnitsInStock'},
+                    {id : 'QuantityPerUnit', label : this.i18n.getText('product_quantityPerUnit'), path : 'QuantityPerUnit'},
+                    {id : 'UnitPrice', label : this.i18n.getText('product_unitPrice'), path : 'UnitPrice'},
+                ].map((v) => ({
+                    id : this.getView().createId(v.id),
+                    cell: {bindingPath : v.path},
+                    header : {header : v.label},
+                    p13n : {key : v.id, label: v.label, path : v.path},
+                    excel : {label : v.label, property : v.path}
+                }));
+
+                // columns[3].groupFunction = columns[5].groupFunction = (context) => {
+                //     let price = parseInt(context.getProperty('UnitPrice'));
+                //     if (!price) price = 0;
+                //     let from = Math.floor(price / 10) * 10;
+                //     return this.i18n.getText('to_range', [from, from + 9]);
+                // }
 
 
+                this.comp.szdk_serviceCreated.then((model) => {
+                    let tableGenerator = new Table({
+                        id:'products_table',
+                        i18n: this.i18n,
+                        model,
+                        properties : {
+                            busyIndicatorDelay : 0,
+                            mode : sap.m.ListMode.SingleSelectMaster,
+                            rememberSelections:true,
+                            growing:true,
+                            growingThreshold:50,
+                            sticky: ['HeaderToolbar','ColumnHeaders'],
+                            popinLayout: sap.m.PopinLayout.Block,
+                            alternateRowColors: false,
+                        },
+                        itemsBinding : {
+                            path : '/Products',
+                            parameters : {
+                                expand : 'Category'
+                            }
+                        },
+                        customToolBar : {
+                            mid : [] //add search field later
+                        },
+                        toolbar : {
+                            p13n : {
+                                Columns : Boolean,
+                                Sorter : Boolean,
+                                Groups : Boolean,
+                            },
+                            excel : this.comp.getModel('settings').getProperty('/odata/useMock') ? 2 : 1,
+                            growSize : true,
+                            pin : true
+                        },
+                        columns,
+                    });
+                    this.byId('products_main_page').addContent(tableGenerator.getTable());
+                    tableGenerator.getTable().attachSelectionChange(this.onSelectionChange.bind(this));
+                });
             },
 
             //navigate to selected product
@@ -185,7 +248,7 @@ sap.ui.define([
                 let params = evt.getParameters();
                 if (!params.listItem || params.listItems && params.listItems.length != 1) return;
 
-                let bindingContext = params.listItem.getBindingContext('service');
+                let bindingContext = params.listItem.getBindingContext();
                 let prodId = bindingContext ? bindingContext.getProperty('ProductID') : null;
                 if (prodId !== null)
                     this.comp.getRouter().navTo("view_product", {id : prodId});
