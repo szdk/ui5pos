@@ -53,7 +53,8 @@ sap.ui.define([
             id : String,
             i18n,
             model,
-            properties : {sap.m.Table properties}
+            properties : {sap.m.Table properties},
+            columnListItem? : {...properties of sap.m.ColumnListItem}
             itemsBinding : {
                 path : String,
                 parameters? : {
@@ -122,6 +123,7 @@ sap.ui.define([
             if (!data.toolbar || !Object.keys(data.toolbar).find(val => !!val))
                 return;
             this.toolbar = new OverflowToolbar();
+            // this.toolbar.addStyleClass('border-bottom-lg');
 
             //start
             if (this.data.customToolbar &&
@@ -152,15 +154,21 @@ sap.ui.define([
                 this.toolbar.addContent();
             }
             if (data.toolbar.p13n) {
-                this.toolbar.addContent(
-                    new Button({
-                        icon : 'sap-icon://provision',
-                        text : this.i18n.getText('layout'),
-                        type : sap.m.ButtonType.Transparent,
-                        press : (e) => {
-                            this.showP13n();
-                        }
-                }));
+                let p13nbutton = new Button({
+                    icon : 'sap-icon://provision',
+                    text : this.i18n.getText('layout'),
+                    type : sap.m.ButtonType.Transparent,
+                    busyIndicatorDelay : 0,
+                    press : (e) => {
+                        p13nbutton.setBusy(true);
+                        p13nbutton.setEnabled(false);
+                        this.showP13n().then(() => {
+                            p13nbutton.setBusy(false);
+                            p13nbutton.setEnabled(true);
+                        });
+                    }
+                });
+                this.toolbar.addContent(p13nbutton);
             }
             if (data.toolbar.excel) {
                 let button = new Button({
@@ -250,7 +258,7 @@ sap.ui.define([
                 resolve = res; reject = rej;
             });
             let cols = [];
-            for (let col of this.table.getColumns()) {
+            for (let col of this.table.getColumns(true)) {
                 let obj = col.data('key') ? this.colP13nMap[col.data('key')] : this.colNonP13n[parseInt(col.data('idx'))];
                 if (obj && obj.columnData && obj.columnData.excel)
                     cols.push({...obj.columnData.excel});
@@ -318,7 +326,8 @@ sap.ui.define([
                     this.colNonP13n.push(obj);
             }
 
-            this.cellContainer = new ColumnListItem({cells: this.cellElements});
+            let columnListProps = data.columnListItem || {};
+            this.cellContainer = new ColumnListItem({cells: this.cellElements, ...columnListProps});
 
             this.table = new Table(data.id, {columns : this.columnElements, noData: new IllustratedMessage(), ...data.properties});
             this.table.setModel(data.model);
@@ -333,41 +342,42 @@ sap.ui.define([
         }
 
         handelStateChange = (evt) => {
-            if (evt.getParameter('control') == this.table) {
+            if (evt && evt.getParameter && evt.getParameter('control') == this.table) {
                 let state = evt.getParameter('state');
-                let cols = this.columnsFromState(state);
-                //reset col properties
-                for (let i = 0; i < cols.length; i++) {
-                    let col = cols[i];
-                    col.setVisible(true).setWidth(col.data('default-width'));
-                    if (state.Sorter && state.Sorter.length > 0) {
-                        let key = col.data('key');
-                        let sort = state.Sorter.find(obj => obj.key == key);
-                        if (sort)
-                            col.setSortIndicator(sort.descending ? Core.SortOrder.Descending : Core.SortOrder.Ascending);
-                        else
-                            col.setSortIndicator(Core.SortOrder.None);
+                if (state) {
+                    let cols = this.columnsFromState(state);
+                    //reset col properties
+                    for (let i = 0; i < cols.length; i++) {
+                        let col = cols[i];
+                        col.setVisible(true).setWidth(col.data('default-width'));
+                        if (state.Sorter && state.Sorter.length > 0) {
+                            let key = col.data('key');
+                            let sort = state.Sorter.find(obj => obj.key == key);
+                            if (sort)
+                                col.setSortIndicator(sort.descending ? Core.SortOrder.Descending : Core.SortOrder.Ascending);
+                            else
+                                col.setSortIndicator(Core.SortOrder.None);
+                        }
                     }
+                    let cells = this.cellsFromState(state);
+                    this.sorter = this.sorterFromState(state);
+
+
+                    this.table.getColumns(true).forEach((cur_col) => this.table.removeColumn(cur_col));
+                    cols.forEach((col, idx) => this.table.insertColumn(col, idx));
+                    
+                    this.cellContainer.getCells().forEach(cur_cell => this.cellContainer.removeCell(cur_cell));
+                    cells.forEach((cell, idx) => this.cellContainer.insertCell(cell, idx));
+
+                    this.table.bindItems({
+                        path : this.data.itemsBinding.path,
+                        parameters : this.data.itemsBinding.parameters,
+                        template : this.cellContainer,
+                        templateShareable : true,
+                        sorter : this.sorter,
+                        filters : this.filters,
+                    });
                 }
-                let cells = this.cellsFromState(state);
-                this.sorter = this.sorterFromState(state);
-
-
-                this.table.getColumns().forEach((cur_col) => this.table.removeColumn(cur_col));
-                cols.forEach((col, idx) => this.table.insertColumn(col, idx));
-                
-                this.cellContainer.getCells().forEach(cur_cell => this.cellContainer.removeCell(cur_cell));
-                cells.forEach((cell, idx) => this.cellContainer.insertCell(cell, idx));
-
-                this.table.bindItems({
-                    path : this.data.itemsBinding.path,
-                    parameters : this.data.itemsBinding.parameters,
-                    template : this.cellContainer,
-                    templateShareable : true,
-                    sorter : this.sorter,
-                    filters : this.filters,
-                });
-                
             }
             this.p13n.detachStateChange(this.handelStateChange);
         };
@@ -375,11 +385,11 @@ sap.ui.define([
         showP13n = () => {
             let data = this.data;
             this.p13n.attachStateChange(this.handelStateChange);
-            this.p13n.show(this.table, Object.keys(data.toolbar.p13n).filter(v => data.toolbar.p13n[v]), this.table);
+            return this.p13n.show(this.table, Object.keys(data.toolbar.p13n).filter(v => data.toolbar.p13n[v]), this.table);
         }
 
         sorterFromState = (state) => {
-            if (typeof state.Sorter == 'undefined') return this.sorter;
+            if (!state || typeof state.Sorter == 'undefined') return this.sorter;
             let sorter = [];
             let groupKey = state.Groups && state.Groups.length > 0 ? state.Groups[0].key : null;
             let isGroupSorted = false;
@@ -405,7 +415,7 @@ sap.ui.define([
         }
 
         columnsFromState = (state) => {
-            if (typeof state.Columns == 'undefined') return this.columnElements;
+            if (!state || typeof state.Columns == 'undefined') return this.columnElements;
             let cols = [];
             //add p13n columns
             for (let col of state.Columns)
@@ -417,7 +427,7 @@ sap.ui.define([
         }
 
         cellsFromState = (state) => {
-            if (typeof state.Columns == 'undefined') return this.cellElements;
+            if (!state || typeof state.Columns == 'undefined') return this.cellElements;
             let cells = [];
             //add p13n cells
             for (let cell of state.Columns)

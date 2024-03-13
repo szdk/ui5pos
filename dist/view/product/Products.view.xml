@@ -11,111 +11,18 @@
     height="100%"
 >
     <Page id='products_main_page' title="{lang>products_title}">
-    <headerContent>
-        <Button icon="sap-icon://add-document" type="Transparent" text="{lang>product_create}" press=".onPressCreateProduct"></Button>
-    </headerContent>
-        <Table
-            id="products_table"
-            items="{
-                path: 'service>/Products',
-                parameters: {
-                    expand : 'Category'
-                }
-            }"
-            busyIndicatorDelay="0"
-            mode="{table>/mode}"
-            selectionChange=".onSelectionChange"
-            rememberSelections="true"
-            growing="true"
-            growingThreshold="2"
-            sticky="{table>/sticky}"
-            popinLayout="Block"
-            alternateRowColors="false"
-        >
-            <!-- ========================== HEADER ================================= -->
-            <headerToolbar>
-                <OverflowToolbar class="border-bottom-lg">
-                    <ToolbarSpacer/>
-                    <core:InvisibleText id="product_search_lable" text="{lang>products_search}"/>
-                    <SearchField placeholder="{lang>products_search}" ariaLabelledBy="product_search_lable" id="product_search" search=".onSearchProduct">
-                        <layoutData><OverflowToolbarLayoutData maxWidth="300px" shrinkable="true" priority="NeverOverflow"/></layoutData>
-                    </SearchField>
+        <headerContent>
+            <Button icon="sap-icon://add-document" type="Transparent" text="{lang>product_create}" press=".onPressCreateProduct"></Button>
+        </headerContent>
 
-                    <ToolbarSpacer/>
-                    <!-- <Button tooltip="{lang>filter}" type="Transparent" text="{lang>filter}" icon="sap-icon://filter" press=".onPressFilter"/>
-                    <Button tooltip="{lang>sort}" type="Transparent" text="{lang>sort}" icon="sap-icon://sort" press=".onPressSort"/>
-                    <Button tooltip="{lang>group}" type="Transparent" text="{lang>group}" icon="sap-icon://group-2" press=".onPressGroup"/> -->
-                    
-                    <!-- Export Excel -->
-                    <Button tooltip="{lang>export_excel}" text="{lang>export_excel}" enabled="{table>/canExport}" type="Transparent" icon="sap-icon://excel-attachment" press=".onExportExcel"/>
-
-                    <MenuButton tooltip="{lang>items_count}" type="Transparent" text="{table>/grow/text}" icon="sap-icon://documents">
-                        <menu>
-                            <Menu itemSelected=".onItemsPerPage">
-                                <MenuItem key="20" text="{lang>20}" />
-                                <MenuItem key="50" text="{lang>50}" />
-                                <MenuItem key="100" text="{lang>100}" />
-                                <MenuItem key="1000" text="{lang>1000}" />
-                                <MenuItem key="0" text="{lang>all}" />
-                            </Menu>
-                        </menu>
-                    </MenuButton>
-                    <MenuButton tooltip="{lang>pin}" text="{lang>pin}" type="Transparent" icon="sap-icon://pushpin-on">
-                        <menu>
-                            <Menu itemSelected=".onPinHeader">
-                                <MenuItem text="{lang>toolbar}" key="HeaderToolbar" icon="{= ${table>/sticky}.indexOf('HeaderToolbar') > -1 ? 'sap-icon://complete' : 'sap-icon://border' }"></MenuItem>
-                                <MenuItem text="{lang>column_header}" key="ColumnHeaders" icon="{= ${table>/sticky}.indexOf('ColumnHeaders') > -1 ? 'sap-icon://complete' : 'sap-icon://border' }"></MenuItem>
-                            </Menu>
-                        </menu>
-                    </MenuButton>
-                    
-                </OverflowToolbar>
-            </headerToolbar>
-            
-
-            <!-- ========================== COLUMN HEADER ================================= -->
-            <columns>
-                <Column id="test_column" minScreenWidth="XXLarge" width="5em"  headerMenu="header-menu">
-                    <Text text="{lang>id}"/>
-                </Column>
-                <Column headerMenu="header-menu">
-                    <Text  text="{lang>product}"/>
-                </Column>
-                <Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="WithoutHeader" headerMenu="header-menu">
-                    <Text text="{lang>category}"/>
-                </Column>
-                <Column minScreenWidth="XXLarge" demandPopin="true" popinDisplay="Inline" headerMenu="header-menu">
-                    <Text text="{lang>product_instock}"/>
-                </Column>
-                <Column minScreenWidth="XXLarge" demandPopin="true" popinDisplay="Inline" headerMenu="header-menu">
-                    <Text text="{lang>product_quantityPerUnit}"/>
-                </Column>
-                <Column hAlign="End" headerMenu="header-menu">
-                    <Text text="{lang>product_unitPrice}"/>
-                </Column>
-            </columns>
-
-            <!-- ========================== ITEMS ================================= -->
-            <items>
-                <ColumnListItem type="Navigation">
-                    <cells>
-                        <ObjectIdentifier  title="{service>ProductID}"></ObjectIdentifier>
-                        <Title titleStyle="H6"  wrapping="true" wrappingType="Normal" text="{service>ProductName}" />
-                        <Text text="{service>Category/CategoryName}"/>
-                        <Text text="{service>UnitsInStock}"/>
-                        <Text text="{service>QuantityPerUnit}"/>
-                        <ObjectNumber number="{
-                            parts:[
-                                {path:'service>UnitPrice'},
-                                {value: 'USD'}
-                            ],
-                            type: 'sap.ui.model.type.Currency',
-                            formatOptions: {showMeasure:false}
-                        }" unit="USD" ></ObjectNumber>
-                    </cells>
-                </ColumnListItem>
-            </items>
-        </Table>
+        <!-- <HBox alignContent="Center" class="m-tb-1 m-lr-2">
+            <HBox alignItems="Center">
+                <Label text="Open Product" labelFor="products_open_id" class="m-r-1"></Label>
+                <Input maxLength="5" id="products_open_id" placeholder="Product ID" showValueHelp="true"></Input>
+            </HBox>
+        </HBox> -->
+        
+        
     </Page>
 
 </mvc:XMLView>

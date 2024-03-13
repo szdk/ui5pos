@@ -8,6 +8,11 @@ sap.ui.define([
         "sap/m/Text",
         "sap/ui/model/Filter",
         "sap/ui/model/FilterOperator",
+        "sap/m/ObjectIdentifier",
+        "sap/m/ObjectNumber",
+        "sap/m/Title",
+        "sap/m/Input",
+        "sap/m/ToolbarSeparator"
     ],
     function (
         Controller,
@@ -19,6 +24,11 @@ sap.ui.define([
         Text,
         Filter,
         FilterOperator,
+        ObjectIdentifier,
+        ObjectNumber,
+        Title,
+        Input,
+        ToolbarSeparator
     ) {
         "use strict";
         //nav Toolbar functions
@@ -166,47 +176,50 @@ sap.ui.define([
 
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
-                
-                // // ===================== table model =================================
-                // this.tableModel = new JSONModel({
-                //     mode : "SingleSelectMaster",
-                //     grow : {size: 50, text:this.i18n.getText('50')},
-                //     sticky : ['HeaderToolbar','ColumnHeaders'],
-                //     canExport : true,
-                // });
-                // this.tableModel.setDefaultBindingMode('OneWay');
-                // this.getView().setModel(this.tableModel, 'table');
-                
-                // this._tableMain = window.temp = this.byId('products_table');
+
+                let filterButton = new Button({icon: 'sap-icon://filter', type: sap.m.ButtonType.Transparent, tooltip : this.i18n.getText('filter')});
+                let inputOpenProduct = new Input({
+                    type : sap.m.InputType.Number,
+                    showValueHelp:true,
+                    placeholder: this.i18n.getText('product_id'),
+                    width : '9em'
+                });
+                let buttonOpenProduct = new Button({type: sap.m.ButtonType.Transparent ,text: this.i18n.getText('open')});
 
                 let columns = [
-                    {id : 'ProductID', label : this.i18n.getText('id'), path : 'ProductID'},
-                    {id : 'ProductName', label : this.i18n.getText('product'), path : 'ProductName'},
-                    {id : 'CategoryName', label : this.i18n.getText('category'), path : 'Category/CategoryName'},
-                    {id : 'UnitsInStock', label : this.i18n.getText('product_instock'), path : 'UnitsInStock'},
-                    {id : 'QuantityPerUnit', label : this.i18n.getText('product_quantityPerUnit'), path : 'QuantityPerUnit'},
-                    {id : 'UnitPrice', label : this.i18n.getText('product_unitPrice'), path : 'UnitPrice'},
+                    {id : 'ProductID', label : this.i18n.getText('id'), path : 'ProductID', header: {minScreenWidth:"XXLarge", width:"5em"}},
+                    {id : 'ProductName', label : this.i18n.getText('product'), path : 'ProductName', header: {}},
+                    {id : 'CategoryName', label : this.i18n.getText('category'), path : 'Category/CategoryName', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"WithoutHeader"}},
+                    {id : 'UnitsInStock', label : this.i18n.getText('product_instock'), path : 'UnitsInStock', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                    {id : 'QuantityPerUnit', label : this.i18n.getText('product_quantityPerUnit'), path : 'QuantityPerUnit', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                    {id : 'UnitPrice', label : this.i18n.getText('product_unitPrice'), path : 'UnitPrice', header: {hAlign : "End"}},
+                    {id : 'SupplierID', label : this.i18n.getText('supplier_id'), path : 'SupplierID', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                    {id : 'CategoryID', label : this.i18n.getText('category_id'), path : 'CategoryID', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                    {id : 'ReorderLevel', label : this.i18n.getText('product_reorder_level'), path : 'ReorderLevel', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                    {id : 'Discontinued', label : this.i18n.getText('discontinued'), path : 'Discontinued', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
                 ].map((v) => ({
                     id : this.getView().createId(v.id),
                     cell: {bindingPath : v.path},
-                    header : {header : v.label},
+                    header : {header : v.label, ...v.header},
                     p13n : {key : v.id, label: v.label, path : v.path},
                     excel : {label : v.label, property : v.path}
                 }));
 
-                // columns[3].groupFunction = columns[5].groupFunction = (context) => {
-                //     let price = parseInt(context.getProperty('UnitPrice'));
-                //     if (!price) price = 0;
-                //     let from = Math.floor(price / 10) * 10;
-                //     return this.i18n.getText('to_range', [from, from + 9]);
-                // }
-
-
+                columns[0].cell.control = new ObjectIdentifier({title: "{ProductID}"});
+                columns[1].cell.control = new Title({titleStyle:"H6", wrapping:true, wrappingType:"Normal", text:"{ProductName}"});
+                columns[5].cell.control = new ObjectNumber({unit:"USD"});
+                columns[5].cell.control.bindProperty('number', {
+                    parts:[{path:'UnitPrice'},{value:'USD'}],
+                    type: 'sap.ui.model.type.Currency',
+                    formatOptions: {showMeasure:false}
+                });
+                
                 this.comp.szdk_serviceCreated.then((model) => {
                     let tableGenerator = new Table({
                         id:'products_table',
                         i18n: this.i18n,
                         model,
+                        columnListItem : {type : sap.m.ListType.Navigation},
                         properties : {
                             busyIndicatorDelay : 0,
                             mode : sap.m.ListMode.SingleSelectMaster,
@@ -223,8 +236,8 @@ sap.ui.define([
                                 expand : 'Category'
                             }
                         },
-                        customToolBar : {
-                            mid : [] //add search field later
+                        customToolbar : {
+                            start : [filterButton, new ToolbarSeparator(), inputOpenProduct, buttonOpenProduct]
                         },
                         toolbar : {
                             p13n : {
@@ -239,7 +252,7 @@ sap.ui.define([
                         columns,
                     });
                     this.byId('products_main_page').addContent(tableGenerator.getTable());
-                    tableGenerator.getTable().attachSelectionChange(this.onSelectionChange.bind(this));
+                    tableGenerator.getTable().attachItemPress(this.onSelectionChange.bind(this));
                 });
             },
 

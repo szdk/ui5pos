@@ -1,6 +1,6 @@
 sap.ui.define([
     "ui5pos/szdk/controller/BaseController",
-    "ui5pos/szdk/controller/util/Table"
+    "ui5pos/szdk/controller/util/Table",
     ],
     function (Controller, myTable) {
         "use strict";
