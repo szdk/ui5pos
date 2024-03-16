@@ -1,6 +1,7 @@
 sap.ui.define([
         "ui5pos/szdk/controller/BaseController",
         'ui5pos/szdk/controller/util/Table',
+        "ui5pos/szdk/controller/util/F4Help",
         "sap/ui/model/json/JSONModel",
         'sap/ui/export/Spreadsheet',
         'sap/m/Dialog',
@@ -17,6 +18,7 @@ sap.ui.define([
     function (
         Controller,
         Table,
+        F4Help,
         JSONModel,
         Spreadsheet,
         Dialog,
@@ -176,16 +178,25 @@ sap.ui.define([
 
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
+                
+                window.temp = this;
 
-                let filterButton = new Button({icon: 'sap-icon://filter', type: sap.m.ButtonType.Transparent, tooltip : this.i18n.getText('filter')});
+                //Open Product input toolbar
                 let inputOpenProduct = new Input({
                     type : sap.m.InputType.Number,
                     showValueHelp:true,
                     placeholder: this.i18n.getText('product_id'),
                     width : '9em'
                 });
+                inputOpenProduct.attachValueHelpRequest(() => (this.onValueHelpProduct.bind(this))(inputOpenProduct));
+                
                 let buttonOpenProduct = new Button({type: sap.m.ButtonType.Transparent ,text: this.i18n.getText('open')});
+                buttonOpenProduct.attachPress(() => (this.openProduct.bind(this))(inputOpenProduct));
+                
+                //Table Filters Toolbar 
+                let filterButton = new Button({icon: 'sap-icon://filter', type: sap.m.ButtonType.Transparent, tooltip : this.i18n.getText('filter')});
 
+                //Table Columns
                 let columns = [
                     {id : 'ProductID', label : this.i18n.getText('id'), path : 'ProductID', header: {minScreenWidth:"XXLarge", width:"5em"}},
                     {id : 'ProductName', label : this.i18n.getText('product'), path : 'ProductName', header: {}},
@@ -214,9 +225,10 @@ sap.ui.define([
                     formatOptions: {showMeasure:false}
                 });
                 
+                //Create Table after service has been created
                 this.comp.szdk_serviceCreated.then((model) => {
                     let tableGenerator = new Table({
-                        id:'products_table',
+                        id: this.getView().createId('products_table'),
                         i18n: this.i18n,
                         model,
                         columnListItem : {type : sap.m.ListType.Navigation},
@@ -253,6 +265,51 @@ sap.ui.define([
                     });
                     this.byId('products_main_page').addContent(tableGenerator.getTable());
                     tableGenerator.getTable().attachItemPress(this.onSelectionChange.bind(this));
+                });
+            },
+
+            openProduct: function (input) {
+                const error = () => {
+                    input.setValueStateText(this.i18n.getText('input_invalid_product_id'));
+                    input.setValueState(sap.ui.core.ValueState.Error);
+                };
+                let id = parseInt(input.getValue());
+                if (!id) {
+                    error();
+                    return;
+                }
+
+                this.comp.getModel('service').read(`/Products(${id})`, {success : (data) => {
+                    if (data && data.ProductID) {
+                        input.setValueState(sap.ui.core.ValueState.None);
+                        input.setValue('');
+                        this.comp.getRouter().navTo("view_product", {id : data.ProductID});
+                    } else {
+                        error();
+                    }
+                }, error : (err) => {
+                    error();
+                }});
+
+            },
+
+            onValueHelpProduct: function (input) {
+                (F4Help.f4Table.bind(this))(
+                    this.comp.getModel('service'),
+                    '/Products',
+                    [{path : 'ProductName', label : this.i18n.getText('product_name')}],
+                    [
+                        {path : 'ProductID', label : this.i18n.getText('product_id')},
+                        {path : 'ProductName', label : this.i18n.getText('product_name')},
+                    ],
+                    ['ProductID'],
+                    this.i18n.getText('product_select_single')
+                ).then((selected) => {
+                    if (!selected || selected.length == 0) return;
+                    let id = parseInt(selected[0].ProductID);
+                    if (id) {
+                        input.setValue(id).setValueState(sap.ui.core.ValueState.None);
+                    }
                 });
             },
 

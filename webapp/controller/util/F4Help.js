@@ -27,9 +27,9 @@ sap.ui.define([
             /**
              * 
              * @param {*} ODataModel 
-             * @param {*} entitySetPath without model name prefix
-             * @param {*} filterFields {field1 : "Field 1 header text", ...}
-             * @param {*} showFields   {field1 : "Field 1 header text", ...}
+             * @param {*} entitySetPath without model name prefix (including / )
+             * @param {*} filterFields [{path : String, label : String}, ...]
+             * @param {*} showFields   [{path : String, label : String}, ...]
              * @param {*} returnFields [field1, ...]
              * @param {*} title        appears on top
              * @param {*} width        max css width of dialog box, default : '480px'
@@ -60,13 +60,14 @@ sap.ui.define([
                 table.setModel(ODataModel);
 
                 let items = [];
-                for (let field in showFields) {
+                // for (let field in showFields) {
+                for (let field of showFields) {
                     table.addColumn(new Column({
-                        header: new Text({text : showFields[field]})
+                        header: new Text({text : field.label})
                     }));
 
                     let item = new Text();
-                    item.bindText(field);
+                    item.bindText(field.path);
                     items.push(item);
                 }
 
@@ -79,12 +80,13 @@ sap.ui.define([
                 let searchFieldElements = [];
                 let searchPanel = null;
                 var searchValues = {};
-                if (filterFields && Object.keys(filterFields).length > 0) {
-                    for (let fieldName in filterFields) {
-                        let el = new SearchField({placeholder: filterFields[fieldName], change: (e) => {
-                            searchValues[fieldName] = e.getParameter('value').trim();
+                // if (filterFields && Object.keys(filterFields).length > 0) {
+                if (filterFields && filterFields.length > 0) {
+                    for (let field of filterFields) {
+                        let el = new SearchField({placeholder: field.label, change: (e) => {
+                            searchValues[field.path] = e.getParameter('value').trim();
                         }, search : (e) => {
-                            searchValues[fieldName] = e.getParameter('query').trim();
+                            searchValues[field.path] = e.getParameter('query').trim();
                             applyFilter(searchValues);
                         }});
                         searchFieldElements.push(el);

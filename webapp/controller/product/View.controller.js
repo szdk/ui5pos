@@ -52,8 +52,13 @@ sap.ui.define([
                 (F4Help.f4Table.bind(this))(
                     this.comp.getModel('service'),
                     '/Categories',
-                    {CategoryName: this.i18n.getText('category_name')},
-                    {CategoryID : this.i18n.getText('category_id'), CategoryName: this.i18n.getText('name')},
+                    [
+                        {path : 'CategoryName', label : this.i18n.getText('category_name')}
+                    ],
+                    [
+                        {path : 'CategoryID', label : this.i18n.getText('category_id')},
+                        {path : 'CategoryName', label : this.i18n.getText('name')}
+                    ],
                     ['CategoryID', 'CategoryName'],
                     this.i18n.getText('category_select_single')
                 ).then((selected) => {
@@ -70,8 +75,13 @@ sap.ui.define([
                 (F4Help.f4Table.bind(this))(
                     this.comp.getModel('service'),
                     '/Suppliers',
-                    {CompanyName: this.i18n.getText('supplier_company_name')},
-                    {SupplierID : this.i18n.getText('supplier_id'), CompanyName: this.i18n.getText('supplier_company_name')},
+                    [{
+                        path : 'CompanyName', label : this.i18n.getText('supplier_company_name')
+                    }],
+                    [
+                        {path : 'SupplierID', label :  this.i18n.getText('supplier_id')},
+                        {path : 'CompanyName', label : this.i18n.getText('supplier_company_name')}
+                    ],
                     ['SupplierID', 'CompanyName'],
                     this.i18n.getText('supplier_select_single')
                 ).then((selected) => {

@@ -14,14 +14,7 @@
         <headerContent>
             <Button icon="sap-icon://add-document" type="Transparent" text="{lang>product_create}" press=".onPressCreateProduct"></Button>
         </headerContent>
-
-        <!-- <HBox alignContent="Center" class="m-tb-1 m-lr-2">
-            <HBox alignItems="Center">
-                <Label text="Open Product" labelFor="products_open_id" class="m-r-1"></Label>
-                <Input maxLength="5" id="products_open_id" placeholder="Product ID" showValueHelp="true"></Input>
-            </HBox>
-        </HBox> -->
-        
+        <!-- <VBox id='vbox'></VBox> -->
         
     </Page>
 
