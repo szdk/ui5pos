@@ -14,7 +14,7 @@
         <headerContent>
             <Button icon="sap-icon://add-document" type="Transparent" text="{lang>product_create}" press=".onPressCreateProduct"></Button>
         </headerContent>
-        <VBox id='vbox'></VBox>
+        <!-- <VBox id='vbox'></VBox> -->
         
     </Page>
 

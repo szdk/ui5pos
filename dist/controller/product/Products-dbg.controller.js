@@ -2,6 +2,7 @@ sap.ui.define([
         "ui5pos/szdk/controller/BaseController",
         'ui5pos/szdk/controller/util/Table',
         "ui5pos/szdk/controller/util/F4Help",
+        "ui5pos/szdk/controller/util/FilterDialog",
         "sap/ui/model/json/JSONModel",
         'sap/ui/export/Spreadsheet',
         'sap/m/Dialog',
@@ -13,12 +14,13 @@ sap.ui.define([
         "sap/m/ObjectNumber",
         "sap/m/Title",
         "sap/m/Input",
-        "sap/m/ToolbarSeparator"
+        "sap/m/ToolbarSeparator",
     ],
     function (
         Controller,
         Table,
         F4Help,
+        FilterDialog,
         JSONModel,
         Spreadsheet,
         Dialog,
@@ -193,8 +195,43 @@ sap.ui.define([
                 let buttonOpenProduct = new Button({type: sap.m.ButtonType.Transparent ,text: this.i18n.getText('open')});
                 buttonOpenProduct.attachPress(() => (this.openProduct.bind(this))(inputOpenProduct));
                 
+                // {
+                //     i18n : Resource Bundle,
+                //     dialog : Boolean,
+                //     title : String,
+                //     onFilter : Function (the Filter object is passed as first argument to the given callback function),
+                //     fields : [
+                //         {
+                //             path : String,
+                //             label : String,
+                //             type : sap.m.InputType OR 'Date' OR 'Datetime' OR 'Time'
+                //             valueBinding : {Object containing binding info, eg : type, formatOption}
+                //             registerValueCheck? : Boolean
+                //             operators : [array of sap.ui.model.FilterOperator]
+                //             onValueHelp ? : Function (the input element is passed as first argument to the given callback function)
+                //         },
+                //         ...
+                //     ]
+                //   }
                 //Table Filters Toolbar 
+                this.filterDialog = new FilterDialog({
+                    i18n : this.i18n,
+                    dialog : true,
+                    title : this.i18n.getText('add_filter', undefined, true) || 'Add Filter',
+                    onFilter : () => console.log('onFilter'),
+                    fields : [
+                        {
+                            path : 'ProductID',
+                            label : this.i18n.getText('product_id'),
+                            type : sap.m.InputType.Number,
+                            operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.NB]
+                        }
+                    ]
+                });
                 let filterButton = new Button({icon: 'sap-icon://filter', type: sap.m.ButtonType.Transparent, tooltip : this.i18n.getText('filter')});
+                filterButton.attachPress(() => {
+                    this.filterDialog.container.open();
+                });
 
                 //Table Columns
                 let columns = [
