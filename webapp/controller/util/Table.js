@@ -118,6 +118,19 @@ sap.ui.define([
         
         getTable = () => this.table;
 
+        applyFilter = (filters) => {
+            this.filters = filters;
+            // this.table.getBinding('items').filter(filters);
+            this.table.bindItems({
+                path : this.data.itemsBinding.path,
+                parameters : this.data.itemsBinding.parameters,
+                template : this.cellContainer,
+                templateShareable : true,
+                sorter : this.sorter,
+                filters : this.filters,
+            });
+        }
+
         generateToolbar = () => {
             let data = this.data;
             if (!data.toolbar || !Object.keys(data.toolbar).find(val => !!val))

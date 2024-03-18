@@ -13,6 +13,21 @@ sap.ui.define([
             obj.i18n = i18n;
         },
         product : {
+            id : SimpleType.extend('product.id', {
+                formatValue : (raw) => {
+                    let result = parseInt(raw);
+                    if (!isNaN(result) && typeof result == 'number') return result;
+                },
+                parseValue: (input) => {
+                    let result = parseInt(input);
+                    if (!isNaN(result) && typeof result == 'number') return result;
+                },
+                validateValue: function (input) {
+                    if (input) input = parseInt(input);
+                    if (!input || input <= 0)
+                        throw new ValidateException(obj.i18n.getText('input_invalid_product_id', [id]));
+                }
+            }),
             name : SimpleType.extend('product.id', {
                 formatValue : (i) => i,
                 parseValue : (i) => i,

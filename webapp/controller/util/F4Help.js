@@ -26,26 +26,30 @@ sap.ui.define([
         return {
             /**
              * 
-             * @param {*} ODataModel 
-             * @param {*} entitySetPath without model name prefix (including / )
-             * @param {*} filterFields [{path : String, label : String}, ...]
-             * @param {*} showFields   [{path : String, label : String}, ...]
-             * @param {*} returnFields [field1, ...]
-             * @param {*} title        appears on top
-             * @param {*} width        max css width of dialog box, default : '480px'
-             * @param {*} singleSelect default: true
+             * @param {Object} data = {
+                    i18n          : Resource Bundel object
+                    ODataModel    : Odata Model Object
+                    entitySetPath : without model name prefix (including / )
+                    filterFields :  [{path : String, label : String}, ...]
+                    showFields :    [{path : String, label : String}, ...]
+                    returnFields :  [field1, ...]
+                    title :         appears on top
+                    width :         max css width of dialog box, default : '480px'
+                    singleSelect :  default: true
+             * } 
              * @returns {Promise} resolves with [{field1 : val, ...}, {...] or null
              */
-            f4Table : function (
-                ODataModel,
-                entitySetPath,
-                filterFields,
-                showFields,
-                returnFields,
-                title,
-                width = '480px',
-                singleSelect = true
-            ) {
+            f4Table : function (data) {
+                let i18n = data.i18n,
+                    ODataModel = data.ODataModel,
+                    entitySetPath = data.entitySetPath,
+                    filterFields = data.filterFields,
+                    showFields = data.showFields,
+                    returnFields = data.returnFields,
+                    title = data.title,
+                    width = data.width || '480px',
+                    singleSelect = typeof data.singleSelect != 'undefined' ? data.singleSelect : true;
+                
                 let resolve = () => {};
                 let promise = new Promise((r) => {
                     resolve = r;
@@ -122,7 +126,7 @@ sap.ui.define([
 
                 let cancelButton = new Button({
                     type: sap.m.ButtonType.Transparent,
-                    text: this.i18n.getText('cancel'),
+                    text: i18n.getText('cancel'),
                     press: () => {
                         closeDialog(null);
                     }

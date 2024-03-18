@@ -49,19 +49,20 @@ sap.ui.define([
             },
             //===========================================
             onValueHelpCategory: function () {
-                (F4Help.f4Table.bind(this))(
-                    this.comp.getModel('service'),
-                    '/Categories',
-                    [
+                F4Help.f4Table({
+                    i18n : this.i18n,
+                    ODataModel: this.comp.getModel('service'),
+                    entitySetPath: '/Categories',
+                    filterFields: [
                         {path : 'CategoryName', label : this.i18n.getText('category_name')}
                     ],
-                    [
+                    showFields: [
                         {path : 'CategoryID', label : this.i18n.getText('category_id')},
                         {path : 'CategoryName', label : this.i18n.getText('name')}
                     ],
-                    ['CategoryID', 'CategoryName'],
-                    this.i18n.getText('category_select_single')
-                ).then((selected) => {
+                    returnFields: ['CategoryID', 'CategoryName'],
+                    title: this.i18n.getText('category_select_single')
+                }).then((selected) => {
                     if (!selected || selected.length == 0) return;
                     let id = parseInt(selected[0].CategoryID);
                     if (id) {
@@ -72,19 +73,20 @@ sap.ui.define([
             },
             //===========================================
             onValueHelpSupplier: function () {
-                (F4Help.f4Table.bind(this))(
-                    this.comp.getModel('service'),
-                    '/Suppliers',
-                    [{
+                F4Help.f4Table({
+                    i18n : this.i18n,
+                    ODataModel: this.comp.getModel('service'),
+                    entitySetPath: '/Suppliers',
+                    filterFields: [{
                         path : 'CompanyName', label : this.i18n.getText('supplier_company_name')
                     }],
-                    [
+                    showFields: [
                         {path : 'SupplierID', label :  this.i18n.getText('supplier_id')},
                         {path : 'CompanyName', label : this.i18n.getText('supplier_company_name')}
                     ],
-                    ['SupplierID', 'CompanyName'],
-                    this.i18n.getText('supplier_select_single')
-                ).then((selected) => {
+                    returnFields: ['SupplierID', 'CompanyName'],
+                    title: this.i18n.getText('supplier_select_single')
+                }).then((selected) => {
                     if (!selected || selected.length == 0) return;
                     let id = parseInt(selected[0].SupplierID);
                     if (id) {

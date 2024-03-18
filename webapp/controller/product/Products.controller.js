@@ -35,235 +35,162 @@ sap.ui.define([
         ToolbarSeparator
     ) {
         "use strict";
-        //nav Toolbar functions
-        let navToolbar = {
-            onSearchProduct : function (e) {
-                let searchValue = e.getParameter('query').trim();
-                let binding = this._tableMain.getBinding('items');
-                
-                //===================== search filters
-                let filter = searchValue.length == 0 ? [] : new Filter({
-                    filters : [
-                        new Filter({path: 'ProductID', operator: FilterOperator.EQ, value1: searchValue}),
-                        new Filter({path: 'ProductName', operator: FilterOperator.Contains, value1: searchValue}),
-                        // new Filter({path: 'CategoryName', operator: FilterOperator.Contains, value1: searchValue}),
-                        new Filter({path: 'QuantityPerUnit', operator: FilterOperator.Contains, value1: searchValue}),
-                    ],
-                    and : false
-                });
 
-                // if (binding.hasPendingChanges(true))
-                //     binding.resetChanges();
-
-                binding.filter(filter);
-
-            },
-            
-            onRefreshItems : function () {
-                this._tableMain.refreshItems();
-            },
-            onItemsPerPage : function (e) {
-                let selectedItem = e.getParameter('item');
-                let growSize = parseInt(selectedItem.getKey());
-                this.tableModel.setProperty('/grow/size', growSize);
-                this.tableModel.setProperty('/grow/text', selectedItem.getText());
-                if (growSize === 0)
-                    this.onRefreshItems();
-            },
-            onPinHeader : function (e) {
-                let clicked = e.getParameter('item').getKey();
-                let pinned = [... this.tableModel.getProperty('/sticky')];
-                let i = pinned.indexOf(clicked);
-                if (i === -1)
-                    pinned.push(clicked);
-                else
-                    pinned.splice(i, 1);
-                this.tableModel.setProperty('/sticky', pinned);
-            },
-            onExportExcel : function () {
-                let type = sap.ui.export.EdmType;
-                let cols = [
-                    {
-                        label: this.i18n.getText('id'),
-                        property: 'ProductID',
-                        type: type.Number,
-                        scale: 0,
-                    },
-                    {
-                        label: this.i18n.getText('product'),
-                        property: 'ProductName',
-                        type: type.String,
-                        width: 20,
-                    },
-                    {
-                        label: this.i18n.getText('category'),
-                        property: 'Category/CategoryName',
-                        type: type.String,
-                    },
-                    {
-                        label: this.i18n.getText('product_instock'),
-                        property: 'UnitsInStock',
-                        type: type.Number,
-                        scale: 0
-                    },
-                    {
-                        label: this.i18n.getText('product_quantityPerUnit'),
-                        property: 'QuantityPerUnit',
-                        type: type.String,
-                    },
-                    {
-                        label: this.i18n.getText('product_unitPrice') + ' (USD)',
-                        property: 'UnitPrice',
-                        type: type.Number,
-                        scale: 2,
-                        delimiter: true
-                    },
-                ];
-
-                const startExport = (dataSource, useWorker = false) => {
-                    let config = {
-                        workbook: {
-                            columns: cols,
-                            // hierarchyLevel: 'Level'
-                        },
-                        dataSource: dataSource,
-                        fileName: `${this.i18n.getText('products_title')}.xlsx`,
-                        worker: useWorker
-                    };
-                    let sheet = new Spreadsheet(config);
-                    sheet.build().finally(function() {
-                        sheet.destroy();
-                    });
-                }
-
-                if (this.comp.getModel('settings').getProperty('/odata/useMock')) {
-                    this.tableModel.setProperty('/canExport', false);
-                    let bindingInfo = this._tableMain.getBindingInfo('items');
-                    this.comp.getModel('service').read( bindingInfo.path, {
-                            urlParameters : {
-                                '$expand' : 'Category'
-                            },
-                            sorters : bindingInfo.sorter,
-                            filters : bindingInfo.filters,
-                            success : (e) => {
-                                startExport(e.results);
-                                this.tableModel.setProperty('/canExport', true);
-                            },
-                            error : (e) => {
-                                let dialogBox = new Dialog({
-                                    type: sap.m.DialogType.Message,
-                                    // title: "Error",
-                                    state: sap.ui.core.ValueState.Error,
-                                    content: new Text({ text: this.i18n.getText('export_failed') }),
-                                    beginButton: new Button({
-                                        type: ButtonType.Emphasized,
-                                        text: this.i18n.getText('ok'),
-                                        press: () => {
-                                            this.tableModel.setProperty('/canExport', true);
-                                            dialogBox.close();
-                                        }
-                                    })
-                                }).open();
-                            }
-                        }
-                    );
-                } else {
-                    startExport(this._tableMain.getBinding('items'), true);
-                }
-            }
-            
-        }
-
-        //controller
         return Controller.extend("ui5pos.szdk.controller.product.Products", {
-            ...navToolbar,
-
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
                 
                 window.temp = this;
 
-                //Open Product input toolbar
-                let inputOpenProduct = new Input({
-                    type : sap.m.InputType.Number,
-                    showValueHelp:true,
-                    placeholder: this.i18n.getText('product_id'),
-                    width : '9em'
-                });
-                inputOpenProduct.attachValueHelpRequest(() => (this.onValueHelpProduct.bind(this))(inputOpenProduct));
-                
-                let buttonOpenProduct = new Button({type: sap.m.ButtonType.Transparent ,text: this.i18n.getText('open')});
-                buttonOpenProduct.attachPress(() => (this.openProduct.bind(this))(inputOpenProduct));
-                
-                // {
-                //     i18n : Resource Bundle,
-                //     dialog : Boolean,
-                //     title : String,
-                //     onFilter : Function (the Filter object is passed as first argument to the given callback function),
-                //     fields : [
-                //         {
-                //             path : String,
-                //             label : String,
-                //             type : sap.m.InputType OR 'Date' OR 'Datetime' OR 'Time'
-                //             valueBinding : {Object containing binding info, eg : type, formatOption}
-                //             registerValueCheck? : Boolean
-                //             operators : [array of sap.ui.model.FilterOperator]
-                //             onValueHelp ? : Function (the input element is passed as first argument to the given callback function)
-                //         },
-                //         ...
-                //     ]
-                //   }
-                //Table Filters Toolbar 
-                this.filterDialog = new FilterDialog({
-                    i18n : this.i18n,
-                    dialog : true,
-                    title : this.i18n.getText('add_filter', undefined, true) || 'Add Filter',
-                    onFilter : () => console.log('onFilter'),
-                    fields : [
-                        {
-                            path : 'ProductID',
-                            label : this.i18n.getText('product_id'),
-                            type : sap.m.InputType.Number,
-                            operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.NB]
-                        }
-                    ]
-                });
-                let filterButton = new Button({icon: 'sap-icon://filter', type: sap.m.ButtonType.Transparent, tooltip : this.i18n.getText('filter')});
-                filterButton.attachPress(() => {
-                    this.filterDialog.container.open();
-                });
-
-                //Table Columns
-                let columns = [
-                    {id : 'ProductID', label : this.i18n.getText('id'), path : 'ProductID', header: {minScreenWidth:"XXLarge", width:"5em"}},
-                    {id : 'ProductName', label : this.i18n.getText('product'), path : 'ProductName', header: {}},
-                    {id : 'CategoryName', label : this.i18n.getText('category'), path : 'Category/CategoryName', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"WithoutHeader"}},
-                    {id : 'UnitsInStock', label : this.i18n.getText('product_instock'), path : 'UnitsInStock', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                    {id : 'QuantityPerUnit', label : this.i18n.getText('product_quantityPerUnit'), path : 'QuantityPerUnit', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                    {id : 'UnitPrice', label : this.i18n.getText('product_unitPrice'), path : 'UnitPrice', header: {hAlign : "End"}},
-                    {id : 'SupplierID', label : this.i18n.getText('supplier_id'), path : 'SupplierID', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                    {id : 'CategoryID', label : this.i18n.getText('category_id'), path : 'CategoryID', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                    {id : 'ReorderLevel', label : this.i18n.getText('product_reorder_level'), path : 'ReorderLevel', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                    {id : 'Discontinued', label : this.i18n.getText('discontinued'), path : 'Discontinued', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                ].map((v) => ({
-                    id : this.getView().createId(v.id),
-                    cell: {bindingPath : v.path},
-                    header : {header : v.label, ...v.header},
-                    p13n : {key : v.id, label: v.label, path : v.path},
-                    excel : {label : v.label, property : v.path}
-                }));
-
-                columns[0].cell.control = new ObjectIdentifier({title: "{ProductID}"});
-                columns[1].cell.control = new Title({titleStyle:"H6", wrapping:true, wrappingType:"Normal", text:"{ProductName}"});
-                columns[5].cell.control = new ObjectNumber({unit:"USD"});
-                columns[5].cell.control.bindProperty('number', {
-                    parts:[{path:'UnitPrice'},{value:'USD'}],
-                    type: 'sap.ui.model.type.Currency',
-                    formatOptions: {showMeasure:false}
-                });
-                
                 //Create Table after service has been created
                 this.comp.szdk_serviceCreated.then((model) => {
+                    //Open Product input toolbar
+                    let inputOpenProduct = new Input({
+                        type : sap.m.InputType.Number,
+                        showValueHelp:true,
+                        placeholder: this.i18n.getText('product_id'),
+                        width : '9em'
+                    });
+                    inputOpenProduct.attachValueHelpRequest(() => (this.onValueHelpProduct.bind(this))(inputOpenProduct));
+                    
+                    let buttonOpenProduct = new Button({type: sap.m.ButtonType.Transparent ,text: this.i18n.getText('open')});
+                    buttonOpenProduct.attachPress(() => (this.openProduct.bind(this))(inputOpenProduct));
+
+                    //Table Filters Toolbar 
+                    this.filterDialog = new FilterDialog({
+                        i18n : this.i18n,
+                        dialog : true,
+                        title : this.i18n.getText('add_filters', undefined, true) || 'Add Filters',
+                        onFilter : (filters) => {
+                            tableGenerator.applyFilter(filters);
+                        },
+                        fields : [
+                            {
+                                path : 'ProductID',
+                                label : this.i18n.getText('product_id'),
+                                type : sap.m.InputType.Number,
+                                operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
+                                onValueHelp : (input) => {
+                                    F4Help.f4Table({
+                                        i18n : this.i18n,
+                                        ODataModel: this.comp.getModel('service'),
+                                        entitySetPath: '/Products',
+                                        filterFields: [{path : 'ProductName', label : this.i18n.getText('product_name')}],
+                                        showFields: [
+                                            {path : 'ProductID', label : this.i18n.getText('product_id')},
+                                            {path : 'ProductName', label : this.i18n.getText('product_name')},
+                                        ],
+                                        returnFields: ['ProductID'],
+                                        title: this.i18n.getText('product_select_single')
+                                    }).then((selected) => {
+                                        if (!selected || selected.length == 0) return;
+                                        let id = parseInt(selected[0].ProductID);
+                                        if (id) {
+                                            input.setValue(id).setValueState(sap.ui.core.ValueState.None);
+                                        }
+                                    });
+                                }
+                            },
+                            {
+                                path : 'ProductName',
+                                label : this.i18n.getText('product_name'),
+                            },
+                            {
+                                path : 'CategoryID',
+                                label : this.i18n.getText('category_id'),
+                                type : sap.m.InputType.Number,
+                                operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
+                                onValueHelp : (input) => {
+                                    F4Help.f4Table({
+                                        i18n : this.i18n,
+                                        ODataModel: this.comp.getModel('service'),
+                                        entitySetPath: '/Categories',
+                                        filterFields: [{path : 'CategoryName', label : this.i18n.getText('category_name')}],
+                                        showFields: [
+                                            {path : 'CategoryID', label : this.i18n.getText('product_id')},
+                                            {path : 'CategoryName', label : this.i18n.getText('product_name')},
+                                        ],
+                                        returnFields: ['CategoryID'],
+                                        title: this.i18n.getText('category_select_single')
+                                    }).then((selected) => {
+                                        if (!selected || selected.length == 0) return;
+                                        let id = parseInt(selected[0].CategoryID);
+                                        if (id) {
+                                            input.setValue(id).setValueState(sap.ui.core.ValueState.None);
+                                        }
+                                    });
+                                }
+                            },
+                            {
+                                path : 'Category/CategoryName',
+                                label : this.i18n.getText('category')
+                            },
+                            {
+                                path : 'SupplierID',
+                                label : this.i18n.getText('supplier_id'),
+                                type : sap.m.InputType.Number,
+                                operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
+                                onValueHelp : (input) => {
+                                    F4Help.f4Table({
+                                        i18n : this.i18n,
+                                        ODataModel: this.comp.getModel('service'),
+                                        entitySetPath: '/Suppliers',
+                                        filterFields: [{path : 'CompanyName', label : this.i18n.getText('supplier_company_name')}],
+                                        showFields: [
+                                            {path : 'SupplierID', label : this.i18n.getText('supplier_id')},
+                                            {path : 'CompanyName', label : this.i18n.getText('supplier_company_name')},
+                                        ],
+                                        returnFields: ['SupplierID'],
+                                        title: this.i18n.getText('supplier_select_single')
+                                    }).then((selected) => {
+                                        if (!selected || selected.length == 0) return;
+                                        let id = parseInt(selected[0].SupplierID);
+                                        if (id) {
+                                            input.setValue(id).setValueState(sap.ui.core.ValueState.None);
+                                        }
+                                    });
+                                }
+                            },
+                            {
+                                path : 'UnitPrice',
+                                label : this.i18n.getText('product_unitPrice'),
+                            }
+                        ]
+                    });
+                    let filterButton = new Button({icon: 'sap-icon://filter', type: sap.m.ButtonType.Transparent, tooltip : this.i18n.getText('filter')});
+                    filterButton.attachPress(() => {
+                        this.filterDialog.container.open();
+                    });
+
+                    //Table Columns
+                    let columns = [
+                        {id : 'ProductID', label : this.i18n.getText('id'), path : 'ProductID', header: {minScreenWidth:"XXLarge", width:"5em"}},
+                        {id : 'ProductName', label : this.i18n.getText('product'), path : 'ProductName', header: {}},
+                        {id : 'CategoryName', label : this.i18n.getText('category'), path : 'Category/CategoryName', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"WithoutHeader"}},
+                        {id : 'UnitsInStock', label : this.i18n.getText('product_instock'), path : 'UnitsInStock', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'QuantityPerUnit', label : this.i18n.getText('product_quantityPerUnit'), path : 'QuantityPerUnit', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'UnitPrice', label : this.i18n.getText('product_unitPrice'), path : 'UnitPrice', header: {hAlign : "End"}},
+                        {id : 'SupplierID', label : this.i18n.getText('supplier_id'), path : 'SupplierID', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'CategoryID', label : this.i18n.getText('category_id'), path : 'CategoryID', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'ReorderLevel', label : this.i18n.getText('product_reorder_level'), path : 'ReorderLevel', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'Discontinued', label : this.i18n.getText('discontinued'), path : 'Discontinued', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                    ].map((v) => ({
+                        id : this.getView().createId(v.id),
+                        cell: {bindingPath : v.path},
+                        header : {header : v.label, ...v.header},
+                        p13n : {key : v.id, label: v.label, path : v.path},
+                        excel : {label : v.label, property : v.path}
+                    }));
+
+                    columns[0].cell.control = new ObjectIdentifier({title: "{ProductID}"});
+                    columns[1].cell.control = new Title({titleStyle:"H6", wrapping:true, wrappingType:"Normal", text:"{ProductName}"});
+                    columns[5].cell.control = new ObjectNumber({unit:"USD"});
+                    columns[5].cell.control.bindProperty('number', {
+                        parts:[{path:'UnitPrice'},{value:'USD'}],
+                        type: 'sap.ui.model.type.Currency',
+                        formatOptions: {showMeasure:false}
+                    });
+
                     let tableGenerator = new Table({
                         id: this.getView().createId('products_table'),
                         i18n: this.i18n,
@@ -331,17 +258,18 @@ sap.ui.define([
             },
 
             onValueHelpProduct: function (input) {
-                (F4Help.f4Table.bind(this))(
-                    this.comp.getModel('service'),
-                    '/Products',
-                    [{path : 'ProductName', label : this.i18n.getText('product_name')}],
-                    [
+                F4Help.f4Table({
+                    i18n : this.i18n,
+                    ODataModel: this.comp.getModel('service'),
+                    entitySetPath: '/Products',
+                    filterFields: [{path : 'ProductName', label : this.i18n.getText('product_name')}],
+                    showFields: [
                         {path : 'ProductID', label : this.i18n.getText('product_id')},
                         {path : 'ProductName', label : this.i18n.getText('product_name')},
                     ],
-                    ['ProductID'],
-                    this.i18n.getText('product_select_single')
-                ).then((selected) => {
+                    returnFields: ['ProductID'],
+                    title: this.i18n.getText('product_select_single')
+                }).then((selected) => {
                     if (!selected || selected.length == 0) return;
                     let id = parseInt(selected[0].ProductID);
                     if (id) {
