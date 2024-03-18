@@ -118,9 +118,7 @@ sap.ui.define([
         
         getTable = () => this.table;
 
-        applyFilter = (filters) => {
-            this.filters = filters;
-            // this.table.getBinding('items').filter(filters);
+        refreshBinding = () => {
             this.table.bindItems({
                 path : this.data.itemsBinding.path,
                 parameters : this.data.itemsBinding.parameters,
@@ -129,6 +127,11 @@ sap.ui.define([
                 sorter : this.sorter,
                 filters : this.filters,
             });
+        }
+
+        applyFilter = (filters) => {
+            this.filters = filters;
+            this.refreshBinding();
         }
 
         generateToolbar = () => {
@@ -161,10 +164,9 @@ sap.ui.define([
             if (this.data.customToolbar &&
             this.data.customToolbar.end && 
             this.data.customToolbar.end.length > 0) {
-                this.toolbar.addContent(new ToolbarSeparator());
                 for (let control of this.data.customToolbar.end)
                     this.toolbar.addContent(control);
-                this.toolbar.addContent();
+                this.toolbar.addContent(new ToolbarSeparator());
             }
             if (data.toolbar.p13n) {
                 let p13nbutton = new Button({
@@ -344,14 +346,15 @@ sap.ui.define([
 
             this.table = new Table(data.id, {columns : this.columnElements, noData: new IllustratedMessage(), ...data.properties});
             this.table.setModel(data.model);
-            this.table.bindItems({
-                path : data.itemsBinding.path,
-                parameters : data.itemsBinding.parameters,
-                template : this.cellContainer,
-                templateShareable : true,
-                sorter : this.sorter,
-                filters : this.filters,
-            });    
+            this.refreshBinding();
+            // this.table.bindItems({
+            //     path : data.itemsBinding.path,
+            //     parameters : data.itemsBinding.parameters,
+            //     template : this.cellContainer,
+            //     templateShareable : true,
+            //     sorter : this.sorter,
+            //     filters : this.filters,
+            // });    
         }
 
         handelStateChange = (evt) => {
@@ -381,15 +384,15 @@ sap.ui.define([
                     
                     this.cellContainer.getCells().forEach(cur_cell => this.cellContainer.removeCell(cur_cell));
                     cells.forEach((cell, idx) => this.cellContainer.insertCell(cell, idx));
-
-                    this.table.bindItems({
-                        path : this.data.itemsBinding.path,
-                        parameters : this.data.itemsBinding.parameters,
-                        template : this.cellContainer,
-                        templateShareable : true,
-                        sorter : this.sorter,
-                        filters : this.filters,
-                    });
+                    this.refreshBinding();
+                    // this.table.bindItems({
+                    //     path : this.data.itemsBinding.path,
+                    //     parameters : this.data.itemsBinding.parameters,
+                    //     template : this.cellContainer,
+                    //     templateShareable : true,
+                    //     sorter : this.sorter,
+                    //     filters : this.filters,
+                    // });
                 }
             }
             this.p13n.detachStateChange(this.handelStateChange);

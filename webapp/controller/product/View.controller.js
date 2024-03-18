@@ -2,14 +2,27 @@ sap.ui.define([
     "ui5pos/szdk/controller/BaseController",
     "ui5pos/szdk/controller/util/RouteEvent",
     "ui5pos/szdk/controller/util/F4Help",
+    "ui5pos/szdk/controller/util/Table",
+    "ui5pos/szdk/controller/util/FilterDialog",
     "sap/ui/model/json/JSONModel",
     "sap/ui/core/Core",
+    "sap/m/ObjectNumber",
+    "sap/m/Text",
+    "sap/m/Title",
+    "sap/m/Button",
     ],
     function (Controller,
         RouteEvent,
         F4Help,
+        TableGenerator,
+        FilterDialog,
         JSONModel,
-        Core) {
+        Core,
+        ObjectNumber,
+        Text,
+        Title,
+        Button,
+    ) {
         "use strict";
         var _this = null;
 
@@ -347,6 +360,11 @@ sap.ui.define([
                     onSuccess2(data);
             },
 
+            //======================================
+            onOpenAction : function (evt) {
+                let button = evt.getSource();
+                this.getView().byId('view_product_actionSheet').openBy(button);
+            },
 
             //============================================
             patternMatched: function (evt) {
@@ -366,7 +384,6 @@ sap.ui.define([
                 let id = arg && arg.id && ("" + arg.id).length > 0 ? arg.id : null;
 
                 if (id) {
-                    
                     this.comp.getModel('service').createBindingContext(`/Products(${id})`, {
                         expand : 'Category,Supplier,Order_Details'
                     },
@@ -379,16 +396,127 @@ sap.ui.define([
                         this.productID = id;
                         this.getView().setBindingContext(context, 'service');
                         this.refreshBinding(null, null, true);
+
+                        if (!this.orders_table) {
+                            this.createOrdersTable(id);
+                        } else {
+                            this.updateOrdersTable(id);
+                        }
+
+
                     }, true);
                 } else {
                     notFound();
                 }
             },
 
-            //======================================
-            onOpenAction : function (evt) {
-                let button = evt.getSource();
-                this.getView().byId('view_product_actionSheet').openBy(button);
+            //==========================================================================
+            createOrdersTable : function (id) {
+                this.filterDialog = new FilterDialog({
+                    i18n : this.i18n,
+                    dialog : true,
+                    title : this.i18n.getText('add_filters'),
+                    onFilter : (filters) => {
+                        this.orders_table.applyFilter(filters);
+                    },
+                    fields : [
+                        {
+                            path : 'OrderID',
+                            label : this.i18n.getText('order_id'),
+                            type : sap.m.InputType.Number,
+                            operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
+                        },
+                        {
+                            path : 'UnitPrice',
+                            label : this.i18n.getText('product_unitPrice'),
+                            type : sap.m.InputType.Number,
+                            operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
+                        },
+                        {
+                            path : 'Quantity',
+                            label : this.i18n.getText('order_quantity'),
+                            type : sap.m.InputType.Number,
+                            operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
+                        },
+                        {
+                            path : 'Discount',
+                            label : this.i18n.getText('order_discount'),
+                            type : sap.m.InputType.Number,
+                            operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
+                        },
+                    ]
+                });
+                let filterButton = new Button({
+                    icon : 'sap-icon://filter',
+                    text : this.i18n.getText('filter'),
+                    press : () => this.filterDialog.container.open()
+                });
+
+                let columns = [
+                    {id : 'OrderID', label : this.i18n.getText('order_id'), path : 'OrderID', header: {/*minScreenWidth:"XXLarge", width:"5em"*/}},
+                    {id : 'UnitPrice', label : this.i18n.getText('product_unitPrice'), path : 'UnitPrice', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},
+                    {id : 'Quantity', label : this.i18n.getText('order_quantity'), path : 'Quantity', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},
+                    {id : 'Discount', label : this.i18n.getText('order_discount'), path : 'Discount', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},                    
+                ].map((v) => ({
+                    id : this.getView().createId(v.id),
+                    cell: {bindingPath : v.path},
+                    header : {header : v.label, ...v.header},
+                    p13n : {key : v.id, label: v.label, path : v.path},
+                    excel : {label : v.label, property : v.path}
+                }));
+                columns[1].cell.control = new ObjectNumber({unit:"USD"});
+                columns[1].cell.control.bindProperty('number', {
+                    parts:[{path:'UnitPrice'},{value:'USD'}],
+                    type: 'sap.ui.model.type.Currency',
+                    formatOptions: {showMeasure:false}
+                });
+                columns[3].cell.control = new Text({text : "{= ${Discount} === 0 ? 0 : ( ${Discount} + ' %' )}"});
+
+                this.orders_table = new TableGenerator({
+                    id : this.getView().createId('orders_table'),
+                    i18n : this.i18n,
+                    model : this.comp.getModel('service'),
+                    //todo: add navigation to view order page when clicked 
+                    // columnListItem : {type : sap.m.ListType.Navigation},
+                    properties : {
+                        busyIndicatorDelay : 0,
+                        mode : sap.m.ListMode.None,
+                        rememberSelections:true,
+                        growing:true,
+                        growingThreshold:50,
+                        sticky: ['HeaderToolbar','ColumnHeaders'],
+                        popinLayout: sap.m.PopinLayout.Block,
+                        alternateRowColors: false,
+                    },
+                    itemsBinding : {
+                        path : `/Products(${id})/Order_Details`
+                    },
+                    customToolbar : {
+                        start : [new Title({text : this.i18n.getText('product_order_details_header')})],
+                        end : [filterButton]
+                    },
+                    toolbar : {
+                        p13n : {
+                            Columns : true,
+                            Sorter : true,
+                            Groups : true,
+                        },
+                        excel : this.comp.getModel('settings').getProperty('/odata/useMock') ? 2 : 1,
+                        growSize : true,
+                        pin : true
+                    },
+                    columns
+                });
+                this.byId('table_container').removeAllContent();
+                this.byId('table_container').addContent(this.orders_table.getTable());
+                //todo add navigation
+                // this.orders_table.getTable().attachItemPress
+            },
+
+            //==========================================================================
+            updateOrdersTable : function (id) {
+                this.orders_table.data.itemsBinding.path = `/Products(${id})/Order_Details`;
+                this.orders_table.refreshBinding();
             }
         });
     }

@@ -233,8 +233,8 @@
 				</f:DynamicPageHeader>
 			</f:header>
 			<f:content>
-				<Table noDataText="Todo: List of orders containing this product."></Table>
-				
+				<layout:VerticalLayout id="table_container">
+				</layout:VerticalLayout>
 			</f:content>
 			
 		</f:DynamicPage>

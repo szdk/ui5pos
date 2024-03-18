@@ -96,6 +96,12 @@ sap.ui.define([
                                 label : this.i18n.getText('product_name'),
                             },
                             {
+                                path : 'UnitPrice',
+                                label : this.i18n.getText('product_unitPrice'),
+                                type : sap.m.InputType.Number,
+                                operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
+                            },
+                            {
                                 path : 'CategoryID',
                                 label : this.i18n.getText('category_id'),
                                 type : sap.m.InputType.Number,
@@ -150,10 +156,6 @@ sap.ui.define([
                                         }
                                     });
                                 }
-                            },
-                            {
-                                path : 'UnitPrice',
-                                label : this.i18n.getText('product_unitPrice'),
                             }
                         ]
                     });
@@ -217,9 +219,9 @@ sap.ui.define([
                         },
                         toolbar : {
                             p13n : {
-                                Columns : Boolean,
-                                Sorter : Boolean,
-                                Groups : Boolean,
+                                Columns : true,
+                                Sorter : true,
+                                Groups : true,
                             },
                             excel : this.comp.getModel('settings').getProperty('/odata/useMock') ? 2 : 1,
                             growSize : true,
