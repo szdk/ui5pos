@@ -7,7 +7,10 @@
 >
     <Shell appWidthLimited="false">
         <App id="app">
-            <t:ToolPage id="toolpage" sideExpanded='{nav>/sideNav/expanded}'>
+            <!-- <t:ToolPage id="toolpage" sideExpanded='{nav>/sideNav/expanded}'> -->
+            <t:ToolPage id="toolpage" sideExpanded='{=
+                ( ${device>/system/phone} === true || ${device>/resize/width} > 999 ) &amp;&amp; ${nav>/sideNav/expanded}
+            }'>
                 <t:header>
                     <t:ToolHeader>
                         <Button
@@ -28,7 +31,15 @@
                     </t:ToolHeader>
                 </t:header>
                 <t:sideContent>
-                    <t:SideNavigation  visible="{nav>/sideNav/visible}" id="app_side_nav_list" selectedKey="{nav>/sideNav/selectedKey}">
+                    <!-- <t:SideNavigation  visible="{nav>/sideNav/visible}" id="app_side_nav_list" selectedKey="{nav>/sideNav/selectedKey}"> -->
+                    <t:SideNavigation  visible="{=
+                        ${nav>/sideNav/visible} &amp;&amp;
+                        (
+                            ${device>/system/phone} === true ||
+                            ${device>/resize/width} > 999 ||
+                            ${nav>/sideNav/expanded}
+                        )
+                    }" id="app_side_nav_list" selectedKey="{nav>/sideNav/selectedKey}">
                         <t:NavigationList>
                             <t:NavigationListItem key="nav_item_route_orders" id="app_nav_route_orders" text="{lang>orders}" icon="sap-icon://sales-order-item" />
                             <t:NavigationListItem key="nav_item_route_home" id="app_nav_route_home" text="{lang>dashboard}" icon="sap-icon://bbyd-dashboard"/>
@@ -38,6 +49,11 @@
                                 <t:NavigationListItem key="nav_item_route_create_product" id="app_nav_route_create_product" text="{lang>product_create}"></t:NavigationListItem>
                             </t:NavigationListItem>
                         </t:NavigationList>
+                        <t:fixedItem>
+                            <t:NavigationList>
+                                <t:NavigationListItem text="{lang>about}" icon="sap-icon://message-information"/>
+                            </t:NavigationList>
+                        </t:fixedItem>
                     </t:SideNavigation>
                 </t:sideContent>
                 <t:mainContents>

@@ -29,6 +29,7 @@
 					
 					<f:content>
 						<GenericTag
+							visible="{= ${device>/resize/width} > 599 }"
 							text="{= 
 								${service>Discontinued} ? ${lang>discontinued} : (
 									${service>UnitsInStock} &lt;= 0 ? ${lang>out_of_stock} : (
@@ -94,8 +95,16 @@
 						<layout:VerticalLayout class="sapUiMediumMarginEnd">
 							<ObjectAttribute title="{lang>product_id}" text="{service>ProductID}"/>
 							<ObjectAttribute title="{lang>product_name}" text="{service>ProductName}"/>
-							<ObjectAttribute title="{lang>category}" text="{service>Category/CategoryName}" press=".onPressCategory"/>
-							<ObjectAttribute title="{lang>discontinued}" text="{= ${service>Discontinued} ? ${lang>yes} : ${lang>no} }"/>
+							<!-- <ObjectAttribute title="{lang>category}" text="{service>Category/CategoryName}" press=".onPressCategory"/> -->
+							<layout:HorizontalLayout allowWrapping="false">
+								<ObjectAttribute title="{lang>category}"/>
+								<Link class="m-l-1" text="{service>Category/CategoryName}"/>
+							</layout:HorizontalLayout>
+
+							<layout:HorizontalLayout allowWrapping="false">
+								<ObjectAttribute title="{lang>supplier}"/>
+								<Link class="m-l-1" text="{service>Supplier/CompanyName}"/>
+							</layout:HorizontalLayout>
 						</layout:VerticalLayout>
 
 						<layout:VerticalLayout>
@@ -233,7 +242,7 @@
 				</f:DynamicPageHeader>
 			</f:header>
 			<f:content>
-				<layout:VerticalLayout id="table_container">
+				<layout:VerticalLayout width="100%" id="table_container">
 				</layout:VerticalLayout>
 			</f:content>
 			

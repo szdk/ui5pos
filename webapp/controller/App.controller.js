@@ -16,7 +16,7 @@ sap.ui.define([
                     sideNav : {
                         visible : true,
                         selectedKey : "home",
-                        expanded : Device.system.desktop,
+                        expanded : !Device.system.phone,
                     }
                 });
 

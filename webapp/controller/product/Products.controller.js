@@ -69,7 +69,7 @@ sap.ui.define([
                                 path : 'ProductID',
                                 label : this.i18n.getText('product_id'),
                                 type : sap.m.InputType.Number,
-                                operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
+                                operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LT, sap.ui.model.FilterOperator.GT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
                                 onValueHelp : (input) => {
                                     F4Help.f4Table({
                                         i18n : this.i18n,
@@ -99,13 +99,13 @@ sap.ui.define([
                                 path : 'UnitPrice',
                                 label : this.i18n.getText('product_unitPrice'),
                                 type : sap.m.InputType.Number,
-                                operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
+                                operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LT, sap.ui.model.FilterOperator.GT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
                             },
                             {
                                 path : 'CategoryID',
                                 label : this.i18n.getText('category_id'),
                                 type : sap.m.InputType.Number,
-                                operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
+                                operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LT, sap.ui.model.FilterOperator.GT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
                                 onValueHelp : (input) => {
                                     F4Help.f4Table({
                                         i18n : this.i18n,
@@ -135,7 +135,7 @@ sap.ui.define([
                                 path : 'SupplierID',
                                 label : this.i18n.getText('supplier_id'),
                                 type : sap.m.InputType.Number,
-                                operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
+                                operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LT, sap.ui.model.FilterOperator.GT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
                                 onValueHelp : (input) => {
                                     F4Help.f4Table({
                                         i18n : this.i18n,
@@ -166,9 +166,9 @@ sap.ui.define([
 
                     //Table Columns
                     let columns = [
-                        {id : 'ProductID', label : this.i18n.getText('id'), path : 'ProductID', header: {minScreenWidth:"XXLarge", width:"5em"}},
+                        {id : 'ProductID', label : this.i18n.getText('id'), path : 'ProductID', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline", width:"5em"}},
                         {id : 'ProductName', label : this.i18n.getText('product'), path : 'ProductName', header: {}},
-                        {id : 'CategoryName', label : this.i18n.getText('category'), path : 'Category/CategoryName', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"WithoutHeader"}},
+                        {id : 'CategoryName', label : this.i18n.getText('category'), path : 'Category/CategoryName', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},
                         {id : 'UnitsInStock', label : this.i18n.getText('product_instock'), path : 'UnitsInStock', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
                         {id : 'QuantityPerUnit', label : this.i18n.getText('product_quantityPerUnit'), path : 'QuantityPerUnit', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
                         {id : 'UnitPrice', label : this.i18n.getText('product_unitPrice'), path : 'UnitPrice', header: {hAlign : "End"}},

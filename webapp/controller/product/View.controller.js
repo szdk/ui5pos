@@ -10,6 +10,7 @@ sap.ui.define([
     "sap/m/Text",
     "sap/m/Title",
     "sap/m/Button",
+    "sap/m/Link",
     ],
     function (Controller,
         RouteEvent,
@@ -22,18 +23,15 @@ sap.ui.define([
         Text,
         Title,
         Button,
+        Link,
     ) {
         "use strict";
-        var _this = null;
 
         return Controller.extend("ui5pos.szdk.controller.product.View", {
             productID: null,
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
                 
-                window.t = this.getView();
-                _this = this;
-
                 //========================= MODEL ============================================
                 this.mainModel = new JSONModel({
                     editting : false,
@@ -385,7 +383,7 @@ sap.ui.define([
 
                 if (id) {
                     this.comp.getModel('service').createBindingContext(`/Products(${id})`, {
-                        expand : 'Category,Supplier,Order_Details'
+                        expand : 'Category,Supplier'
                     },
                     (context) => {
                         if (!context) {
@@ -397,9 +395,11 @@ sap.ui.define([
                         this.getView().setBindingContext(context, 'service');
                         this.refreshBinding(null, null, true);
 
+                        document.title = this.i18n.getText("view_product_title2", [this.mainModel.getProperty('/productData/ProductName')]);
+
                         if (!this.orders_table) {
                             this.createOrdersTable(id);
-                        } else {
+                        } else if (this.orders_table_id != id) {
                             this.updateOrdersTable(id);
                         }
 
@@ -412,6 +412,8 @@ sap.ui.define([
 
             //==========================================================================
             createOrdersTable : function (id) {
+                this.orders_table_id = id;
+                this.byId('product_view_page').setHeaderExpanded(true);
                 this.filterDialog = new FilterDialog({
                     i18n : this.i18n,
                     dialog : true,
@@ -454,9 +456,10 @@ sap.ui.define([
 
                 let columns = [
                     {id : 'OrderID', label : this.i18n.getText('order_id'), path : 'OrderID', header: {/*minScreenWidth:"XXLarge", width:"5em"*/}},
-                    {id : 'UnitPrice', label : this.i18n.getText('product_unitPrice'), path : 'UnitPrice', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},
+                    {id : 'UnitPrice', label : this.i18n.getText('product_unitPrice'), path : 'UnitPrice', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
                     {id : 'Quantity', label : this.i18n.getText('order_quantity'), path : 'Quantity', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},
-                    {id : 'Discount', label : this.i18n.getText('order_discount'), path : 'Discount', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},                    
+                    {id : 'Discount', label : this.i18n.getText('order_discount'), path : 'Discount', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                    {id : 'NetPrice', label : this.i18n.getText('order_net_price'), path : 'UnitPrice', header: {hAlign : "End"}},
                 ].map((v) => ({
                     id : this.getView().createId(v.id),
                     cell: {bindingPath : v.path},
@@ -464,13 +467,23 @@ sap.ui.define([
                     p13n : {key : v.id, label: v.label, path : v.path},
                     excel : {label : v.label, property : v.path}
                 }));
+                columns[0].cell.control = new Link({text:"{OrderID}", wrapping : true, press: (evt) => {
+                    this.comp.getRouter().navTo("view_order", {id : parseInt(evt.getSource().getText())});
+                }});
                 columns[1].cell.control = new ObjectNumber({unit:"USD"});
                 columns[1].cell.control.bindProperty('number', {
                     parts:[{path:'UnitPrice'},{value:'USD'}],
                     type: 'sap.ui.model.type.Currency',
                     formatOptions: {showMeasure:false}
                 });
-                columns[3].cell.control = new Text({text : "{= ${Discount} === 0 ? 0 : ( ${Discount} + ' %' )}"});
+                columns[3].cell.control = new Text({text : "{= ${Discount} === 0 ? 0 : ( (${Discount} * 100) + ' %' )}"});
+                columns[4].cell.control = new ObjectNumber({unit:"USD"});
+                columns[4].cell.control.bindProperty('number', {
+                    parts:[{path:'UnitPrice'},{path:'Quantity'},{path:'Discount'}],
+                    type: this.inputCheck.order.netPrice,
+                    formatOptions: {showMeasure:false}
+                });
+                delete columns[4].excel;
 
                 this.orders_table = new TableGenerator({
                     id : this.getView().createId('orders_table'),
@@ -515,6 +528,8 @@ sap.ui.define([
 
             //==========================================================================
             updateOrdersTable : function (id) {
+                this.orders_table_id = id;
+                this.byId('product_view_page').setHeaderExpanded(true);
                 this.orders_table.data.itemsBinding.path = `/Products(${id})/Order_Details`;
                 this.orders_table.refreshBinding();
             }

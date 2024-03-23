@@ -1,9 +1,11 @@
 sap.ui.define([
     "sap/ui/model/SimpleType",
+    "sap/ui/model/CompositeType",
     "sap/ui/model/ValidateException",
     "sap/base/i18n/ResourceBundle"
 ], function (
     SimpleType,
+    CompositeType,
     ValidateException,
     ResourceBundle
 ) {
@@ -12,8 +14,25 @@ sap.ui.define([
         setResourceBundel : (i18n) => {
             obj.i18n = i18n;
         },
+        other : {
+            dateToTime : SimpleType.extend('ui5pos.szdk.inputCheck.other.dateToTime', {
+                formatValue : (v) => {
+                    if (!v) return '';
+                    return new Date(v).toTimeString().split(' ')[0];
+                }
+            })
+        },
+        order : {
+            netPrice : new (CompositeType.extend('ui5pos.szdk.inputCheck.order.netprice', {
+                formatValue : (v) => {
+                    let price = v[0], quantity = v[1], discount = v.length > 2 ? v[2] : 0;
+                    price = price * quantity * (1 - discount);
+                    return (Math.round(price * 100) / 100).toFixed(2);
+                }
+            }))(),
+        },
         product : {
-            id : SimpleType.extend('product.id', {
+            id : SimpleType.extend('ui5pos.szdk.inputCheck.product.id', {
                 formatValue : (raw) => {
                     let result = parseInt(raw);
                     if (!isNaN(result) && typeof result == 'number') return result;
@@ -28,7 +47,7 @@ sap.ui.define([
                         throw new ValidateException(obj.i18n.getText('input_invalid_product_id', [id]));
                 }
             }),
-            name : SimpleType.extend('product.id', {
+            name : SimpleType.extend('ui5pos.szdk.inputCheck.product.id', {
                 formatValue : (i) => i,
                 parseValue : (i) => i,
                 validateValue : function (input) {
@@ -38,7 +57,7 @@ sap.ui.define([
                         throw new ValidateException(obj.i18n.getText('input_length_exceeded', [40]));
                 },
             }),
-            unitPrice : SimpleType.extend('product.unitPrice', {
+            unitPrice : SimpleType.extend('ui5pos.szdk.inputCheck.product.unitPrice', {
                 formatValue : (raw) => {
                     let result = Math.round(parseFloat(raw) * 100) / 100;
                     if (!isNaN(result) && typeof result == 'number') return result;
@@ -53,7 +72,7 @@ sap.ui.define([
                         throw new ValidateException(obj.i18n.getText('input_invalid'))
                 }
             }),
-            unitInStock : SimpleType.extend('product.unitInStock', {
+            unitInStock : SimpleType.extend('ui5pos.szdk.inputCheck.product.unitInStock', {
                 formatValue : (raw) =>  {
                     let result = parseInt(raw);
                     if (!isNaN(result) && typeof result == 'number') return result;
@@ -68,7 +87,7 @@ sap.ui.define([
                         throw new ValidateException(obj.i18n.getText('input_invalid'))
                 }
             }),
-            quantityPerUnit : SimpleType.extend('product.quantityPerUnit', {
+            quantityPerUnit : SimpleType.extend('ui5pos.szdk.inputCheck.product.quantityPerUnit', {
                 formatValue : (i) => i,
                 parseValue : (i) => i,
                 validateValue : function (input) {
@@ -80,7 +99,7 @@ sap.ui.define([
             }),
         },
         category : {
-            id : SimpleType.extend('category.id', {
+            id : SimpleType.extend('ui5pos.szdk.inputCheck.category.id', {
                 formatValue : (raw) => {
                     let result = parseInt(raw);
                     if (!isNaN(result) && typeof result == 'number') return result;
@@ -97,7 +116,7 @@ sap.ui.define([
             }),
         },
         supplier : {
-            id : SimpleType.extend('supplier.id', {
+            id : SimpleType.extend('ui5pos.szdk.inputCheck.supplier.id', {
                 formatValue : (raw) => {
                     let result = parseInt(raw);
                     if (!isNaN(result) && typeof result == 'number') return result;

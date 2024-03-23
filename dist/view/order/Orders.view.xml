@@ -11,6 +11,6 @@
     height="100%"
 >
     <Page id="orders_page" title="{lang>orders_title}">
-        <l:VerticalLayout id="table_container"></l:VerticalLayout>
+        <l:VerticalLayout width="100%" id="table_container"></l:VerticalLayout>
     </Page>
 </mvc:XMLView>

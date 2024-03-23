@@ -122,6 +122,7 @@ function (
             this.container = null;
             if (data.dialog) {
                 this.container = new Dialog({
+                    draggable : true,
                     stretch : !sap.ui.Device.system.desktop,
                     contentWidth : '40em',
                     // title : data.title,
@@ -320,7 +321,7 @@ function (
                         //header
                         new Bar({
                             contentLeft : [
-                                new Title({text : this.i18n.getText('add_filter_conditions', undefined, true) || 'Add filter conditions'})
+                                new Title({text : field.label})
                             ],
                             contentRight : [
                                 new Button({
@@ -332,7 +333,7 @@ function (
                                         mi.destroyTokens(); mi.removeAllTokens();
                                         for (let item of container.getItems()) {
                                             let operator = item.data('operator').getSelectedKey();
-                                            let low = item.data('low').getValue();;
+                                            let low = item.data('low').getValue();
                                             let high = item.data('high');
                                             high = high.getEditable() ? high.getValue() : null;
                                             if (!this.operators[operator])
@@ -342,6 +343,11 @@ function (
                                                 // editable : false, //editable false, because we don't want user to remove this token by cliking on cross button (we let user do it in subpage)
                                                 text
                                             });
+                                            if (field.type == 'Datetime') {
+                                                low = item.data('low').getDateValue();
+                                                if (high != null)
+                                                    high = item.data(high).getDateValue();
+                                            }
                                             token.data('operator', operator);
                                             token.data('low', low);
                                             token.data('high', high);

@@ -458,8 +458,10 @@ sap.ui.define([
             let data = this.data;
 
             let helper = [];
-            for (let col of data.columns)
-                helper.push({...col.p13n});
+            for (let col of data.columns) {
+                if (col.p13n)
+                    helper.push({...col.p13n});
+            }
             let eng = Engine.getInstance();
             eng.register(this.table, {
                 helper : new MetadataHelper(helper),

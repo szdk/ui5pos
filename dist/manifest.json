@@ -93,6 +93,13 @@
                     ]
                 },
                 {
+                    "name" : "view_order",
+                    "pattern" : "order/{id}",
+                    "target" : [
+                        "view_order"
+                    ]
+                },
+                {
                     "name": "products",
                     "pattern": "products",
                     "target" : [
@@ -132,6 +139,11 @@
                     "title" : "{{orders_title}}",
                     "viewName": "order.Orders",
                     "viewId": "orders"
+                },
+                "view_order" : {
+                    "title" : "{{order_view_title1}}",
+                    "viewName" : "order.View",
+                    "viewId" : "view_order"
                 },
                 "products" : {
                     "title": "{{products_title}}",

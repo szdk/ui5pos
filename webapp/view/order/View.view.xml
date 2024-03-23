@@ -1,5 +1,5 @@
 <mvc:View 
-		controllerName="ui5pos.szdk.controller.product.View"
+		controllerName="ui5pos.szdk.controller.order.View"
 		xmlns:mvc="sap.ui.core.mvc"
 		xmlns="sap.m"
 		xmlns:f="sap.f"
@@ -10,45 +10,34 @@
 		core:require="{formatMessage: 'sap/base/strings/formatMessage'}"
 
 		height="100%">
-		<f:DynamicPage id="product_view_page" headerExpanded="true">
+		<f:DynamicPage id="order_view_page" headerExpanded="true">
 			<f:title>
 				<f:DynamicPageTitle>
 					<f:heading>
-						<Title text="{service>ProductName}"/>
+						<Title text="{parts : [{path : 'lang>order_view_title'}, {path : 'service>OrderID'}], formatter : 'formatMessage' }"/>
 					</f:heading>
 
 					<f:expandedContent>
-						<Label text="{parts : [{path: 'lang>supplied_by'}, {path: 'service>Supplier/CompanyName'}], formatter : 'formatMessage' }"/>
+						<Label text="{parts : [{path: 'lang>order_view_sold_to_des'}, {path: 'service>Customer/Phone'}], formatter : 'formatMessage' }"/>
 					</f:expandedContent>
 					<f:snappedContent>
-						<Label text="{parts : [{path: 'lang>supplied_by'}, {path: 'service>Supplier/CompanyName'}], formatter : 'formatMessage' }"/>
+						<Label text="{parts : [{path: 'lang>order_view_sold_to_des'}, {path: 'service>Customer/Phone'}], formatter : 'formatMessage' }"/>
 					</f:snappedContent>
 					<f:snappedTitleOnMobile>
-						<Title text="{service>ProductName}"/>
+						<Title text="{parts : [{path : 'lang>order_view_title'}, {path : 'service>OrderID'}], formatter : 'formatMessage' }"/>
 					</f:snappedTitleOnMobile>
 					
 					<f:content>
-						<GenericTag
-							visible="{= ${device>/resize/width} > 599 }"
-							text="{= 
-								${service>Discontinued} ? ${lang>discontinued} : (
-									${service>UnitsInStock} &lt;= 0 ? ${lang>out_of_stock} : (
-										${service>UnitsInStock} &lt;= ${service>ReorderLevel} ?
-											${lang>few_left} + ' ( ' + ${service>UnitsInStock} + ' / ' + ${service>ReorderLevel} + ' ) '
-											: ${lang>in_stock} + ' ( ' + ${service>UnitsInStock} + ' / ' + ${service>ReorderLevel} + ' ) '
-									)
-								)
-							}"
-							status="{= 
-								${service>Discontinued} || ${service>UnitsInStock} === 0 ?
-									'Error'
-									: (
-										${service>UnitsInStock} &lt;= ${service>ReorderLevel} ? 'Warning' : 'Success'
-									)
-							}"
-							press="onPressOpenPopover"
-							design="StatusIconHidden">
-						</GenericTag>
+                        <GenericTag visible="{= ${device>/resize/width} > 599 }" text="{lang>order_total}" design="StatusIconHidden" status="Success"  class="sapUiSmallMarginBottom">
+                            <ObjectNumber state="Success" emphasized="true" number="{
+								parts : [
+									{path : 'service>Freight' },
+									{value : 'USD'}
+								],
+								type: 'sap.ui.model.type.Currency',
+								formatOptions: {showMeasure:false}
+							}" unit="USD"/>
+                        </GenericTag>
 					</f:content>
 					
 					<f:actions>
@@ -66,13 +55,7 @@
 
 						<Button visible="{= ${model>/editting} === false }" type="Ghost" press=".onOpenAction" text="{lang>action}">
 							<dependents>
-								<ActionSheet id="view_product_actionSheet" title="{lang>action}" placement="Bottom">
-									<Button
-										icon="{= ${service>Discontinued} ? 'sap-icon://media-play' : 'sap-icon://media-pause' }"
-										text="{= ${service>Discontinued} ? ${lang>product_unmark_discontinued} : ${lang>product_mark_discontinued} }"
-										press=".onToggleDiscontinue"
-										type="Ghost"
-									/>
+								<ActionSheet id="view_order_actionSheet" title="{lang>action}" placement="Bottom">
 									<Button
 										icon="sap-icon://delete"
 										text="{lang>delete}"
@@ -82,6 +65,7 @@
 								</ActionSheet>
 							</dependents>
 						</Button>
+						<Button visible="{= ${model>/editting} === false }" text="{lang>print}" icon="sap-icon://print" type="Accept" press="onPrint"></Button>
 						
 					</f:actions>
 
@@ -93,36 +77,26 @@
 					<!-- =========== VIEW MODE ============== -->
 					<layout:HorizontalLayout visible="{= ${model>/editting} === false }" allowWrapping="true">
 						<layout:VerticalLayout class="sapUiMediumMarginEnd">
-							<ObjectAttribute title="{lang>product_id}" text="{service>ProductID}"/>
-							<ObjectAttribute title="{lang>product_name}" text="{service>ProductName}"/>
-							<!-- <ObjectAttribute title="{lang>category}" text="{service>Category/CategoryName}" press=".onPressCategory"/> -->
-							<layout:HorizontalLayout allowWrapping="false">
-								<ObjectAttribute title="{lang>category}"/>
-								<Link class="m-l-1" text="{service>Category/CategoryName}"/>
-							</layout:HorizontalLayout>
-
-							<layout:HorizontalLayout allowWrapping="false">
-								<ObjectAttribute title="{lang>supplier}"/>
-								<Link class="m-l-1" text="{service>Supplier/CompanyName}"/>
-							</layout:HorizontalLayout>
+							<ObjectAttribute title="{lang>order_id}" text="{service>OrderID}"/>
+							<ObjectAttribute title="{lang>order_date}" text="{path : 'service>OrderDate', type : 'sap.ui.model.type.Date'}"/>
+							<ObjectAttribute title="{lang>order_time}" text="{path : 'service>OrderDate', type : '.inputCheck.other.dateToTime'}"/>
 						</layout:VerticalLayout>
 
 						<layout:VerticalLayout>
 							<layout:HorizontalLayout allowWrapping="false">
-								<ObjectAttribute title="{lang>product_unitPrice}"/>
+								<ObjectAttribute title="{lang>order_total}"/>
 								<ObjectNumber class="m-l-1" number="{
 									parts:[
-										{path:'service>UnitPrice'},
+										{path:'service>Freight'},
 										{value: 'USD'}
 									],
 									type: 'sap.ui.model.type.Currency',
 									formatOptions: {showMeasure:false}
 								}" unit="USD" ></ObjectNumber>
 							</layout:HorizontalLayout>
+							<ObjectAttribute title="{lang>customer_name}" text="{service>Customer/ContactName}"/>
+							<ObjectAttribute title="{lang>customer_phone}" text="{service>Customer/Phone}"/>
 							
-							<ObjectAttribute title="{lang>product_quantityPerUnit}" text="{service>QuantityPerUnit}"/>
-							<ObjectAttribute title="{lang>product_instock}" text="{service>UnitsInStock}"/>
-							<ObjectAttribute title="{lang>product_reorder_level}" text="{service>ReorderLevel}"/>
 						</layout:VerticalLayout>
 					</layout:HorizontalLayout>
 
