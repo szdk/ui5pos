@@ -51,7 +51,7 @@
                         </t:NavigationList>
                         <t:fixedItem>
                             <t:NavigationList>
-                                <t:NavigationListItem text="{lang>about}" icon="sap-icon://message-information"/>
+                                <t:NavigationListItem selectable="false" text="{lang>about}" icon="sap-icon://message-information"/>
                             </t:NavigationList>
                         </t:fixedItem>
                     </t:SideNavigation>

@@ -10,9 +10,9 @@
     <!-- <App> -->
         <Page title="{lang>setup_title}">
             <content>
-                <l:BlockLayout background="Default">
+                <l:BlockLayout background="Light">
                     <l:BlockLayoutRow>
-                        <l:BlockLayoutCell class="m-2 bg-w brad-m">
+                        <l:BlockLayoutCell class="m-2 brad-m">
                             <Text class="disp-block" text="{lang>setup_pleaseSelect}"></Text>
                             <List>
                                 <StandardListItem icon="sap-icon://broken-link"
@@ -71,7 +71,7 @@
                 </l:BlockLayout>
 
                 <!-- Service created Success message -->
-                <HBox visible="{local>/ServiceCreated}" class="bg-w brad-m m-2 p-lr-6 p-tb-3 m-p-lr-4 s-p-lr-3 xs-p-lr-2" alignItems="Center" justifyContent="Start">
+                <HBox visible="{local>/ServiceCreated}" backgroundDesign="Solid" class="brad-m m-2 p-lr-6 p-tb-3 m-p-lr-4 s-p-lr-3 xs-p-lr-2" alignItems="Center" justifyContent="Start">
                     <VBox alignContent="Center" justifyContent="Center">
                         <core:Icon src="sap-icon://accept" size="3em" color="#4CAF50" width="1em" height="1em"></core:Icon>
                     </VBox>
