@@ -1,7 +1,6 @@
 sap.ui.define([
     "ui5pos/szdk/controller/BaseController",
     "ui5pos/szdk/controller/util/Table",
-    "ui5pos/szdk/controller/util/RouteEvent",
     "sap/ui/model/json/JSONModel",
     "sap/m/ObjectNumber",
     "sap/m/Text",
@@ -12,7 +11,6 @@ sap.ui.define([
     function (
         Controller,
         TableGenerator,
-        RouteEvent,
         JSONModel,
         ObjectNumber,
         Text,
@@ -25,15 +23,6 @@ sap.ui.define([
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
                 
-                window.view = this;
-
-                //========================= MODEL ============================================
-                this.mainModel = new JSONModel({
-                    editting : false,
-                    orderData : {}
-                });
-                this.getView().setModel(this.mainModel, 'model');
-
                 //==================== set busy on server request =============================
                 this.getView().setBusyIndicatorDelay(0);
                 this.comp.szdk_serviceCreated.then((s) => s.attachRequestSent(() => this.getView().setBusy(true)));
@@ -44,11 +33,8 @@ sap.ui.define([
             },
 
             patternMatched : function (evt) {
-                if (!RouteEvent.defaultPatternMatched.apply(this, [evt])) return;
-                this.getView().getModel('nav').setProperty('/sideNav/selectedKey', `nav_item_route_orders`);
-
-                this.mainModel.setProperty('/editting', false);
-                this.mainModel.setProperty('/orderData', {});
+                if (!this.defaultPatternMatched(evt)) return;
+                this.comp.getModel('nav').setProperty('/sideNav/selectedKey', `nav_item_route_orders`);
 
                 this.orderID = null;
 
@@ -71,8 +57,7 @@ sap.ui.define([
                         //order found
                         this.orderID = parseInt(id);
                         this.getView().setBindingContext(context, 'service');
-                        this.refreshBinding(null, null, true);
-
+                        
                         document.title = this.i18n.getText('order_view_title', [this.orderID]);
 
                         if (!this.order_details_table) {
@@ -87,37 +72,6 @@ sap.ui.define([
                     notFound();
                 }
 
-            },
-
-            refreshBinding: function (onSuccess = null, onError = null, cached = false) {
-                if (!onError)
-                    onError = (err) => {
-                        this.showErrorDialog({message: err.message});
-                    }
-                const onSuccess2 = (data) => {
-                    if (!data || parseInt(data.OrderID) !== parseInt(this.orderID)) {
-                        this.showErrorDialog();
-                        return;
-                    }
-                    data = {
-                        OrderID: data.OrderID,
-                        CustomerID: data.CustomerID,
-                        OrderDate: data.OrderDate,
-                        Freight: data.Freight,
-                    }
-                    this.mainModel.setProperty('/ordertData', data);
-                    if (onSuccess)
-                        onSuccess(data);
-                }
-                let data = !cached ? false : this.comp.getModel('service').getObject('', this.getView().getBindingContext('service'));
-                if (!data || parseInt(data.OrderID) !== parseInt(this.orderID))
-                    this.comp.getModel('service').read(`/Orders(${this.orderID})`, {
-                        urlParameters: { '$expand':'Customer' },
-                        success : onSuccess2,
-                        error : onError
-                    });
-                else
-                    onSuccess2(data);
             },
 
             createOrderDetailTable : function (order_id) {

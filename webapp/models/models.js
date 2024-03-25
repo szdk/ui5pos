@@ -31,6 +31,16 @@ sap.ui.define([
                 return model;
             },
 
+            createNavModel: function () {
+                return new JSONModel({
+                    sideNav : {
+                        visible : true,
+                        selectedKey : "home",
+                        expanded : !Device.system.phone,
+                    }
+                });
+            },
+
             //Northwind Odata Service
             createService : function (settings) {
                 let result = new Promise((resolve, reject) => {

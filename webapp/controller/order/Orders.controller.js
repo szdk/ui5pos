@@ -29,6 +29,8 @@ sap.ui.define([
         return Controller.extend("ui5pos.szdk.controller.order.Orders", {
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
+
+                this.comp.getRouter().getRoute('orders').attachPatternMatched(this.defaultPatternMatched.bind(this));
                 
                 this.comp.szdk_serviceCreated.then((model) => {
                     let inputOpenOrder = new Input({

@@ -8,6 +8,7 @@ sap.ui.define([
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
 
+                this.comp.getRouter().getRoute('xxxxxxxxxxxxxxxxxx').attachPatternMatched(this.defaultPatternMatched.bind(this));
                 
             }
         });

@@ -41,10 +41,10 @@
                         )
                     }" id="app_side_nav_list" selectedKey="{nav>/sideNav/selectedKey}">
                         <t:NavigationList>
+                            <t:NavigationListItem key="nav_item_route_create_order" id="app_nav_route_create_order" text="{lang>create_order_title}" icon="sap-icon://cart-approval" />
                             <t:NavigationListItem key="nav_item_route_orders" id="app_nav_route_orders" text="{lang>orders}" icon="sap-icon://sales-order-item" />
-                            <t:NavigationListItem key="nav_item_route_home" id="app_nav_route_home" text="{lang>dashboard}" icon="sap-icon://bbyd-dashboard"/>
+                            <t:NavigationListItem selectable="false" enabled="false" key="nav_item_route_home" id="app_nav_route_home" text="{lang>dashboard}" icon="sap-icon://bbyd-dashboard"/>
                             <t:NavigationListItem text="{lang>products}" icon="sap-icon://product" selectable="false">
-                                <!-- <t:NavigationListItem key="nav_item_route_view_product" id="app_nav_route_view_product" text="{lang>view_product}"></t:NavigationListItem> -->
                                 <t:NavigationListItem key="nav_item_route_products" id="app_nav_route_products" text="{lang>app_nav_all_products}" icon="sap-icon://activity-items"></t:NavigationListItem>
                                 <t:NavigationListItem key="nav_item_route_create_product" id="app_nav_route_create_product" text="{lang>product_create}"></t:NavigationListItem>
                             </t:NavigationListItem>

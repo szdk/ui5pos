@@ -9,6 +9,13 @@ sap.ui.define([
         return Controller.extend("ui5pos.szdk.controller.Setup", {
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
+
+                this.comp.getRouter().getRoute('setup').attachPatternMatched((evt) => {
+                    if (this.comp.getModel('service')) {
+                        this.goBack();
+                    }
+                    this.comp.getModel('nav').setProperty('/sideNav/visible', false);
+                });
                 
                 let localModel = new JSONModel({
                     odataType : "1",

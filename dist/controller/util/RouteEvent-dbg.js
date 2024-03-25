@@ -2,20 +2,22 @@ sap.ui.define([
     ],
     function () {
         "use strict";
+
+        //note: bind component as this while calling this function
         const defaultPatternMatched = function (evt) {
             let routeName = evt.getParameter('name');
 
             //service not set yet, redirect to setup page
-            if (!this.comp.getModel('service')) {
-                this.comp.getRouter().navTo('setup');
+            if (!this.getModel('service')) {
+                this.getRouter().navTo('setup');
                 return false;
             }
 
             //show nav item list
-            this.getView().getModel('nav').setProperty('/sideNav/visible', true);
+            this.getModel('nav').setProperty('/sideNav/visible', true);
 
             //select relevent nav item with the help of navModel
-            this.getView().getModel('nav').setProperty('/sideNav/selectedKey', `nav_item_route_${routeName}`);
+            this.getModel('nav').setProperty('/sideNav/selectedKey', `nav_item_route_${routeName}`);
             return true;
         };
         return {
@@ -36,13 +38,14 @@ sap.ui.define([
                 },
                 "view_product" : {}, // patternmatched is defined in its view controller
                 "setup" : {
+                    //note: bind component as "this" when calling this function
                     patternMatched : function (evt) {
                         //service already set, move to home page
-                        if (this.comp.getModel('service')) {
+                        if (this.getModel('service')) {
                             this.goBack();
                         }
                         // hide side nav items
-                        this.getView().getModel('nav').setProperty('/sideNav/visible', false);
+                        this.getModel('nav').setProperty('/sideNav/visible', false);
                     }
                 }
             },

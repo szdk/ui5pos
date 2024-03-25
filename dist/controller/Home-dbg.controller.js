@@ -7,6 +7,9 @@ sap.ui.define([
         return Controller.extend("ui5pos.szdk.controller.Home", {
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
+
+                this.comp.getRouter().getRoute('home').attachPatternMatched(this.defaultPatternMatched.bind(this));
+                
             }
         });
     }

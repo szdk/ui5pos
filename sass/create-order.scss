@@ -1,0 +1,9 @@
+.h-sep-child > div {
+    margin-left : 0.25em;
+}
+.h-sep-child > div:nth-child(1) {
+    margin-left : 0;
+}
+
+.custom-font.font-2-em {font-size: 2em}
+.custom-font.font-4-em {font-size : 4em}

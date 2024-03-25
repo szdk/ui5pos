@@ -1,0 +1,151 @@
+<mvc:View xmlns:cards="sap.f.cards" xmlns:widgets="sap.ui.integration.widgets" 
+		controllerName="ui5pos.szdk.controller.order.CreateOrder"
+		xmlns:mvc="sap.ui.core.mvc"
+		xmlns="sap.m"
+		xmlns:f="sap.f"
+		xmlns:layout="sap.ui.layout"
+		xmlns:core="sap.ui.core"
+		xmlns:form="sap.ui.layout.form"
+
+		core:require="{formatMessage: 'sap/base/strings/formatMessage'}"
+
+		height="100%">
+
+		<Page backgroundDesign="Transparent" title="{lang>create_order_title}">
+			<customHeader>
+				<OverflowToolbar>
+					<core:Icon src="sap-icon://cart-approval"></core:Icon>
+					<Title text="{lang>create_order_title}"></Title>
+				</OverflowToolbar>
+			</customHeader>
+			<content>
+				<HBox renderType="Bare" width="100%" wrap="Wrap" justifyContent="SpaceAround">
+					<VBox renderType="Bare" width="70%">
+						<HBox class="p-1" renderType="Bare">
+							<!-- input -->
+							<VBox renderType="Bare" class="p-1">
+								<f:Card height="100%">
+									<f:header>
+										<cards:Header title="{lang>create_order_input_item}" iconSrc="sap-icon://cart-2"></cards:Header>
+									</f:header>
+									<f:content>
+										<VBox renderType="Bare">
+											<!-- product id input -->
+											<HBox renderType="Bare" wrap="Wrap" class="p-1">
+												<VBox renderType="Bare" class="p-1">
+													<Label labelFor="select_input_mode" text="{lang>create_order_input_mode}"></Label>
+													<Select id="select_input_mode" selectedKey="{config>/input/mode}">
+														<core:ListItem key="scan" text="{lang>create_order_mode_scan}" icon="sap-icon://bar-code"></core:ListItem>
+														<core:ListItem key="input" text="{lang>create_order_mode_input}" icon="sap-icon://value-help"></core:ListItem>
+													</Select>
+												</VBox>
+												<VBox renderType="Bare" class="p-1">
+													<Label labelFor="input_product_id" text="{lang>product_id}"></Label>
+													<Input id="input_product_id" value="{data>/input/productID}" change=".onInputProductID" showValueHelp="true" valueHelpRequest=".onValueHelpInputProduct"></Input>
+												</VBox>
+											</HBox>
+											
+											<HBox renderType="Bare" class="p-1 h-sep-child">
+												<!-- quantity input -->
+												<VBox renderType="Bare" class="p-1">
+													<Label labelFor="input_quantity" text="{lang>create_order_label_quantity}"></Label>
+													<HBox renderType="Bare" class="h-sep-child">
+														<Input
+															id="input_quantity"
+															value="{
+																path : 'data>/input/quantity',
+																type : 'sap.ui.model.type.Integer',
+																constraints : {
+																	minimum : 1,
+																	maximum : 10000
+																}
+															}"
+															editable="{= ${config>/input/lock_quantity} === false }"
+															type="Number"
+															width="3.5em"
+														/>
+														<ToggleButton type="Default" icon="sap-icon://locked" pressed="{config>/input/lock_quantity}"></ToggleButton>
+													</HBox>
+												</VBox>
+												<!-- discount input -->
+												<VBox renderType="Bare" class="p-1">
+													<Label labelFor="input_discount" text="{lang>create_order_label_discount}"></Label>
+													<HBox renderType="Bare" class="h-sep-child">
+														<Select width="5.5em" selectedKey="{data>/input/discount_type}" editable="{= ${config>/input/lock_discount} === false }">
+															<core:ListItem key="per" text="%"></core:ListItem>
+															<core:ListItem key="usd" text="$"></core:ListItem>
+														</Select>
+														<Input
+															id="input_discount"
+															value="{data>/input/discount}"
+															editable="{= ${config>/input/lock_discount} === false }"
+															type="Number"
+															width="3.5em"
+														/>
+														<ToggleButton type="Default" icon="sap-icon://locked" pressed="{config>/input/lock_discount}"></ToggleButton>
+													</HBox>
+												</VBox>
+												<VBox renderType="Bare" class="p-1" justifyContent="End">
+													<Button type="Emphasized" text="{lang>create_order_btn_add_item}" press=".onAddItem"></Button>
+												</VBox>
+											</HBox>
+										</VBox>
+									</f:content>
+								</f:Card>
+							</VBox>
+							<!-- order total  -->
+							<VBox renderType="Bare" class="p-1">
+								<f:Card height="100%">
+									<f:header>
+										<cards:Header title="{lang>order_total}" iconSrc="sap-icon://sum"></cards:Header>
+									</f:header>
+									<f:content>
+										<VBox renderType="Bare">
+											<HBox renderType="Bare" width="20em" class="p-2" justifyContent="End">
+												<Text text="$" class="m-r-1 custom-font font-2-em"/>
+												<Text
+													text="{
+														parts:[{path:'order>/total'},{value:'USD'}],
+														type: 'sap.ui.model.type.Currency',
+														formatOptions: {showMeasure:false}
+													}"
+													class="custom-font font-4-em"
+												></Text>
+											</HBox>
+										</VBox>
+									</f:content>
+								</f:Card>
+							</VBox>
+						</HBox>
+						<HBox class="p-1" renderType="Bare" >
+							<VBox renderType="Bare" class="p-1">
+								<!-- customer -->
+								<f:Card height="100%">
+									<f:header>
+										<cards:Header title="{lang>customer_details}"></cards:Header>
+									</f:header>
+								</f:Card>
+							</VBox>
+							<VBox renderType="Bare" class="p-1">
+								<!-- past orders -->
+								<f:Card height="100%">
+									<f:header>
+										<cards:Header title="{lang>create_order_previous}"></cards:Header>
+									</f:header>
+								</f:Card>
+							</VBox>
+						</HBox>
+					</VBox>
+					<VBox renderType="Bare" width="29.5%" class="p-2">
+						<!-- order items -->
+						<f:Card height="100%">
+							<f:header>
+								<cards:Header title="{lang>order_view_items_header}"></cards:Header>
+							</f:header>
+						</f:Card>
+					</VBox>
+				</HBox>
+			</content>
+		</Page>
+
+</mvc:View>

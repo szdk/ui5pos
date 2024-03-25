@@ -10,6 +10,9 @@ sap.ui.define([
         return Controller.extend("ui5pos.szdk.controller.product.Create", {
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
+
+                this.comp.getRouter().getRoute('create_product').attachPatternMatched(this.defaultPatternMatched.bind(this));
+
                 //========================= MODEL ============================================
                 this.mainModel = new JSONModel({
                     productData : {

@@ -42,6 +42,8 @@ sap.ui.define([
                 
                 window.temp = this;
 
+                this.comp.getRouter().getRoute('products').attachPatternMatched(this.defaultPatternMatched.bind(this));
+
                 //Create Table after service has been created
                 this.comp.szdk_serviceCreated.then((model) => {
                     //Open Product input toolbar

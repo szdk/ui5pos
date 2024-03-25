@@ -86,6 +86,13 @@
                     ]
                 },
                 {
+                    "name" : "create_order",
+                    "pattern" : "order/create",
+                    "target" : [
+                        "create_order"
+                    ]
+                },
+                {
                     "name" : "orders",
                     "pattern" : "orders",
                     "target" : [
@@ -94,7 +101,7 @@
                 },
                 {
                     "name" : "view_order",
-                    "pattern" : "order/{id}",
+                    "pattern" : "order/view/{id}",
                     "target" : [
                         "view_order"
                     ]
@@ -115,7 +122,7 @@
                 },
                 {
                     "name": "view_product",
-                    "pattern": "product/{id}",
+                    "pattern": "product/view/{id}",
                     "target" : [
                         "view_product"
                     ]
@@ -134,6 +141,11 @@
                     "title": "{{home_title}}",
                     "viewName": "Home",
                     "viewId": "home"
+                },
+                "create_order" : {
+                    "title" : "{{create_order_title}}",
+                    "viewName" : "order.CreateOrder",
+                    "viewId" : "create_order"
                 },
                 "orders" : {
                     "title" : "{{orders_title}}",

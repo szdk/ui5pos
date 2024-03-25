@@ -1,6 +1,5 @@
 sap.ui.define([
     "ui5pos/szdk/controller/BaseController",
-    "ui5pos/szdk/controller/util/RouteEvent",
     "ui5pos/szdk/controller/util/F4Help",
     "ui5pos/szdk/controller/util/Table",
     "ui5pos/szdk/controller/util/FilterDialog",
@@ -12,8 +11,8 @@ sap.ui.define([
     "sap/m/Button",
     "sap/m/Link",
     ],
-    function (Controller,
-        RouteEvent,
+    function (
+        Controller,
         F4Help,
         TableGenerator,
         FilterDialog,
@@ -366,8 +365,8 @@ sap.ui.define([
 
             //============================================
             patternMatched: function (evt) {
-                if (!RouteEvent.defaultPatternMatched.apply(this, [evt])) return;
-                this.getView().getModel('nav').setProperty('/sideNav/selectedKey', `nav_item_route_products`);
+                if (!this.defaultPatternMatched(evt)) return;
+                this.comp.getModel('nav').setProperty('/sideNav/selectedKey', `nav_item_route_products`);
 
                 this.mainModel.setProperty('/editting', false);
                 this.mainModel.setProperty('/productData', {});

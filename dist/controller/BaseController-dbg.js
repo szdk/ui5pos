@@ -28,6 +28,23 @@ sap.ui.define([
                 this.inputCheck.setResourceBundel(this.i18n);
             },
 
+            defaultPatternMatched: function (evt) {
+                let routeName = evt.getParameter('name');
+
+                //service not set yet, redirect to setup page
+                if (!this.comp.getModel('service')) {
+                    this.comp.getRouter().navTo('setup');
+                    return false;
+                }
+    
+                //show nav item list
+                this.comp.getModel('nav').setProperty('/sideNav/visible', true);
+    
+                //select relevent nav item with the help of navModel
+                this.comp.getModel('nav').setProperty('/sideNav/selectedKey', `nav_item_route_${routeName}`);
+                return true;
+            },
+
             goBack: function (defaultPage = "home", parameters = {}) {
                 let prev = History.getInstance().getPreviousHash();
                 if (prev !== undefined)

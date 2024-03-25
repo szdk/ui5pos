@@ -1,2 +1,2 @@
-sap.ui.define(["ui5pos/szdk/controller/BaseController"],function(n){"use strict";return n.extend("ui5pos.szdk.controller.XXXXXX",{onInit:function(){n.prototype.onInit.apply(this,arguments)}})});
+sap.ui.define(["ui5pos/szdk/controller/BaseController"],function(t){"use strict";return t.extend("ui5pos.szdk.controller.XXXXXX",{onInit:function(){t.prototype.onInit.apply(this,arguments);this.comp.getRouter().getRoute("xxxxxxxxxxxxxxxxxx").attachPatternMatched(this.defaultPatternMatched.bind(this))}})});
 //# sourceMappingURL=template.controller.js.map

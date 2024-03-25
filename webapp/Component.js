@@ -2,7 +2,7 @@ sap.ui.define([
     "sap/ui/core/UIComponent",
     "ui5pos/szdk/models/models",
 ],
-function (UIComponent, models, MockServer) {
+function (UIComponent, models) {
     "use strict";
 
     return UIComponent.extend("ui5pos.szdk.Component", {
@@ -27,6 +27,9 @@ function (UIComponent, models, MockServer) {
             // ======================================== MODELS  ======================================== 
             this.setModel(models.createDeviceModel(), "device");
             this.setModel(models.createSettingsModel(), "settings");
+            
+            this.setModel(models.createNavModel(), "nav");
+            this.getModel('nav').setDefaultBindingMode("OneWay");
 
             // change app title
             this.getRouter().attachTitleChanged(function(oEvent) {
