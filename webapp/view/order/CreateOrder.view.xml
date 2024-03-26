@@ -16,12 +16,21 @@
 				<OverflowToolbar>
 					<core:Icon src="sap-icon://cart-approval"></core:Icon>
 					<Title text="{lang>create_order_title}"></Title>
+					<ToolbarSpacer></ToolbarSpacer>
+					<Button icon="sap-icon://clear-all" text="{lang>clear}"></Button>
+					<ToggleButton text="{lang>auto_print}" icon="sap-icon://print" pressed="{config>/auto_print}"></ToggleButton>
 				</OverflowToolbar>
 			</customHeader>
+			<footer>
+				<OverflowToolbar>
+					<ToolbarSpacer ></ToolbarSpacer>
+					<Button text="{lang>create_order}" type="Emphasized" icon="sap-icon://sales-order-item"></Button>
+				</OverflowToolbar>
+			</footer>
 			<content>
-				<HBox renderType="Bare" width="100%" wrap="Wrap" justifyContent="SpaceAround">
+				<HBox class="p-1" renderType="Bare" width="100%" wrap="Wrap" justifyContent="SpaceAround">
 					<VBox renderType="Bare" width="70%">
-						<HBox class="p-1" renderType="Bare">
+						<HBox renderType="Bare">
 							<!-- input -->
 							<VBox renderType="Bare" class="p-1">
 								<f:Card height="100%">
@@ -45,11 +54,29 @@
 												</VBox>
 											</HBox>
 											
-											<HBox renderType="Bare" class="p-1 h-sep-child">
+											<HBox renderType="Bare" class="p-1 custom h-sep-child">
+												<!-- discount input -->
+												<VBox renderType="Bare" class="p-1">
+													<Label labelFor="input_discount" text="{lang>order_discount}"></Label>
+													<HBox renderType="Bare" class="custom h-sep-child">
+														<Select width="5.5em" selectedKey="{data>/input/discount_type}" editable="{= ${config>/input/lock_discount} === false }">
+															<core:ListItem key="per" text="%"></core:ListItem>
+															<core:ListItem key="usd" text="$"></core:ListItem>
+														</Select>
+														<Input
+															id="input_discount"
+															value="{data>/input/discount}"
+															editable="{= ${config>/input/lock_discount} === false }"
+															type="Number"
+															width="3.5em"
+														/>
+														<ToggleButton type="Default" icon="sap-icon://locked" pressed="{config>/input/lock_discount}"></ToggleButton>
+													</HBox>
+												</VBox>
 												<!-- quantity input -->
 												<VBox renderType="Bare" class="p-1">
 													<Label labelFor="input_quantity" text="{lang>create_order_label_quantity}"></Label>
-													<HBox renderType="Bare" class="h-sep-child">
+													<HBox renderType="Bare" class="custom h-sep-child">
 														<Input
 															id="input_quantity"
 															value="{
@@ -67,24 +94,7 @@
 														<ToggleButton type="Default" icon="sap-icon://locked" pressed="{config>/input/lock_quantity}"></ToggleButton>
 													</HBox>
 												</VBox>
-												<!-- discount input -->
-												<VBox renderType="Bare" class="p-1">
-													<Label labelFor="input_discount" text="{lang>create_order_label_discount}"></Label>
-													<HBox renderType="Bare" class="h-sep-child">
-														<Select width="5.5em" selectedKey="{data>/input/discount_type}" editable="{= ${config>/input/lock_discount} === false }">
-															<core:ListItem key="per" text="%"></core:ListItem>
-															<core:ListItem key="usd" text="$"></core:ListItem>
-														</Select>
-														<Input
-															id="input_discount"
-															value="{data>/input/discount}"
-															editable="{= ${config>/input/lock_discount} === false }"
-															type="Number"
-															width="3.5em"
-														/>
-														<ToggleButton type="Default" icon="sap-icon://locked" pressed="{config>/input/lock_discount}"></ToggleButton>
-													</HBox>
-												</VBox>
+												<!-- add item button -->
 												<VBox renderType="Bare" class="p-1" justifyContent="End">
 													<Button type="Emphasized" text="{lang>create_order_btn_add_item}" press=".onAddItem"></Button>
 												</VBox>
@@ -100,8 +110,8 @@
 										<cards:Header title="{lang>order_total}" iconSrc="sap-icon://sum"></cards:Header>
 									</f:header>
 									<f:content>
-										<VBox renderType="Bare">
-											<HBox renderType="Bare" width="20em" class="p-2" justifyContent="End">
+										<VBox renderType="Bare" width="100%">
+											<HBox renderType="Bare" width="100%" class="p-2" justifyContent="End">
 												<Text text="$" class="m-r-1 custom-font font-2-em"/>
 												<Text
 													text="{
@@ -112,36 +122,179 @@
 													class="custom-font font-4-em"
 												></Text>
 											</HBox>
+											<HBox renderType="Bare" alignItems="End" class="p-1">
+												<VBox renderType="Bare" class="p-1">
+													<Table class="no-border">
+														<columns>
+															<Column></Column><Column hAlign="End"></Column>
+														</columns>
+														<items>
+															<ColumnListItem>
+																<Text text="{lang>create_order_total_price}:"></Text>
+																<ObjectNumber number="{
+																	parts:[{path:'order>/total_price'},{value:'USD'}],
+																	type: 'sap.ui.model.type.Currency',
+																	formatOptions: {showMeasure:false}
+																}" unit="USD"></ObjectNumber>
+															</ColumnListItem>
+															<ColumnListItem>
+																<Text text="{lang>create_order_total_discount}:"></Text>
+																<ObjectNumber number="{
+																	parts:[{path:'order>/total_discount'},{value:'USD'}],
+																	type: 'sap.ui.model.type.Currency',
+																	formatOptions: {showMeasure:false}
+																}" unit="USD"></ObjectNumber>
+															</ColumnListItem>
+															<ColumnListItem>
+																<Text text="{lang>order_total}:"></Text>
+																<ObjectNumber number="{
+																	parts:[{path:'order>/total'},{value:'USD'}],
+																	type: 'sap.ui.model.type.Currency',
+																	formatOptions: {showMeasure:false}
+																}" unit="USD"></ObjectNumber>
+															</ColumnListItem>
+														</items>
+													</Table>
+												</VBox>
+												<!-- <VBox renderType="Bare" class="p-1">
+													<Button text="{lang>create_order}" type="Emphasized"></Button>
+												</VBox> -->
+											</HBox>
 										</VBox>
 									</f:content>
 								</f:Card>
 							</VBox>
 						</HBox>
-						<HBox class="p-1" renderType="Bare" >
-							<VBox renderType="Bare" class="p-1">
-								<!-- customer -->
+						<HBox renderType="Bare" >
+							<!-- customer -->
+							<VBox renderType="Bare" width="50%" class="p-1">
 								<f:Card height="100%">
 									<f:header>
-										<cards:Header title="{lang>customer_details}"></cards:Header>
+										<cards:Header title="{lang>customer_details}" iconSrc="sap-icon://person-placeholder"></cards:Header>
 									</f:header>
+									<f:content>
+										<VBox renderType="Bare" class="p-2" width="100%">
+											<HBox renderType="Bare" justifyContent="End">
+												<Button type="Transparent" text="{lang>clear}"></Button>
+											</HBox>
+											<HBox renderType="Bare" alignItems="Center" justifyContent="SpaceBetween">
+												<Label width="40%" labelFor="input_customer_phone" text="{lang>customer_phone}:"></Label>
+												<Input width="60%" id="input_customer_phone" value="{order>/customer_phone}"></Input>
+											</HBox>
+											<HBox renderType="Bare" alignItems="Center" justifyContent="SpaceBetween">
+												<Label width="40%" labelFor="input_customer_name" text="{lang>customer_name}:"></Label>
+												<Input width="60%" id="input_customer_name" value="{order>/customer_name}"></Input>
+											</HBox>
+											<HBox renderType="Bare">
+												<VBox renderType="Bare" width="70%" class="p-r-2">
+													<Label labelFor="input_customer_address" text="{lang>customer_address}:"></Label>
+													<Input id="input_customer_address" value="{order>/customer_address}"></Input>
+												</VBox>
+												<VBox renderType="Bare" width="30%">
+													<Label labelFor="input_customer_city" text="{lang>customer_city}:"></Label>
+													<Input id="input_customer_city" value="{order>/customer_city}"></Input>
+												</VBox>
+											</HBox>
+											<HBox renderType="Bare">
+												<VBox renderType="Bare" width="50%" class="p-r-2">
+													<Label labelFor="input_customer_postal" text="{lang>customer_postal_code}:"></Label>
+													<Input id="input_customer_postal" value="{order>/customer_postal_code}"></Input>
+												</VBox>
+												<VBox renderType="Bare" width="50%">
+													<Label labelFor="input_customer_country" text="{lang>customer_country}:"></Label>
+													<Input id="input_customer_country" value="{order>/customer_country}"></Input>
+												</VBox>
+											</HBox>
+										</VBox>
+									</f:content>
 								</f:Card>
 							</VBox>
-							<VBox renderType="Bare" class="p-1">
-								<!-- past orders -->
+							<!-- past orders -->
+							<VBox renderType="Bare" width="50%" class="p-1">
 								<f:Card height="100%">
 									<f:header>
-										<cards:Header title="{lang>create_order_previous}"></cards:Header>
+										<cards:Header title="{lang>create_order_previous}" iconSrc="sap-icon://sales-order-item"></cards:Header>
 									</f:header>
+									<f:content>
+										<List items="{data>/previous_orders}">
+											<noData>
+												<IllustratedMessage illustrationType="sapIllus-SimpleEmptyList"></IllustratedMessage>
+											</noData>
+											<CustomListItem>
+												<VBox renderType="Bare" class="p-lr-2 p-b-1">
+													<HBox renderType="Bare" alignItems="Center" justifyContent="SpaceBetween">
+														<Title text="{data>order_id}" titleStyle="H3"></Title>
+														<HBox renderType="Bare">
+															<Button type="Transparent" icon="sap-icon://delete" tooltip="{lang>delete}"></Button>
+															<Button type="Transparent" icon="sap-icon://show" tooltip="{lang>view}"></Button>
+															<Button type="Transparent" icon="sap-icon://edit" tooltip="{lang>edit}"></Button>
+															<Button type="Transparent" icon="sap-icon://print" tooltip="{lang>print}"></Button>
+														</HBox>
+													</HBox>
+													<HBox renderType="Bare" alignItems="Center">
+															<ObjectAttribute
+																class="p-r-3"
+																title="{lang>order_total}" text="{
+																	parts:[{path:'data>order_total'},{value:'$'}],
+																	type: 'sap.ui.model.type.Currency',
+																	formatOptions: {showMeasure:true}
+															}"></ObjectAttribute>
+															<ObjectAttribute
+																title="{lang>create_order_prev_phone}"
+																text="{data>phone}"
+															></ObjectAttribute>
+													</HBox>
+												</VBox>
+											</CustomListItem>
+										</List>
+									</f:content>
 								</f:Card>
 							</VBox>
 						</HBox>
 					</VBox>
-					<VBox renderType="Bare" width="29.5%" class="p-2">
-						<!-- order items -->
+					<!-- order items -->
+					<VBox renderType="Bare" width="29.5%" class="p-1">
 						<f:Card height="100%">
 							<f:header>
-								<cards:Header title="{lang>order_view_items_header}"></cards:Header>
+								<cards:Header title="{lang>order_view_items_header}" iconSrc="sap-icon://product"></cards:Header>
 							</f:header>
+							<f:content>
+								<List items="{order>/items}">
+									<noData>
+										<IllustratedMessage
+											illustrationType="sapIllus-EmptyList"
+											title="{lang>create_order_no_item_title}"
+				    						description="{lang>create_order_no_item_desc}"
+										></IllustratedMessage>
+									</noData>
+									<CustomListItem>
+										<VBox renderType="Bare" class="p-lr-2 p-b-1">
+											<HBox renderType="Bare" justifyContent="SpaceBetween" alignItems="Center">
+												<Title text="{order>name}" title="{order>name}"/>
+												<HBox renderType="Bare" alignItems="Center">
+													<Button icon="sap-icon://edit" type="Transparent"></Button>
+													<Button icon="sap-icon://delete" type="Transparent"></Button>
+												</HBox>
+											</HBox>
+											<HBox renderType="Bare" alignItems="Center">
+												<ToolbarSpacer></ToolbarSpacer>
+												<ObjectAttribute title="{lang>create_order_price}" text="{
+													parts:[{path:'order>price'},{value:'$'}],
+													type: 'sap.ui.model.type.Currency',
+													formatOptions: {showMeasure:true}
+												}"></ObjectAttribute>
+												<ObjectAttribute title="{lang>order_discount}" text="{= (${order>discount} * 100) + '%' }" class="p-l-3"></ObjectAttribute>
+												<ObjectAttribute title="{lang>order_quantity}" text="{order>quantity}" class="p-l-3"></ObjectAttribute>
+												<ObjectAttribute title="{lang>create_order_total}" text="{
+													parts:[{path:'order>total'},{value:'$'}],
+													type: 'sap.ui.model.type.Currency',
+													formatOptions: {showMeasure:true}
+												}" class="p-l-3"></ObjectAttribute>
+											</HBox>
+										</VBox>
+									</CustomListItem>
+								</List>
+							</f:content>
 						</f:Card>
 					</VBox>
 				</HBox>
