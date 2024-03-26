@@ -1,0 +1,51 @@
+
+.custom.h-sep-child > * {
+    margin-right : 0.25em;
+}
+.custom.h-sep-child > *:last-child {
+    margin-right : 0;
+}
+
+.no-border table tbody td { border-top : none;}
+
+div#ui5pos-component---create_order--cnt-left-pane {width: 70%;}
+div#ui5pos-component---create_order--cnt-right-pane {width: 30%;}
+
+div#ui5pos-component---create_order--cnt-left-tp-1 {width: 40%;}
+div#ui5pos-component---create_order--cnt-left-tp-2 {width: 60%;}
+
+div#ui5pos-component---create_order--cnt-cust {width: 50%;}
+div#ui5pos-component---create_order--cnt-prev-ord {width: 50%;}
+
+@media screen and (max-width : 1600px ) {
+    div#ui5pos-component---create_order--cnt-left-pane {width: 67%;}
+    div#ui5pos-component---create_order--cnt-right-pane {width: 33%;}
+
+    div#ui5pos-component---create_order--cnt-left-tp-1 {width: 46%;}
+    div#ui5pos-component---create_order--cnt-left-tp-2 {width: 54%;}
+}
+
+@media screen and (max-width : 1400px ) {
+    div#ui5pos-component---create_order--cnt-left-tp-1 {width: 40%;}
+    div#ui5pos-component---create_order--cnt-left-tp-2 {width: 60%;}
+}
+
+@media screen and (max-width : 1100px) {
+    div#ui5pos-component---create_order--cnt-left-tp-1 {width: 45%;}
+    div#ui5pos-component---create_order--cnt-left-tp-2 {width: 55%;}
+}
+
+@media screen and (max-width : 980px) {
+    div#ui5pos-component---create_order--cnt-left-pane {width: 100%;}
+    div#ui5pos-component---create_order--cnt-right-pane {width: 100%;}
+
+    div#ui5pos-component---create_order--cnt-left-tp-1 {width: 50%;}
+    div#ui5pos-component---create_order--cnt-left-tp-2 {width: 50%;}
+}
+
+@media screen and (max-width : 700px) {
+    div#ui5pos-component---create_order--cnt-left-tp-1 {width: 100%;}
+    div#ui5pos-component---create_order--cnt-left-tp-2 {width: 100%;}
+    div#ui5pos-component---create_order--cnt-cust {width: 100%;}
+    div#ui5pos-component---create_order--cnt-prev-ord {width: 100%;}
+}

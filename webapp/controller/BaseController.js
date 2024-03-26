@@ -39,6 +39,7 @@ sap.ui.define([
     
                 //show nav item list
                 this.comp.getModel('nav').setProperty('/sideNav/visible', true);
+                this.comp.getModel('nav').setProperty('/sideNav/expandableMin', 1000);
     
                 //select relevent nav item with the help of navModel
                 this.comp.getModel('nav').setProperty('/sideNav/selectedKey', `nav_item_route_${routeName}`);

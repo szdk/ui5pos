@@ -1,10 +1,12 @@
 sap.ui.define([
     "ui5pos/szdk/controller/BaseController",
-    "sap/ui/model/json/JSONModel"
+    "sap/ui/model/json/JSONModel",
+    "sap/ui/Device",
     ],
     function (
         Controller,
-        JSONModel
+        JSONModel,
+        Device
         ) {
         "use strict";
 
@@ -12,7 +14,9 @@ sap.ui.define([
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
 
-                // this.comp.getRouter().getRoute('create_order').attachPatternMatched(this.defaultPatternMatched.bind(this));
+                this.comp.getRouter().getRoute('create_order').attachPatternMatched(() => {
+                    this.comp.getModel('nav').setProperty('/sideNav/expandableMin', 1260);
+                });
 
                 // ========= models ============================
                 this.configModel = new JSONModel({
@@ -41,7 +45,7 @@ sap.ui.define([
                 this.getView().setModel(this.dataModel, 'data');
 
                 this.orderModel = new JSONModel({
-                    total : 0,
+                    total : 100000,
                     total_price : 0,
                     total_discount : 0,
                     items : [

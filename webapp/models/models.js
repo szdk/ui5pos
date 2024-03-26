@@ -37,6 +37,7 @@ sap.ui.define([
                         visible : true,
                         selectedKey : "home",
                         expanded : !Device.system.phone,
+                        expandableMin : 1000,
                     }
                 });
             },

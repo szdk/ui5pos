@@ -9,7 +9,7 @@
         <App id="app">
             <!-- <t:ToolPage id="toolpage" sideExpanded='{nav>/sideNav/expanded}'> -->
             <t:ToolPage id="toolpage" sideExpanded='{=
-                ( ${device>/system/phone} === true || ${device>/resize/width} > 999 ) &amp;&amp; ${nav>/sideNav/expanded}
+                ( ${device>/system/phone} === true || ${device>/resize/width} >= ${nav>/sideNav/expandableMin} ) &amp;&amp; ${nav>/sideNav/expanded}
             }'>
                 <t:header>
                     <t:ToolHeader>
@@ -36,7 +36,7 @@
                         ${nav>/sideNav/visible} &amp;&amp;
                         (
                             ${device>/system/phone} === true ||
-                            ${device>/resize/width} > 999 ||
+                            ${device>/resize/width} >= ${nav>/sideNav/expandableMin} ||
                             ${nav>/sideNav/expanded}
                         )
                     }" id="app_side_nav_list" selectedKey="{nav>/sideNav/selectedKey}">

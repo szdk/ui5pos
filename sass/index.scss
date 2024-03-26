@@ -1,4 +1,6 @@
 @use 'margin-padding';
 @use 'style';
 @use 'ui5classes';
-@use 'create-order';
+@use 'create-order/panel';
+@use 'create-order/input-panel';
+@use 'create-order/order-total';

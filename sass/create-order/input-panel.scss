@@ -1,0 +1,47 @@
+
+div#ui5pos-component---create_order--cnt-mode {
+    width: 40%;
+}
+
+div#ui5pos-component---create_order--cnt-item-id {
+    width: 60%;
+}
+
+
+div#ui5pos-component---create_order--cnt-disc {
+    width: 50%;
+}
+
+div#ui5pos-component---create_order--cnt-quan {
+    width: 50%;
+}
+
+div#ui5pos-component---create_order--cnt-btn-additm {
+    margin-top: 1em;
+}
+
+
+@media screen and (max-width : 1400px) {
+    div#ui5pos-component---create_order--cnt-mode {width: 55%;}
+    div#ui5pos-component---create_order--cnt-item-id {width: 45%;}
+
+    div#ui5pos-component---create_order--cnt-disc {
+        width: 100%;
+    }
+
+    div#ui5pos-component---create_order--sel-disc-type {
+        width: 40% !important;
+    }
+
+    div#ui5pos-component---create_order--inpt-disc {
+        width: 55% !important;
+    }
+
+    div#ui5pos-component---create_order--cnt-quan {
+        width: 60%;
+    }
+
+    div#ui5pos-component---create_order--cnt-btn-additm {
+        width: 40%;
+    }
+}
