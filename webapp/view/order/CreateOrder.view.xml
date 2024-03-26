@@ -35,7 +35,7 @@
 							<VBox renderType="Bare" class="p-1" id="cnt-left-tp-1">
 								<f:Card height="100%">
 									<f:header>
-										<cards:Header title="{lang>create_order_input_item}" iconSrc="sap-icon://cart-2"></cards:Header>
+										<cards:Header title="{lang>create_order_input_item}" iconSrc="sap-icon://cart-2" iconSize="{= ${device>/resize/height} > 800 ? 'S' : 'XS' }"></cards:Header>
 									</f:header>
 									<f:content>
 										<VBox renderType="Bare">
@@ -105,7 +105,7 @@
 							<VBox renderType="Bare" class="p-1" id="cnt-left-tp-2">
 								<f:Card height="100%">
 									<f:header>
-										<cards:Header title="{lang>order_total}" iconSrc="sap-icon://sum"></cards:Header>
+										<cards:Header title="{lang>order_total}" iconSrc="sap-icon://sum" iconSize="{= ${device>/resize/height} > 800 ? 'S' : 'XS' }"></cards:Header>
 									</f:header>
 									<f:content>
 										<VBox renderType="Bare" width="100%">
@@ -168,7 +168,7 @@
 							<VBox renderType="Bare" class="p-1" id="cnt-cust">
 								<f:Card height="100%">
 									<f:header>
-										<cards:Header title="{lang>customer_details}" iconSrc="sap-icon://person-placeholder"></cards:Header>
+										<cards:Header title="{lang>customer_details}" iconSrc="sap-icon://person-placeholder" iconSize="{= ${device>/resize/height} > 800 ? 'S' : 'XS' }"></cards:Header>
 									</f:header>
 									<f:content>
 										<VBox renderType="Bare" class="p-2" width="100%">
@@ -211,7 +211,7 @@
 							<VBox renderType="Bare" class="p-1" id="cnt-prev-ord">
 								<f:Card height="100%">
 									<f:header>
-										<cards:Header title="{lang>create_order_previous}" iconSrc="sap-icon://sales-order-item"></cards:Header>
+										<cards:Header title="{lang>create_order_previous}" iconSrc="sap-icon://sales-order-item" iconSize="{= ${device>/resize/height} > 800 ? 'S' : 'XS' }"></cards:Header>
 									</f:header>
 									<f:content>
 										<List items="{data>/previous_orders}">
@@ -254,7 +254,7 @@
 					<VBox renderType="Bare" id="cnt-right-pane" class="p-1">
 						<f:Card height="100%">
 							<f:header>
-								<cards:Header title="{lang>order_view_items_header}" iconSrc="sap-icon://product"></cards:Header>
+								<cards:Header title="{lang>order_view_items_header}" iconSrc="sap-icon://product" iconSize="{= ${device>/resize/height} > 800 ? 'S' : 'XS' }"></cards:Header>
 							</f:header>
 							<f:content>
 								<List items="{order>/items}">
