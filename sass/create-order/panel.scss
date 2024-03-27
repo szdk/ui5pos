@@ -8,6 +8,11 @@
 
 .no-border table tbody td { border-top : none;}
 
+.no-border .sapMListShowSeparatorsAll .sapMLIBShowSeparator:last-child>td:not(.sapMListTblDummyCell) {
+    border-bottom: none !important;
+}
+
+
 div#ui5pos-component---create_order--cnt-left-pane {width: 70%;}
 div#ui5pos-component---create_order--cnt-right-pane {width: 30%;}
 
@@ -16,6 +21,16 @@ div#ui5pos-component---create_order--cnt-left-tp-2 {width: 60%;}
 
 div#ui5pos-component---create_order--cnt-cust {width: 50%;}
 div#ui5pos-component---create_order--cnt-prev-ord {width: 50%;}
+
+// @media screen and (min-width : 1600px) {
+//     div#ui5pos-component---create_order--cnt-main {padding : 0.55em;}
+//     div#ui5pos-component---create_order--cnt-left-tp-1 {padding : 0.55em;}
+//     div#ui5pos-component---create_order--cnt-left-tp-2 {padding : 0.55em;}
+//     div#ui5pos-component---create_order--cnt-cust {padding : 0.55em;}
+//     div#ui5pos-component---create_order--cnt-prev-ord {padding : 0.55em;}
+//     div#ui5pos-component---create_order--cnt-right-pane {padding : 0.55em;}
+// }
+
 
 @media screen and (max-width : 1600px ) {
     div#ui5pos-component---create_order--cnt-left-pane {width: 67%;}
@@ -49,3 +64,4 @@ div#ui5pos-component---create_order--cnt-prev-ord {width: 50%;}
     div#ui5pos-component---create_order--cnt-cust {width: 100%;}
     div#ui5pos-component---create_order--cnt-prev-ord {width: 100%;}
 }
+

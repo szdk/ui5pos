@@ -28,9 +28,10 @@
 				</OverflowToolbar>
 			</footer>
 			<content>
-				<HBox class="p-1" renderType="Bare" width="100%" wrap="Wrap" justifyContent="SpaceAround">
-					<VBox renderType="Bare" id="cnt-left-pane">
-						<HBox renderType="Bare" wrap="Wrap">
+				<HBox height="100%" class="p-1" renderType="Bare" width="100%" wrap="Wrap" justifyContent="SpaceAround" id="cnt-main">
+					<HBox renderType="Bare" wrap="Wrap" id="cnt-left-pane">
+					<!-- <VBox renderType="Bare" id="cnt-left-pane"> -->
+						<!-- <HBox renderType="Bare" wrap="Wrap"> -->
 							<!-- input -->
 							<VBox renderType="Bare" class="p-1" id="cnt-left-tp-1">
 								<f:Card height="100%">
@@ -43,14 +44,14 @@
 											<HBox renderType="Bare" wrap="Wrap" class="p-1">
 												<VBox renderType="Bare" class="p-1" id="cnt-mode">
 													<Label labelFor="select_input_mode" text="{lang>create_order_input_mode}"></Label>
-													<Select id="select_input_mode" selectedKey="{config>/input/mode}">
+													<Select id="select_input_mode" selectedKey="{config>/input/mode}" enabled="{config>/editable}">
 														<core:ListItem key="scan" text="{lang>create_order_mode_scan}" icon="sap-icon://bar-code"></core:ListItem>
 														<core:ListItem key="input" text="{lang>create_order_mode_input}" icon="sap-icon://value-help"></core:ListItem>
 													</Select>
 												</VBox>
 												<VBox renderType="Bare" class="p-1" id="cnt-item-id">
 													<Label labelFor="input_product_id" text="{lang>product_id}"></Label>
-													<Input id="input_product_id" value="{data>/input/productID}" change=".onInputProductID" showValueHelp="true" valueHelpRequest=".onValueHelpInputProduct"></Input>
+													<Input id="input_product_id" submit=".onSubmitProductID" showValueHelp="true" valueHelpRequest=".onValueHelpProductID" enabled="{config>/editable}"></Input>
 												</VBox>
 											</HBox>
 											
@@ -59,17 +60,18 @@
 												<VBox renderType="Bare" class="p-1" id="cnt-disc">
 													<Label labelFor="inpt-disc" text="{lang>order_discount}"></Label>
 													<HBox id="cnt-disc-inpt" renderType="Bare" class="custom h-sep-child">
-														<Select id="sel-disc-type" selectedKey="{data>/input/discount_type}" editable="{= ${config>/input/lock_discount} === false }">
+														<Select id="sel-disc-type" selectedKey="per" editable="{= ${config>/input/lock_discount} === false }" enabled="{config>/editable}">
 															<core:ListItem key="per" text="%"></core:ListItem>
 															<core:ListItem key="usd" text="$"></core:ListItem>
 														</Select>
 														<Input
 															id="inpt-disc"
-															value="{data>/input/discount}"
 															editable="{= ${config>/input/lock_discount} === false }"
 															type="Number"
+															submit=".onSubmitDisc"
+															enabled="{config>/editable}"
 														/>
-														<ToggleButton id="tgl-disc-lock" type="Default" icon="sap-icon://locked" pressed="{config>/input/lock_discount}"></ToggleButton>
+														<ToggleButton id="tgl-disc-lock" type="Default" icon="sap-icon://locked" pressed="{config>/input/lock_discount}" enabled="{config>/editable}"></ToggleButton>
 													</HBox>
 												</VBox>
 												<!-- quantity input -->
@@ -78,23 +80,17 @@
 													<HBox id="cnt-quan-inpt" renderType="Bare" class="custom h-sep-child">
 														<Input
 															id="inpt-quan"
-															value="{
-																path : 'data>/input/quantity',
-																type : 'sap.ui.model.type.Integer',
-																constraints : {
-																	minimum : 1,
-																	maximum : 10000
-																}
-															}"
 															editable="{= ${config>/input/lock_quantity} === false }"
 															type="Number"
+															submit=".onAddItem"
+															enabled="{config>/editable}"
 														/>
-														<ToggleButton id="tgl-quan-lock" type="Default" icon="sap-icon://locked" pressed="{config>/input/lock_quantity}"></ToggleButton>
+														<ToggleButton id="tgl-quan-lock" type="Default" icon="sap-icon://locked" pressed="{config>/input/lock_quantity}" enabled="{config>/editable}"></ToggleButton>
 													</HBox>
 												</VBox>
 												<!-- add item button -->
 												<VBox id="cnt-btn-additm" renderType="Bare" class="p-1" justifyContent="End">
-													<Button id="btn-additm" type="Emphasized" text="{lang>create_order_btn_add_item}" press=".onAddItem"></Button>
+													<Button id="btn-additm" type="Emphasized" text="{lang>create_order_btn_add_item}" press=".onAddItem" enabled="{config>/editable}"></Button>
 												</VBox>
 											</HBox>
 										</VBox>
@@ -162,8 +158,8 @@
 									</f:content>
 								</f:Card>
 							</VBox>
-						</HBox>
-						<HBox renderType="Bare" wrap="Wrap">
+						<!-- </HBox>
+						<HBox renderType="Bare" wrap="Wrap"> -->
 							<!-- customer -->
 							<VBox renderType="Bare" class="p-1" id="cnt-cust">
 								<f:Card height="100%">
@@ -248,8 +244,9 @@
 									</f:content>
 								</f:Card>
 							</VBox>
-						</HBox>
-					</VBox>
+						<!-- </HBox> -->
+					<!-- </VBox> -->
+					</HBox>
 					<!-- order items -->
 					<VBox renderType="Bare" id="cnt-right-pane" class="p-1">
 						<f:Card height="100%">
