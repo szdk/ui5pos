@@ -24,14 +24,14 @@
 			<footer>
 				<OverflowToolbar>
 					<ToolbarSpacer ></ToolbarSpacer>
-					<Button text="{lang>create_order}" type="Emphasized" icon="sap-icon://sales-order-item"></Button>
+					<Button text="{lang>create_order}" enabled="{= (${order>/items}).length > 0 }" type="Emphasized" icon="sap-icon://sales-order-item"></Button>
 				</OverflowToolbar>
 			</footer>
 			<content>
 				<HBox height="100%" class="p-1" renderType="Bare" width="100%" wrap="Wrap" justifyContent="SpaceAround" id="cnt-main">
-					<HBox renderType="Bare" wrap="Wrap" id="cnt-left-pane">
-					<!-- <VBox renderType="Bare" id="cnt-left-pane"> -->
-						<!-- <HBox renderType="Bare" wrap="Wrap"> -->
+					<!-- <HBox renderType="Bare" wrap="Wrap" id="cnt-left-pane"> -->
+					<VBox renderType="Bare" id="cnt-left-pane">
+						<HBox renderType="Bare" wrap="Wrap">
 							<!-- input -->
 							<VBox renderType="Bare" class="p-1" id="cnt-left-tp-1">
 								<f:Card height="100%">
@@ -51,7 +51,7 @@
 												</VBox>
 												<VBox renderType="Bare" class="p-1" id="cnt-item-id">
 													<Label labelFor="input_product_id" text="{lang>product_id}"></Label>
-													<Input id="input_product_id" submit=".onSubmitProductID" showValueHelp="true" valueHelpRequest=".onValueHelpProductID" editable="{config>/editable}"></Input>
+													<Input id="input_product_id" type="Number" submit=".onSubmitProductID" showValueHelp="true" valueHelpRequest=".onValueHelpProductID" editable="{config>/editable}"></Input>
 												</VBox>
 											</HBox>
 											
@@ -120,11 +120,7 @@
 											<HBox renderType="Bare" width="100%" class="p-2" justifyContent="End">
 												<Text id="txt-total-symb" text="$" class="m-r-1"/>
 												<Text
-													text="{
-														parts:[{path:'order>/total'},{value:'USD'}],
-														type: 'sap.ui.model.type.Currency',
-														formatOptions: {showMeasure:false}
-													}"
+													text="{= (${order>/total}).toFixed(2) }"
 													id="txt-total-amnt"
 												></Text>
 											</HBox>
@@ -170,8 +166,8 @@
 									</f:content>
 								</f:Card>
 							</VBox>
-						<!-- </HBox>
-						<HBox renderType="Bare" wrap="Wrap"> -->
+						</HBox>
+						<HBox renderType="Bare" wrap="Wrap">
 							<!-- customer -->
 							<VBox renderType="Bare" class="p-1" id="cnt-cust">
 								<f:Card height="100%">
@@ -240,11 +236,7 @@
 													<HBox renderType="Bare" alignItems="Center">
 															<ObjectAttribute
 																class="p-r-3"
-																title="{lang>order_total}" text="{
-																	parts:[{path:'data>order_total'},{value:'$'}],
-																	type: 'sap.ui.model.type.Currency',
-																	formatOptions: {showMeasure:true}
-															}"></ObjectAttribute>
+																title="{lang>order_total}" text="${= (${data>order_total}).toFixed(2) }"></ObjectAttribute>
 															<ObjectAttribute
 																title="{lang>create_order_prev_phone}"
 																text="{data>phone}"
@@ -256,9 +248,12 @@
 									</f:content>
 								</f:Card>
 							</VBox>
-						<!-- </HBox> -->
-					<!-- </VBox> -->
-					</HBox>
+							<layoutData>
+								<FlexItemData growFactor="1"></FlexItemData>
+							</layoutData>
+						</HBox>
+					</VBox>
+					<!-- </HBox> -->
 					<!-- order items -->
 					<VBox renderType="Bare" id="cnt-right-pane" class="p-1">
 						<f:Card height="100%">
@@ -279,27 +274,50 @@
 											<HBox renderType="Bare" justifyContent="SpaceBetween" alignItems="Center">
 												<Title text="{order>name}" title="{order>name}"/>
 												<HBox renderType="Bare" alignItems="Center">
-													<Button icon="sap-icon://edit" type="Transparent"></Button>
-													<Button icon="sap-icon://delete" type="Transparent"></Button>
+													<Button icon="sap-icon://edit" type="Transparent" press=".onEditItem"></Button>
+													<Button icon="sap-icon://delete" type="Transparent" press=".onDeleteItem"></Button>
 												</HBox>
 											</HBox>
 											<HBox renderType="Bare" alignItems="Center">
 												<!-- <ToolbarSpacer></ToolbarSpacer> -->
-												<ObjectAttribute title="{lang>create_order_price}" text="{
-													parts:[{path:'order>price'},{value:'$'}],
-													type: 'sap.ui.model.type.Currency',
-													formatOptions: {showMeasure:true}
-												}"></ObjectAttribute>
-												<ObjectAttribute title="{lang>order_discount}" text="{= (${order>discount} * 100) + '%' }" class="p-l-3"></ObjectAttribute>
+												<ObjectAttribute title="{lang>create_order_price}" text="${= (${order>price}).toFixed(2) }"></ObjectAttribute>
+												<ObjectAttribute title="{lang>order_discount}" text="{= (${order>discount} * 100).toFixed(1) + '%' }" class="p-l-3"></ObjectAttribute>
 												<ObjectAttribute title="{lang>order_quantity}" text="{order>quantity}" class="p-l-3"></ObjectAttribute>
-												<ObjectAttribute title="{lang>create_order_total}" text="{
-													parts:[{path:'order>total'},{value:'$'}],
-													type: 'sap.ui.model.type.Currency',
-													formatOptions: {showMeasure:true}
-												}" class="p-l-3"></ObjectAttribute>
+												<ObjectAttribute title="{lang>create_order_total}" text="${= (${order>total}).toFixed(2) }" class="p-l-3"></ObjectAttribute>
 											</HBox>
 										</VBox>
 									</CustomListItem>
+									<dependents>
+										<Dialog id="edit-item-dialog" title="{lang>create_order_edit_item}">
+											<beginButton>
+												<Button text="{lang>update}" press=".onUpdateItem" type="Emphasized"></Button>
+											</beginButton>
+											<endButton>
+												<Button text="{lang>cancel}" press=".onCancelItemUpdate"></Button>
+											</endButton>
+											<content>
+												<VBox renderType="Bare" class="p-tb-1 p-lr-2">
+													<!-- <Title id="item-name-edit" titleStyle="H2"></Title> -->
+													<ObjectAttribute id="item-name-edit" title="{lang>create_order_item_name}" class="m-tb-2"></ObjectAttribute>
+													<GenericTag  text="{lang>product_unitPrice}:"  design="StatusIconHidden" status="Success">
+														<ObjectNumber id="item-price-edit" state="Success" emphasized="false" unit="USD"/>
+													</GenericTag>
+													<Label labelFor="inpt-disc-edit" text="{lang>order_discount}" class="m-t-2"></Label>
+													<HBox renderType="Bare">
+														<VBox class="m-r-1">
+															<Select id="sel-disc-type-edit" selectedKey="per">
+																<core:ListItem key="per" text="%"></core:ListItem>
+																<core:ListItem key="usd" text="$"></core:ListItem>
+															</Select>
+														</VBox>
+														<Input id="inpt-disc-edit" type="Number"></Input>
+													</HBox>
+													<Label labelFor="inpt-quan-edit" text="{lang>create_order_label_quantity}" class="m-t-2"/>
+													<Input id="inpt-quan-edit" type="Number"></Input>
+												</VBox>
+											</content>
+										</Dialog>
+									</dependents>
 								</List>
 							</f:content>
 						</f:Card>

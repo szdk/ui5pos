@@ -81,12 +81,102 @@ sap.ui.define([
                 this.toggleDiscountVisible(true);
             },
 
+            onDeleteItem : function (evt) {
+                let source = evt.getSource();
+                let ctx = source && source.getBindingContext('order');
+                let id = parseInt(ctx && ctx.getProperty && ctx.getProperty('id'));
+                if (!id) return;
+
+                let items = [...this.orderModel.getProperty('/items')];
+                let idx = items.findIndex(v => v.id == id);
+                if (idx < 0) return;
+
+                items.splice(idx, 1);
+                this.orderModel.setProperty('/items', items);
+                this.updateOrderTotal();
+            },
+
+            onEditItem : function (evt) {
+                let source = evt.getSource();
+                let ctx = source && source.getBindingContext('order');
+                let id = parseInt(ctx && ctx.getProperty && ctx.getProperty('id'));
+                if (!id) return;
+                let items = [...this.orderModel.getProperty('/items')];
+                let idx = items.findIndex(v => v.id == id);
+                if (idx < 0) return;
+
+                let d = this.byId('edit-item-dialog');
+                d.data('id', id);
+
+                this.byId('sel-disc-type-edit').setSelectedKey('per');
+                this.byId('item-name-edit').setText(items[idx].name);
+                this.byId('item-price-edit').setNumber(items[idx].price.toFixed(2));
+                this.byId('inpt-disc-edit').setValue(Math.round(items[idx].discount * 1000) / 10);
+                this.byId('inpt-quan-edit').setValue(parseInt(items[idx].quantity));
+                d.open();
+                this.focus(this.byId('inpt-disc-edit'));
+            },
+
+            onUpdateItem : function () {
+                let dialog = this.byId('edit-item-dialog'),
+                    seldisctype = this.byId('sel-disc-type-edit'),
+                    inputdisc = this.byId('inpt-disc-edit'),
+                    inputquan = this.byId('inpt-quan-edit');
+                let id = dialog.data('id');
+                let items = [...this.orderModel.getProperty('/items')];
+                let idx = items.findIndex(v => v.id == id);
+                if (idx >= 0) {
+                    this.fetchProduct(id).then(data => {
+                        let newItem = {...items[idx]};
+                        newItem.quantity = parseInt(inputquan.getValue()) || 0;
+                        newItem.discount = parseFloat(inputdisc.getValue()) || 0.0;
+
+                        if (newItem.quantity <= 0) {
+                            this.focus(inputquan);
+                            inputquan.setValueStateText(this.i18n.getText('input_invalid'));
+                            inputquan.setValueState(sap.ui.core.ValueState.Error);
+                            return;
+                        }
+                        inputquan.setValueState(sap.ui.core.ValueState.None);
+                        
+                        if (seldisctype.getSelectedKey() == 'usd') {
+                            newItem.discount = newItem.discount / newItem.price;
+                        } else {
+                            newItem.discount /= 100;
+                        }
+                        newItem.discount = Math.round(newItem.discount * 1000) / 1000;
+                        if (newItem.discount < 0) newItem.discount = 0.0;
+                        if (newItem.discount > 1) newItem.discount = 1.0;
+                        
+                        newItem.total = this.round2(newItem.price * newItem.quantity * (1 - newItem.discount));
+
+                        if (this.checkInputProduct(data, inputquan, newItem.quantity)) {
+                            items[idx] = newItem;
+                            this.orderModel.setProperty('/items', items);
+                            this.updateOrderTotal();
+                            dialog.close();
+                        }
+                    }).catch(e => {
+                        console.error(e);
+                        dialog.close();
+                        this.showErrorDialog();
+                    });
+                } else {
+                    dialog.close();
+                }
+            },
+
+            onCancelItemUpdate : function () {
+                this.byId('edit-item-dialog').close();
+            },
+
             onAddItem : function () {
                 let inputid = this.byId('input_product_id');
                 let id = parseInt(inputid.getValue());
                 const invalidProd = () => {
                     inputid.setValueStateText(this.i18n.getText('input_invalid_product_id'));
                     inputid.setValueState(sap.ui.core.ValueState.Error);
+                    this.focus(inputid);
                 }
                 if (!id) {
                     invalidProd();
@@ -119,7 +209,7 @@ sap.ui.define([
                     quantity : parseInt(inputquan.getValue()) || 0,
                     editted : false
                 };
-                if (newItem.quantity == 0) {
+                if (newItem.quantity <= 0) {
                     this.focus(inputquan);
                     inputquan.setValueState(sap.ui.core.ValueState.Error);
                     return;
@@ -132,8 +222,8 @@ sap.ui.define([
                     newItem.discount /= 100;
                 }
                 newItem.discount = Math.round(newItem.discount * 1000) / 1000;
-                if (newItem.discount < 0) newItem.discount = 0;
-                if (newItem.discount > 1) newItem.discount = 1;
+                if (newItem.discount < 0) newItem.discount = 0.0;
+                if (newItem.discount > 1) newItem.discount = 1.0;
 
                 newItem.total = this.round2(newItem.price * newItem.quantity * (1 - newItem.discount));
 
@@ -185,6 +275,7 @@ sap.ui.define([
                             if (id == parseInt(input.getValue())) {
                                 input.setValueStateText(this.i18n.getText('input_invalid_product_id'));
                                 input.setValueState(sap.ui.core.ValueState.Error);
+                                this.focus(input);
                             }
                         });
                 } else {
@@ -212,6 +303,7 @@ sap.ui.define([
                 let val = parseInt(input.getValue());
                 if (!val || val <= 0) {
                     input.setValueState(sap.ui.core.ValueState.Error);
+                    this.focus(input);
                 } else {
                     input.setValueState(sap.ui.core.ValueState.None);
                     this.onAddItem();
@@ -266,18 +358,22 @@ sap.ui.define([
                 if (!data) {
                     input.setValueStateText(this.i18n.getText('input_invalid_product_id'));
                     input.setValueState(sap.ui.core.ValueState.Error);
+                    this.focus(input);
                     return false;
                 } else if (data.Discontinued) {
                     input.setValueStateText(this.i18n.getText('discontinued'));
                     input.setValueState(sap.ui.core.ValueState.Error);
+                    this.focus(input);
                     return false;
                 } else if (!parseInt(data.UnitsInStock) || parseInt(data.UnitsInStock) == 0) {
                     input.setValueStateText(this.i18n.getText('out_of_stock'));
                     input.setValueState(sap.ui.core.ValueState.Error);
+                    this.focus(input);
                     return false;
                 } else if (parseInt(data.UnitsInStock) < quan) {
                     input.setValueStateText(this.i18n.getText('only_num_left', [data.UnitsInStock]));
                     input.setValueState(sap.ui.core.ValueState.Error);
+                    this.focus(input);
                     return false;
                 } else
                     input.setValueState(sap.ui.core.ValueState.None);
