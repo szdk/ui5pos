@@ -44,14 +44,14 @@
 											<HBox renderType="Bare" wrap="Wrap" class="p-1">
 												<VBox renderType="Bare" class="p-1" id="cnt-mode">
 													<Label labelFor="select_input_mode" text="{lang>create_order_input_mode}"></Label>
-													<Select id="select_input_mode" selectedKey="{config>/input/mode}" enabled="{config>/editable}">
+													<Select id="select_input_mode" selectedKey="{config>/input/mode}" editable="{config>/editable}">
 														<core:ListItem key="scan" text="{lang>create_order_mode_scan}" icon="sap-icon://bar-code"></core:ListItem>
 														<core:ListItem key="input" text="{lang>create_order_mode_input}" icon="sap-icon://value-help"></core:ListItem>
 													</Select>
 												</VBox>
 												<VBox renderType="Bare" class="p-1" id="cnt-item-id">
 													<Label labelFor="input_product_id" text="{lang>product_id}"></Label>
-													<Input id="input_product_id" submit=".onSubmitProductID" showValueHelp="true" valueHelpRequest=".onValueHelpProductID" enabled="{config>/editable}"></Input>
+													<Input id="input_product_id" submit=".onSubmitProductID" showValueHelp="true" valueHelpRequest=".onValueHelpProductID" editable="{config>/editable}"></Input>
 												</VBox>
 											</HBox>
 											
@@ -60,16 +60,27 @@
 												<VBox renderType="Bare" class="p-1" id="cnt-disc">
 													<Label labelFor="inpt-disc" text="{lang>order_discount}"></Label>
 													<HBox id="cnt-disc-inpt" renderType="Bare" class="custom h-sep-child">
-														<Select id="sel-disc-type" selectedKey="per" editable="{= ${config>/input/lock_discount} === false }" enabled="{config>/editable}">
+														<Select id="sel-disc-type" selectedKey="per" editable="{= ${config>/editable} &amp;&amp; ${config>/input/lock_discount} === false }">
 															<core:ListItem key="per" text="%"></core:ListItem>
 															<core:ListItem key="usd" text="$"></core:ListItem>
 														</Select>
 														<Input
 															id="inpt-disc"
-															editable="{= ${config>/input/lock_discount} === false }"
+															editable="{= ${config>/editable} &amp;&amp; ${config>/input/lock_discount} === false }"
 															type="Number"
 															submit=".onSubmitDisc"
-															enabled="{config>/editable}"
+															valueStateText="{lang>input_discount_unmatched}"
+															value="0"
+														/>
+														<!-- show discount of already existing item in card -->
+														<Select id="sel-disc-type-existing" selectedKey="per" editable="false" visible="false">
+															<core:ListItem key="per" text="%"></core:ListItem>
+														</Select>
+														<Input
+															id="inpt-disc-existing"
+															editable="false"
+															type="Number"
+															visible="false"
 														/>
 														<ToggleButton id="tgl-disc-lock" type="Default" icon="sap-icon://locked" pressed="{config>/input/lock_discount}" enabled="{config>/editable}"></ToggleButton>
 													</HBox>
@@ -80,10 +91,11 @@
 													<HBox id="cnt-quan-inpt" renderType="Bare" class="custom h-sep-child">
 														<Input
 															id="inpt-quan"
-															editable="{= ${config>/input/lock_quantity} === false }"
+															editable="{= ${config>/editable} &amp;&amp; ${config>/input/lock_quantity} === false }"
 															type="Number"
-															submit=".onAddItem"
-															enabled="{config>/editable}"
+															submit=".onSubmitQuan"
+															valueStateText="{lang>input_invalid}"
+															value="1"
 														/>
 														<ToggleButton id="tgl-quan-lock" type="Default" icon="sap-icon://locked" pressed="{config>/input/lock_quantity}" enabled="{config>/editable}"></ToggleButton>
 													</HBox>
@@ -272,7 +284,7 @@
 												</HBox>
 											</HBox>
 											<HBox renderType="Bare" alignItems="Center">
-												<ToolbarSpacer></ToolbarSpacer>
+												<!-- <ToolbarSpacer></ToolbarSpacer> -->
 												<ObjectAttribute title="{lang>create_order_price}" text="{
 													parts:[{path:'order>price'},{value:'$'}],
 													type: 'sap.ui.model.type.Currency',
