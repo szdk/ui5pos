@@ -109,6 +109,7 @@ sap.ui.define([
 
                 data.buttonClose = data.buttonClose || data.onConfirm ? this.i18n.getText('cancel') : this.i18n.getText('close');
                 data.buttonConfirm = data.buttonConfirm || this.i18n.getText('confirm');
+                data.buttonType = data.buttonType || sap.m.ButtonType.Emphasized;
                 data.message = data.message || [this.i18n.getText('an_error_occurred')];
                 data.onClose = data.onClose;
                 data.onConfirm = data.onConfirm;
@@ -139,7 +140,7 @@ sap.ui.define([
                 });
                 //confirm button
                 let confirmButton = !data.onConfirm ? undefined : new Button({
-                    type: sap.m.ButtonType.Emphasized,
+                    type: data.buttonType,
                     text: data.buttonConfirm,
                     press: () => {
                         this._Dialog.close();

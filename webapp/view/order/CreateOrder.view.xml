@@ -9,22 +9,47 @@
 
 		core:require="{formatMessage: 'sap/base/strings/formatMessage'}"
 
+		busyIndicatorDelay="0"
 		height="100%">
 
-		<Page backgroundDesign="Transparent" title="{lang>create_order_title}">
+		<Page backgroundDesign="Transparent" title="{= ${order>/order_id} > 0 ? ${
+			parts : [
+				{path : 'lang>edit_order_num'},
+				{path : 'order>/order_id'}
+			],
+			formatter : 'formatMessage'
+		} : ${lang>create_order_title} }">
 			<customHeader>
 				<OverflowToolbar>
 					<core:Icon src="sap-icon://cart-approval"></core:Icon>
-					<Title text="{lang>create_order_title}"></Title>
+					<Title text="{= ${order>/order_id} > 0 ? ${
+							parts : [
+								{path : 'lang>edit_order_num'},
+								{path : 'order>/order_id'}
+							],
+							formatter : 'formatMessage'
+						} : ${lang>create_order_title} }"></Title>
 					<ToolbarSpacer></ToolbarSpacer>
-					<Button icon="sap-icon://clear-all" text="{lang>clear}"></Button>
+					<Button icon="sap-icon://clear-all" text="{lang>clear}" press=".onClearOrder"></Button>
 					<ToggleButton text="{lang>auto_print}" icon="sap-icon://print" pressed="{config>/auto_print}"></ToggleButton>
 				</OverflowToolbar>
 			</customHeader>
 			<footer>
 				<OverflowToolbar>
 					<ToolbarSpacer ></ToolbarSpacer>
-					<Button text="{lang>create_order}" enabled="{= (${order>/items}).length > 0 }" type="Emphasized" icon="sap-icon://sales-order-item"></Button>
+					<Button
+						text="{= ${order>/order_id} > 0 ? ${
+							parts : [
+								{path : 'lang>update_order_num'},
+								{path : 'order>/order_id'}
+							],
+							formatter : 'formatMessage'
+						} : ${lang>create_order} }"
+						enabled="{= (${order>/items}).length > 0 }"
+						type="Emphasized"
+						icon="sap-icon://sales-order-item"
+						press=".onPressCreateOrder"
+					></Button>
 				</OverflowToolbar>
 			</footer>
 			<content>
@@ -217,6 +242,7 @@
 													change=".onChangePhone"
 													showSuggestion="true"
 													suggestionRows="{service>/Customers}"
+													valueStateText="{lang>customer_provide_phone}"
 													showTableSuggestionValueHelp="false"
 													enableTableAutoPopinMode="true"
 												>
@@ -301,7 +327,7 @@
 														<HBox renderType="Bare">
 															<Button type="Transparent" icon="sap-icon://delete" tooltip="{lang>delete}"></Button>
 															<Button type="Transparent" icon="sap-icon://show" tooltip="{lang>view}" press=".onPressViewOrder"></Button>
-															<Button type="Transparent" icon="sap-icon://edit" tooltip="{lang>edit}"></Button>
+															<Button type="Transparent" icon="sap-icon://edit" tooltip="{lang>edit}" press=".onPressEditOrder"></Button>
 															<Button type="Transparent" icon="sap-icon://print" tooltip="{lang>print}"></Button>
 														</HBox>
 													</HBox>

@@ -46,6 +46,7 @@ sap.ui.define([
                 this.getView().setModel(this.dataModel, 'data');
 
                 this.orderModel = new JSONModel({
+                    order_id : null,
                     total : 0,
                     total_price : 0,
                     total_discount : 0,
@@ -69,6 +70,84 @@ sap.ui.define([
                 
             },
 
+            onPressCreateOrder : function () {
+                let items = this.orderModel.getProperty('/items');
+                if (!items || items.length <= 0) return;
+                let customerPhone = this.orderModel.getProperty('/customer/phone');
+                if (!customerPhone || customerPhone.trim().length == 0) {
+                    this.byId('inpt-cst-phn').setValueState(sap.ui.core.ValueState.Error);
+                    this.focus(this.byId('inpt-cst-phn'));
+                }
+            },
+
+
+            editOrderMode : function (order_id) {
+                this.getView().setBusy(true);
+                this.fetchOrder(order_id).then(data => {
+                    this.getView().setBusy(false);
+
+                    this.onClearOrder();
+                    this.orderModel.setProperty('/order_id', order_id);
+
+                    this.orderModel.setProperty('/customer', {
+                        editable : false,
+                        id : data.Customer.CustomerID,
+                        phone : data.Customer.Phone,
+                        name : data.Customer.ContactName,
+                        address : data.Customer.Address,
+                        city : data.Customer.City,
+                        postal_code : data.Customer.PostalCode,
+                        country : data.Customer.Country
+                    });
+                    this.byId('inpt-cst-phn').setValueState(sap.ui.core.ValueState.None);
+
+                    let items = [];
+                    let ref = (Array.isArray(data.Order_Details) ? data.Order_Details : (data.Order_Details && data.Order_Details.results)) || [];
+                    for (let el of ref) {
+                        items.push({
+                            id : el.ProductID,
+                            name : el.Product.ProductName,
+                            price : el.UnitPrice,
+                            discount : el.Discount,
+                            quantity : el.Quantity,
+                            total : Math.round((el.UnitPrice * el.Quantity * (1 - el.Discount) ) * 100) / 100,
+                            editted : false,
+                        });
+                    }
+                    this.orderModel.setProperty('/items', items);
+                    this.updateOrderTotal();
+                    this.focus(this.byId('input_product_id'));
+                }).catch(err => {
+                    this.getView().setBusy(false);
+                    console.error(err);
+                    this.showErrorDialog();
+                });
+            },
+
+            onClearOrder : function () {
+                this.orderModel.setData({
+                    order_id : null,
+                    total : 0,
+                    total_price : 0,
+                    total_discount : 0,
+                    items : [
+                        // {id : 1, name : 'Gumbo Mix', price : 14.99, discount : 0, quantity : 4, total: 59.96, editted : false},
+                        // {id : 2, name : 'Chiuawa', price : 9.00, discount : 0.15, quantity : 9, total: 12.15, editted : false}
+                    ],
+                    customer : {
+                        editable : true,
+                        id : null,
+                        phone : '',
+                        name : '',
+                        address : '',
+                        city : '',
+                        postal_code : '',
+                        country : '',
+                    }
+                });
+                this.focus(this.byId('input_product_id'));
+            },
+
             onPressCustInfo : function (evt) {
                 this.byId('ppp-customer-exist-des').openBy(evt.getSource());
             },
@@ -82,6 +161,27 @@ sap.ui.define([
                     city : '',
                     postal_code : '',
                 });
+            },
+
+            onPressEditOrder : function (evt) {
+                let source = evt.getSource();
+                let ctx = source && source.getBindingContext('data');
+                let id = parseInt(ctx && ctx.getProperty && ctx.getProperty('order_id'));
+                if (id) {
+                    let curItems = this.orderModel.getProperty('/items');
+                    if (curItems && curItems.length > 0)
+                        this.showInfoDialog({
+                            title : this.i18n.getText('edit_order_num', [id]),
+                            buttonConfirm : this.i18n.getText('continue'),
+                            buttonType : sap.m.ButtonType.Reject,
+                            onConfirm : () => {
+                                this.editOrderMode(id);
+                            },
+                            message : this.i18n.getText('create_order_cnf_edit')
+                        });
+                    else
+                        this.editOrderMode(id);
+                }
             },
 
             onPressViewOrder : function (evt) {
@@ -338,6 +438,22 @@ sap.ui.define([
                     input.setValueState(sap.ui.core.ValueState.None);
                     this.onAddItem();
                 }
+            },
+
+            fetchOrder : function (order_id) {
+                let res = () => {}, rej = () => {};
+                let prom = new Promise((s, e) => {
+                    res = s; rej = e;
+                });
+
+                this.comp.getModel('service').read(`/Orders(${order_id})`, {
+                    urlParameters : {
+                        '$expand' : 'Customer,Order_Details,Order_Details/Product'
+                    },
+                    success : res,
+                    error : rej
+                });
+                return prom;
             },
 
             fetchPhone : function (phone) {
