@@ -8,6 +8,9 @@ sap.ui.define([
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
 
+                // ======================== remove loading text from body =====================
+                document.body.classList.remove('szdk-loading')
+
                 // ======================================= App model =========================================
                 this.appNavModel = this.comp.getModel('nav');                
                 

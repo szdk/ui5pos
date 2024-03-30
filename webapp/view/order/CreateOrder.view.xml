@@ -39,7 +39,7 @@
 										<cards:Header title="{lang>create_order_input_item}" iconSrc="sap-icon://cart-2" iconSize="{= ${device>/resize/height} > 800 ? 'S' : 'XS' }"></cards:Header>
 									</f:header>
 									<f:content>
-										<VBox renderType="Bare">
+										<VBox renderType="Bare" id="cnt-card-inpt">
 											<!-- product id input -->
 											<HBox renderType="Bare" wrap="Wrap" class="p-1">
 												<VBox renderType="Bare" class="p-1" id="cnt-mode">
@@ -116,7 +116,7 @@
 										<cards:Header title="{lang>order_total}" iconSrc="sap-icon://sum" iconSize="{= ${device>/resize/height} > 800 ? 'S' : 'XS' }"></cards:Header>
 									</f:header>
 									<f:content>
-										<VBox renderType="Bare" width="100%">
+										<VBox renderType="Bare" width="100%" id="cnt-card-ordtotal">
 											<HBox renderType="Bare" width="100%" class="p-2" justifyContent="End">
 												<Text id="txt-total-symb" text="$" class="m-r-1"/>
 												<Text
@@ -175,38 +175,110 @@
 										<cards:Header title="{lang>customer_details}" iconSrc="sap-icon://person-placeholder" iconSize="{= ${device>/resize/height} > 800 ? 'S' : 'XS' }"></cards:Header>
 									</f:header>
 									<f:content>
-										<VBox renderType="Bare" class="p-2" width="100%">
-											<HBox renderType="Bare" justifyContent="End">
-												<Button type="Transparent" text="{lang>clear}"></Button>
+										<VBox renderType="Bare" class="p-2" width="100%" id="cnt-card-cust">
+											<HBox renderType="Bare" justifyContent="SpaceBetween">
+												<Button
+													icon="sap-icon://hint"
+													type="Transparent"
+													visible="{= (${order>/customer/phone}).trim().length > 0 &amp;&amp; ${order>/customer/editable} }"
+													press=".onPressCustInfo"
+												>
+													<dependents>
+														<Popover
+															id="ppp-customer-exist-des"
+															title="{lang>information}"
+														>
+															<Text
+																id="cust-ppp-txt"
+																class="m-2"
+																text="{
+																	parts : [
+																		{path : 'lang>create_order_customer_no_exist_des' },
+																		{path : 'order>/customer/phone' }
+																	],
+																	formatter : 'formatMessage'
+																}"/>
+														</Popover>
+													</dependents>
+												</Button>
+												<ToolbarSpacer ></ToolbarSpacer>
+												<Button type="Transparent" text="{lang>clear}" press=".onClearCust">
+													<layoutData>
+														<FlexItemData alignSelf="End"></FlexItemData>
+													</layoutData>
+												</Button>
 											</HBox>
 											<HBox renderType="Bare" alignItems="Center" justifyContent="SpaceBetween">
-												<Label width="30%" wrapping="true" labelFor="input_customer_phone" text="{lang>create_order_prev_phone}:"></Label>
-												<Input width="70%" id="input_customer_phone" value="{order>/customer_phone}"></Input>
+												<Label width="30%" wrapping="true" labelFor="inpt-cst-phn" text="{lang>create_order_prev_phone}:"></Label>
+												<Input
+													width="70%"
+													id="inpt-cst-phn"
+													value="{order>/customer/phone}"
+													change=".onChangePhone"
+													showSuggestion="true"
+													suggestionRows="{service>/Customers}"
+													showTableSuggestionValueHelp="false"
+													enableTableAutoPopinMode="true"
+												>
+													<suggestionColumns>
+														<Column><Label text="{lang>create_order_prev_phone}"/></Column>
+														<Column><Label text="{lang>create_order_customer_name}"/></Column>
+													</suggestionColumns>
+													<suggestionRows>
+														<ColumnListItem>
+															<Label text="{service>Phone}" />
+															<Label text="{service>ContactName}" />
+														</ColumnListItem>
+													</suggestionRows>
+												</Input>
 											</HBox>
 											<HBox renderType="Bare" alignItems="Center" justifyContent="SpaceBetween">
-												<Label width="30%" wrapping="true" labelFor="input_customer_name" text="{lang>create_order_customer_name}:"></Label>
-												<Input width="70%" id="input_customer_name" value="{order>/customer_name}"></Input>
+												<Label width="30%" wrapping="true" labelFor="inpt-cus-name" text="{lang>create_order_customer_name}:"></Label>
+												<Input width="70%" id="inpt-cus-name" editable="{order>/customer/editable}" value="{order>/customer/name}"></Input>
 											</HBox>
 											<HBox renderType="Bare">
 												<VBox renderType="Bare" width="70%" class="p-r-2">
-													<Label labelFor="input_customer_address" text="{lang>customer_address}:"></Label>
-													<Input id="input_customer_address" value="{order>/customer_address}"></Input>
+													<Label labelFor="inpt-cust-adr" text="{lang>customer_address}:"></Label>
+													<Input id="inpt-cust-adr" editable="{order>/customer/editable}" value="{order>/customer/address}"></Input>
 												</VBox>
 												<VBox renderType="Bare" width="30%">
-													<Label labelFor="input_customer_city" text="{lang>customer_city}:"></Label>
-													<Input id="input_customer_city" value="{order>/customer_city}"></Input>
+													<Label labelFor="inpt-cust-city" text="{lang>customer_city}:"></Label>
+													<Input id="inpt-cust-city" editable="{order>/customer/editable}" value="{order>/customer/city}"></Input>
 												</VBox>
 											</HBox>
 											<HBox renderType="Bare">
 												<VBox renderType="Bare" width="50%" class="p-r-2">
-													<Label labelFor="input_customer_postal" text="{lang>customer_postal_code}:"></Label>
-													<Input id="input_customer_postal" value="{order>/customer_postal_code}"></Input>
+													<Label labelFor="inpt-cust-post" text="{lang>customer_postal_code}:"></Label>
+													<Input id="inpt-cust-post" editable="{order>/customer/editable}" value="{order>/customer/postal_code}"></Input>
 												</VBox>
 												<VBox renderType="Bare" width="50%">
-													<Label labelFor="input_customer_country" text="{lang>customer_country}:"></Label>
-													<Input id="input_customer_country" value="{order>/customer_country}"></Input>
+													<Label labelFor="inpt-cust-cnt" text="{lang>customer_country}:"></Label>
+													<Input id="inpt-cust-cnt" editable="{order>/customer/editable}" value="{order>/customer/country}"></Input>
 												</VBox>
 											</HBox>
+											<!-- <MessageStrip
+												class="m-t-2"
+												visible="{= (${order>/customer/phone}).trim().length > 0 }"
+												text="{= ${order>/customer/editable} ?
+													${
+														parts : [
+															{path : 'lang>create_order_customer_no_exist_des' },
+															{path : 'order>/customer/phone' }
+														],
+														formatter : 'formatMessage'
+													} :
+													${
+														parts : [
+															{path : 'lang>create_order_customer_exists_des' },
+															{path : 'order>/customer/phone' }
+														],
+														formatter : 'formatMessage'
+													}
+												}"
+												type="Information"
+												showIcon="true"
+												enableFormattedText="true"
+											/> -->
 										</VBox>
 									</f:content>
 								</f:Card>
@@ -228,7 +300,7 @@
 														<Title text="{data>order_id}" titleStyle="H3"></Title>
 														<HBox renderType="Bare">
 															<Button type="Transparent" icon="sap-icon://delete" tooltip="{lang>delete}"></Button>
-															<Button type="Transparent" icon="sap-icon://show" tooltip="{lang>view}"></Button>
+															<Button type="Transparent" icon="sap-icon://show" tooltip="{lang>view}" press=".onPressViewOrder"></Button>
 															<Button type="Transparent" icon="sap-icon://edit" tooltip="{lang>edit}"></Button>
 															<Button type="Transparent" icon="sap-icon://print" tooltip="{lang>print}"></Button>
 														</HBox>

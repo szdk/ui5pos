@@ -12,6 +12,12 @@
     border-bottom: none !important;
 }
 
+div#ui5pos-component---create_order--cust-ppp-txt {
+    max-width: 30em;
+    margin: 1em;
+    line-height: 1.25;
+}
+
 
 div#ui5pos-component---create_order--cnt-left-pane {width: 70%;}
 div#ui5pos-component---create_order--cnt-right-pane {width: 30%;}
@@ -22,15 +28,17 @@ div#ui5pos-component---create_order--cnt-left-tp-2 {width: 60%;}
 div#ui5pos-component---create_order--cnt-cust {width: 50%;}
 div#ui5pos-component---create_order--cnt-prev-ord {width: 50%;}
 
-// @media screen and (min-width : 1600px) {
-//     div#ui5pos-component---create_order--cnt-main {padding : 0.55em;}
-//     div#ui5pos-component---create_order--cnt-left-tp-1 {padding : 0.55em;}
-//     div#ui5pos-component---create_order--cnt-left-tp-2 {padding : 0.55em;}
-//     div#ui5pos-component---create_order--cnt-cust {padding : 0.55em;}
-//     div#ui5pos-component---create_order--cnt-prev-ord {padding : 0.55em;}
-//     div#ui5pos-component---create_order--cnt-right-pane {padding : 0.55em;}
-// }
-
+@media screen and (min-width : 1600px) and (min-height : 880px) {
+    div#ui5pos-component---create_order--cnt-card-inpt {
+        padding: 1em;
+    }
+    div#ui5pos-component---create_order--cnt-card-ordtotal {
+        padding : 1em;
+    }
+    div#ui5pos-component---create_order--cnt-card-cust {
+        padding : 1em 1em;
+    }
+}
 
 @media screen and (max-width : 1600px ) {
     div#ui5pos-component---create_order--cnt-left-pane {width: 67%;}

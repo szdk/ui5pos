@@ -3,12 +3,16 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "sap/ui/Device",
     "ui5pos/szdk/controller/util/F4Help",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
     ],
     function (
         Controller,
         JSONModel,
         Device,
         F4Help,
+        Filter,
+        FilterOperator,
         ) {
         "use strict";
 
@@ -34,9 +38,9 @@ sap.ui.define([
 
                 this.dataModel = new JSONModel({
                     previous_orders : [
-                        {order_id : 10003, phone : '9876543210', order_total : 30.27},
-                        {order_id : 10002, phone : '9876543210', order_total : 54.00},
-                        {order_id : 10001, phone : '9876543210', order_total : 99.99}
+                        {order_id : 10249, phone : '9876543210', order_total : 30.27},
+                        {order_id : 10250, phone : '9876543210', order_total : 54.00},
+                        {order_id : 10251, phone : '9876543210', order_total : 99.99}
                     ],
                 });
                 this.getView().setModel(this.dataModel, 'data');
@@ -49,16 +53,42 @@ sap.ui.define([
                         // {id : 1, name : 'Gumbo Mix', price : 14.99, discount : 0, quantity : 4, total: 59.96, editted : false},
                         // {id : 2, name : 'Chiuawa', price : 9.00, discount : 0.15, quantity : 9, total: 12.15, editted : false}
                     ],
-                    customer_phone : '',
-                    customer_name : '',
-                    customer_address : '',
-                    customer_city : '',
-                    customer_postal_code: '',
-                    customer_country : '',
+                    customer : {
+                        editable : true,
+                        id : null,
+                        phone : '',
+                        name : '',
+                        address : '',
+                        city : '',
+                        postal_code : '',
+                        country : '',
+                    }
                 });
                 this.getView().setModel(this.orderModel, 'order');
 
                 
+            },
+
+            onPressCustInfo : function (evt) {
+                this.byId('ppp-customer-exist-des').openBy(evt.getSource());
+            },
+            onClearCust : function () {
+                this.orderModel.setProperty('/customer', {
+                    editable : true,
+                    id : null,
+                    phone : '',
+                    name : '',
+                    address : '',
+                    city : '',
+                    postal_code : '',
+                });
+            },
+
+            onPressViewOrder : function (evt) {
+                let source = evt.getSource();
+                let ctx = source && source.getBindingContext('data');
+                let id = parseInt(ctx && ctx.getProperty && ctx.getProperty('order_id'));
+                this.comp.getRouter().navTo("view_order", {id : id});
             },
 
             updateOrderTotal : function () {
@@ -310,6 +340,33 @@ sap.ui.define([
                 }
             },
 
+            fetchPhone : function (phone) {
+                let res = () => {}, rej = () => {};
+                let prom = new Promise((s, e) => {
+                    res = s; rej = e;
+                });
+
+                let model = this.comp.getModel('service');
+                model.read(`/Customers`, {
+                    filters : [
+                        new Filter({
+                            path : 'Phone',
+                            operator : FilterOperator.EQ,
+                            value1 : phone
+                        })
+                    ],
+                    success : (data) => {
+                        if (data && data.results && data.results.length > 0) {
+                            res(data.results[0]);
+                        } else
+                            rej(`customer with phone "${phone}" not found`);
+                    },
+                    error : rej
+                });
+                
+                return prom;
+            },
+
             fetchProduct : function (id) {
                 let res = () => {}, rej = () => {};
                 let prom = new Promise((s, e) => {
@@ -322,9 +379,6 @@ sap.ui.define([
                     res(data);
                 else{
                     model.read(`/Products(${id})`, {
-                        // urlParameters : {
-                        //     '$expand' : "ProductID,ProductName,UnitPrice,UnitsInStock,Discontinued"
-                        // },
                         success : res,
                         error : rej
                     });
@@ -353,7 +407,29 @@ sap.ui.define([
                     }
                 });
             },
-
+            onChangePhone : function (evt) {
+                evt.getSource().setValueState(sap.ui.core.ValueState.None);
+                let phone = this.orderModel.getProperty('/customer/phone');
+                if (!phone || phone.trim().length == 0) return;
+                this.orderModel.setProperty('/customer/editable', false);
+                this.fetchPhone(phone).then((data) => {
+                    this.orderModel.setProperty('/customer', {
+                        editable : false,
+                        id : data.CustomerID,
+                        phone : data.Phone,
+                        name : data.ContactName,
+                        address : data.Address,
+                        city : data.City,
+                        postal_code : data.PostalCode,
+                        country : data.Country,
+                    });
+                }).catch((err) => {
+                    console.error(err);
+                    this.orderModel.setProperty('/customer/editable', true);
+                    this.orderModel.setProperty('/customer/id', null);
+                    this.focus(this.byId('inpt-cus-name'));
+                });
+            },
             checkInputProduct : function (data, input, quan = 1) {
                 if (!data) {
                     input.setValueStateText(this.i18n.getText('input_invalid_product_id'));
@@ -383,7 +459,9 @@ sap.ui.define([
             patternMatched : function (evt) {
                 if (!this.defaultPatternMatched(evt)) return;
                 this.comp.getModel('nav').setProperty('/sideNav/selectedKey', `nav_item_route_create_order`);
-                this.comp.getModel('nav').setProperty('/sideNav/expandableMin', 1260);
+                this.comp.getModel('nav').setProperty('/sideNav/expandableMin', 1401);
+                // if (sap.ui.Device.resize.width >= 1260 && sap.ui.Device.resize.width <= 1400)
+                //     this.comp.getModel('nav').setProperty('/sideNav/expanded', false);
                 setTimeout(() => this.focus(this.byId('input_product_id')), 500)
             },
 
