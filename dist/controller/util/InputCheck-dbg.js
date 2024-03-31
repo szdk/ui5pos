@@ -22,6 +22,70 @@ sap.ui.define([
                 }
             })
         },
+        customer : {
+            id : SimpleType.extend('ui5pos.szdk.inputCheck.customer.id', {
+                formatValue : (i) => i ? i.trim() : '',
+                parseValue : (i) => i ? i.trim() : '',
+                validateValue : function (input) {
+                    if (!input || input.trim().length == 0)
+                        throw new ValidateException(obj.i18n.getText('input_required'));
+                    if (input.trim().length != 5)
+                        throw new ValidateException(obj.i18n.getText('input_length_unmatch', [5]));
+                },
+            }),
+            name : SimpleType.extend('ui5pos.szdk.inputCheck.customer.name', {
+                formatValue : (i) => i ? i.trim() : '',
+                parseValue : (i) => i ? i.trim() : '',
+                validateValue : function (input) {
+                    if (input.trim().length > 30)
+                        throw new ValidateException(obj.i18n.getText('input_length_exceeded', [30]));
+                }
+            }),
+            address : SimpleType.extend('ui5pos.szdk.inputCheck.customer.address', {
+                formatValue : (i) => i ? i.trim() : '',
+                parseValue : (i) => i ? i.trim() : '',
+                validateValue : function (input) {
+                    if (input.trim().length > 60)
+                        throw new ValidateException(obj.i18n.getText('input_length_exceeded', [60]));
+                }
+            }),
+            city : SimpleType.extend('ui5pos.szdk.inputCheck.customer.city', {
+                formatValue : (i) => i ? i.trim() : '',
+                parseValue : (i) => i ? i.trim() : '',
+                validateValue : function (input) {
+                    if (input.trim().length > 15)
+                        throw new ValidateException(obj.i18n.getText('input_length_exceeded', [15]));
+                }
+            }),
+            postal : SimpleType.extend('ui5pos.szdk.inputCheck.customer.postal', {
+                formatValue : (i) => i ? i.trim() : '',
+                parseValue : (i) => i ? i.trim() : '',
+                validateValue : function (input) {
+                    if (input.trim().length > 10)
+                        throw new ValidateException(obj.i18n.getText('input_length_exceeded', [10]));
+                }
+            }),
+            country : SimpleType.extend('ui5pos.szdk.inputCheck.customer.country', {
+                formatValue : (i) => i ? i.trim() : '',
+                parseValue : (i) => i ? i.trim() : '',
+                validateValue : function (input) {
+                    if (input.trim().length > 15)
+                        throw new ValidateException(obj.i18n.getText('input_length_exceeded', [15]));
+                }
+            }),
+            phone : SimpleType.extend('ui5pos.szdk.inputCheck.customer.phone', {
+                formatValue : (i) => i ? i.trim() : '',
+                parseValue : (i) => i ? i.trim() : '',
+                validateValue : function (input) {
+                    if (!input || input.trim().length == 0)
+                        throw new ValidateException(obj.i18n.getText('input_required'));
+                    if (input.trim().length > 24)
+                        throw new ValidateException(obj.i18n.getText('input_length_exceeded', [24]));
+                    if (input.trim().length < 3)
+                        throw new ValidateException(obj.i18n.getText('input_length_required', [3]));
+                }
+            }),
+        },
         order : {
             netPrice : new (CompositeType.extend('ui5pos.szdk.inputCheck.order.netprice', {
                 formatValue : (v) => {
@@ -47,7 +111,7 @@ sap.ui.define([
                         throw new ValidateException(obj.i18n.getText('input_invalid_product_id', [id]));
                 }
             }),
-            name : SimpleType.extend('ui5pos.szdk.inputCheck.product.id', {
+            name : SimpleType.extend('ui5pos.szdk.inputCheck.product.name', {
                 formatValue : (i) => i,
                 parseValue : (i) => i,
                 validateValue : function (input) {

@@ -4,7 +4,8 @@ sap.ui.define([
     "sap/ui/Device",
     "ui5pos/szdk/controller/util/F4Help",
     "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator"
+    "sap/ui/model/FilterOperator",
+    "sap/ui/core/Messaging",
     ],
     function (
         Controller,
@@ -13,6 +14,7 @@ sap.ui.define([
         F4Help,
         Filter,
         FilterOperator,
+        Messaging,
         ) {
         "use strict";
 
@@ -67,17 +69,43 @@ sap.ui.define([
                 });
                 this.getView().setModel(this.orderModel, 'order');
 
+                // ======================= register input validation check =====================================
+                // Messaging.registerObject(this.byId('inpt-cst-phn'), true);
+                Messaging.registerObject(this.byId('inpt-cus-name'), true);
+                Messaging.registerObject(this.byId('inpt-cust-adr'), true);
+                Messaging.registerObject(this.byId('inpt-cust-city'), true);
+                Messaging.registerObject(this.byId('inpt-cust-post'), true);
+                Messaging.registerObject(this.byId('inpt-cust-cnt'), true);
                 
             },
 
             onPressCreateOrder : function () {
                 let items = this.orderModel.getProperty('/items');
                 if (!items || items.length <= 0) return;
-                let customerPhone = this.orderModel.getProperty('/customer/phone');
-                if (!customerPhone || customerPhone.trim().length == 0) {
-                    this.byId('inpt-cst-phn').setValueState(sap.ui.core.ValueState.Error);
-                    this.focus(this.byId('inpt-cst-phn'));
+
+                for (let id of [
+                    'inpt-cst-phn',
+                    'inpt-cus-name',
+                    'inpt-cust-adr',
+                    'inpt-cust-city',
+                    'inpt-cust-post',
+                    'inpt-cust-cnt',
+                ]) {
+                    let el = this.byId(id);
+                    try {
+                        el.getBinding('value').getType().validateValue(el.getValue());
+                    } catch (e) {
+                        if (e.message) {
+                            // el.setValueStateText(e.message);
+                            el.setValueState(sap.ui.core.ValueState.Error);
+                        }
+                        this.focus(el);
+                        return;
+                    }
                 }
+
+                
+                
             },
 
 
@@ -125,26 +153,16 @@ sap.ui.define([
             },
 
             onClearOrder : function () {
-                this.orderModel.setData({
-                    order_id : null,
-                    total : 0,
-                    total_price : 0,
-                    total_discount : 0,
-                    items : [
-                        // {id : 1, name : 'Gumbo Mix', price : 14.99, discount : 0, quantity : 4, total: 59.96, editted : false},
-                        // {id : 2, name : 'Chiuawa', price : 9.00, discount : 0.15, quantity : 9, total: 12.15, editted : false}
-                    ],
-                    customer : {
-                        editable : true,
-                        id : null,
-                        phone : '',
-                        name : '',
-                        address : '',
-                        city : '',
-                        postal_code : '',
-                        country : '',
-                    }
-                });
+                this.orderModel.setProperty('/order_id', null);
+                this.orderModel.setProperty('/total', 0);
+                this.orderModel.setProperty('/total_price', 0);
+                this.orderModel.setProperty('/total_discount', 0);
+                this.orderModel.setProperty('/items', []);
+                this.orderModel.setProperty('/customer/editable', true);
+                this.orderModel.setProperty('/customer/id', null);
+                this.orderModel.setProperty('/customer/phone', ' ');
+                this.orderModel.setProperty('/customer/phone', '');
+                this.byId('inpt-cst-phn').setValueState(sap.ui.core.ValueState.None);
                 this.focus(this.byId('input_product_id'));
             },
 
@@ -155,12 +173,31 @@ sap.ui.define([
                 this.orderModel.setProperty('/customer', {
                     editable : true,
                     id : null,
+                    phone : ' ',
+                    name : ' ',
+                    address : ' ',
+                    city : ' ',
+                    postal_code : ' ',
+                    country : ' ',
+                });
+                //to trigger refresh in case input has value state error
+                this.orderModel.setProperty('/customer', {
+                    editable : true,
+                    id : null,
                     phone : '',
                     name : '',
                     address : '',
                     city : '',
                     postal_code : '',
+                    country : '',
                 });
+                
+                this.byId('inpt-cst-phn').setValueState(sap.ui.core.ValueState.None);
+                this.byId('inpt-cus-name').setValueState(sap.ui.core.ValueState.None);
+                this.byId('inpt-cust-adr').setValueState(sap.ui.core.ValueState.None);
+                this.byId('inpt-cust-city').setValueState(sap.ui.core.ValueState.None);
+                this.byId('inpt-cust-post').setValueState(sap.ui.core.ValueState.None);
+                this.byId('inpt-cust-cnt').setValueState(sap.ui.core.ValueState.None);
             },
 
             onPressEditOrder : function (evt) {
@@ -524,7 +561,15 @@ sap.ui.define([
                 });
             },
             onChangePhone : function (evt) {
-                evt.getSource().setValueState(sap.ui.core.ValueState.None);
+                let el = evt.getSource();
+                try {
+                    el.getBinding('value').getType().validateValue(el.getValue());
+                    el.setValueState(sap.ui.core.ValueState.None);
+                } catch (e) {
+                    el.setValueStateText(e.message);
+                    el.setValueState(sap.ui.core.ValueState.Error);
+                    return;
+                }
                 let phone = this.orderModel.getProperty('/customer/phone');
                 if (!phone || phone.trim().length == 0) return;
                 this.orderModel.setProperty('/customer/editable', false);

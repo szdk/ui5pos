@@ -4,7 +4,7 @@ sap.ui.define([
     "ui5pos/szdk/controller/util/Table",
     "ui5pos/szdk/controller/util/FilterDialog",
     "sap/ui/model/json/JSONModel",
-    "sap/ui/core/Core",
+    "sap/ui/core/Messaging",
     "sap/m/ObjectNumber",
     "sap/m/Text",
     "sap/m/Title",
@@ -17,7 +17,7 @@ sap.ui.define([
         TableGenerator,
         FilterDialog,
         JSONModel,
-        Core,
+        Messaging,
         ObjectNumber,
         Text,
         Title,
@@ -47,14 +47,13 @@ sap.ui.define([
                 this.comp.getRouter().getRoute('view_product').attachPatternMatched(this.patternMatched.bind(this));
 
                 //======================== register input validation ===========================
-                let om = Core.getMessageManager();
-                om.registerObject(this.byId('product_input_name'), true);
-                om.registerObject(this.byId('product_input_category'), true);
-                om.registerObject(this.byId('product_input_supplier'), true);
-                om.registerObject(this.byId('product_input_qpu'), true);
-                om.registerObject(this.byId('product_input_unit_price'), true);
-                om.registerObject(this.byId('product_input_in_stock'), true);
-                om.registerObject(this.byId('product_input_reorder_level'), true);
+                Messaging.registerObject(this.byId('product_input_name'), true);
+                Messaging.registerObject(this.byId('product_input_category'), true);
+                Messaging.registerObject(this.byId('product_input_supplier'), true);
+                Messaging.registerObject(this.byId('product_input_qpu'), true);
+                Messaging.registerObject(this.byId('product_input_unit_price'), true);
+                Messaging.registerObject(this.byId('product_input_in_stock'), true);
+                Messaging.registerObject(this.byId('product_input_reorder_level'), true);
 
             },
             //===========================================

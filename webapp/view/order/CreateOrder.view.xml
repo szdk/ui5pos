@@ -238,13 +238,17 @@
 												<Input
 													width="70%"
 													id="inpt-cst-phn"
-													value="{order>/customer/phone}"
+													value="{
+														path : 'order>/customer/phone',
+														type : 'ui5pos.szdk.inputCheck.customer.phone'
+													}"
 													change=".onChangePhone"
 													showSuggestion="true"
 													suggestionRows="{service>/Customers}"
 													valueStateText="{lang>customer_provide_phone}"
 													showTableSuggestionValueHelp="false"
 													enableTableAutoPopinMode="true"
+													required="true"
 												>
 													<suggestionColumns>
 														<Column><Label text="{lang>create_order_prev_phone}"/></Column>
@@ -260,26 +264,41 @@
 											</HBox>
 											<HBox renderType="Bare" alignItems="Center" justifyContent="SpaceBetween">
 												<Label width="30%" wrapping="true" labelFor="inpt-cus-name" text="{lang>create_order_customer_name}:"></Label>
-												<Input width="70%" id="inpt-cus-name" editable="{order>/customer/editable}" value="{order>/customer/name}"></Input>
+												<Input width="70%" id="inpt-cus-name" editable="{order>/customer/editable}" value="{
+													path : 'order>/customer/name',
+													type : 'ui5pos.szdk.inputCheck.customer.name'
+												}"></Input>
 											</HBox>
 											<HBox renderType="Bare">
 												<VBox renderType="Bare" width="70%" class="p-r-2">
 													<Label labelFor="inpt-cust-adr" text="{lang>customer_address}:"></Label>
-													<Input id="inpt-cust-adr" editable="{order>/customer/editable}" value="{order>/customer/address}"></Input>
+													<Input id="inpt-cust-adr" editable="{order>/customer/editable}" value="{
+														path : 'order>/customer/address',
+														type : 'ui5pos.szdk.inputCheck.customer.address'
+													}"></Input>
 												</VBox>
 												<VBox renderType="Bare" width="30%">
 													<Label labelFor="inpt-cust-city" text="{lang>customer_city}:"></Label>
-													<Input id="inpt-cust-city" editable="{order>/customer/editable}" value="{order>/customer/city}"></Input>
+													<Input id="inpt-cust-city" editable="{order>/customer/editable}" value="{
+														path : 'order>/customer/city',
+														type : 'ui5pos.szdk.inputCheck.customer.city'
+													}"></Input>
 												</VBox>
 											</HBox>
 											<HBox renderType="Bare">
 												<VBox renderType="Bare" width="50%" class="p-r-2">
 													<Label labelFor="inpt-cust-post" text="{lang>customer_postal_code}:"></Label>
-													<Input id="inpt-cust-post" editable="{order>/customer/editable}" value="{order>/customer/postal_code}"></Input>
+													<Input id="inpt-cust-post" editable="{order>/customer/editable}" value="{
+														path : 'order>/customer/postal_code',
+														type : 'ui5pos.szdk.inputCheck.customer.postal'
+													}"></Input>
 												</VBox>
 												<VBox renderType="Bare" width="50%">
 													<Label labelFor="inpt-cust-cnt" text="{lang>customer_country}:"></Label>
-													<Input id="inpt-cust-cnt" editable="{order>/customer/editable}" value="{order>/customer/country}"></Input>
+													<Input id="inpt-cust-cnt" editable="{order>/customer/editable}" value="{
+														path : 'order>/customer/country',
+														type : 'ui5pos.szdk.inputCheck.customer.country'
+													}"></Input>
 												</VBox>
 											</HBox>
 											<!-- <MessageStrip
