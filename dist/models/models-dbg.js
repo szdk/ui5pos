@@ -26,7 +26,21 @@ sap.ui.define([
 
             //Settings Model
             createSettingsModel: function () {
-                let model = new JSONModel(sap.ui.require.toUrl('ui5pos/szdk/models/settings.json'));
+                let settings = {
+                    odata : {
+                        serviceUrl : "",
+                        useMock : true,
+                        delay : 100,
+                        generateID : false,
+                        updateQuantity : false,
+                        updateMethod : "MERGE"
+                    }
+                };
+                //todo load properties from localStorage if present
+                //todo update localStorage whenever settings model changes
+                
+                // let model = new JSONModel(sap.ui.require.toUrl('ui5pos/szdk/models/settings.json'));
+                let model = new JSONModel(settings);
                 model.setDefaultBindingMode("OneWay");
                 return model;
             },

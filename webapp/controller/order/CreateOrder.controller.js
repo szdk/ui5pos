@@ -1,20 +1,24 @@
 sap.ui.define([
     "ui5pos/szdk/controller/BaseController",
+    "ui5pos/szdk/controller/order/Helper",
     "sap/ui/model/json/JSONModel",
     "sap/ui/Device",
     "ui5pos/szdk/controller/util/F4Help",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
     "sap/ui/core/Messaging",
+    "sap/m/MessageToast",
     ],
     function (
         Controller,
+        Helper,
         JSONModel,
         Device,
         F4Help,
         Filter,
         FilterOperator,
         Messaging,
+        MessageToast,
         ) {
         "use strict";
 
@@ -40,9 +44,9 @@ sap.ui.define([
 
                 this.dataModel = new JSONModel({
                     previous_orders : [
-                        {order_id : 10249, phone : '9876543210', order_total : 30.27},
-                        {order_id : 10250, phone : '9876543210', order_total : 54.00},
-                        {order_id : 10251, phone : '9876543210', order_total : 99.99}
+                        // {order_id : 10249, phone : '9876543210', order_total : 30.27},
+                        // {order_id : 10250, phone : '9876543210', order_total : 54.00},
+                        // {order_id : 10251, phone : '9876543210', order_total : 99.99}
                     ],
                 });
                 this.getView().setModel(this.dataModel, 'data');
@@ -104,8 +108,56 @@ sap.ui.define([
                     }
                 }
 
-                
-                
+                let orderModel = {...this.orderModel.getData()};
+                let order = {OrderDate : new Date()};
+
+                let order_details = [];
+                for (let item of orderModel.items) {
+                    order_details.push({
+                        ProductID : item.id,
+                        UnitPrice : item.price,
+                        Quantity : item.quantity,
+                        Discount : item.discount
+                    });
+                }
+                let customer = null;
+                if (orderModel.customer.id)
+                    order.CustomerID = orderModel.customer.id;
+                else {
+                    customer = {
+                        Phone : orderModel.customer.phone,
+                        ContactName : orderModel.customer.name,
+                        Address : orderModel.customer.address,
+                        City : orderModel.customer.city,
+                        PostalCode : orderModel.customer.postal_code,
+                        Country : orderModel.customer.country,
+                    };
+                }
+
+                if (!orderModel.order_id) {
+                    this.getView().setBusy(true);
+                    (Helper.create.bind(this))(order, order_details, customer)
+                        .then((order_data) => {
+                            this.getView().setBusy(false);
+                            MessageToast.show(this.i18n.getText('create_order_created_num', [order_data.OrderID]), {
+                                duration : 15000,
+                                animationDuration : 1,
+                            });
+                            let previous_orders = this.dataModel.getProperty('/previous_orders') || [];
+                            previous_orders.unshift({order_id : order_data.OrderID, phone : orderModel.customer.phone, order_total : Math.round(order_data.Freight * 100) / 100});
+                            if (previous_orders.length > 20)
+                                previous_orders.pop();
+                            this.dataModel.setProperty('/previous_orders', previous_orders);
+                            this.onClearOrder();
+                        })
+                        .catch((err) => {
+                            this.getView().setBusy(false);
+                            console.error(err);
+                            this.showErrorDialog({message : err.message});
+                        });
+                } else {
+                    alert('todo: update order');
+                }                
             },
 
 
@@ -162,7 +214,10 @@ sap.ui.define([
                 this.orderModel.setProperty('/customer/id', null);
                 this.orderModel.setProperty('/customer/phone', ' ');
                 this.orderModel.setProperty('/customer/phone', '');
+                this.orderModel.setProperty('/customer/name', ' ');
+                this.orderModel.setProperty('/customer/name', '');
                 this.byId('inpt-cst-phn').setValueState(sap.ui.core.ValueState.None);
+                this.byId('inpt-cus-name').setValueState(sap.ui.core.ValueState.None);
                 this.focus(this.byId('input_product_id'));
             },
 
@@ -226,6 +281,11 @@ sap.ui.define([
                 let ctx = source && source.getBindingContext('data');
                 let id = parseInt(ctx && ctx.getProperty && ctx.getProperty('order_id'));
                 this.comp.getRouter().navTo("view_order", {id : id});
+            },
+
+            onPressViewProduct : function (evt) {
+                let id = evt.getSource().data('id');
+                this.comp.getRouter().navTo("view_product", {id});
             },
 
             updateOrderTotal : function () {
@@ -536,6 +596,31 @@ sap.ui.define([
                         error : rej
                     });
                 }
+                return prom;
+            },
+
+            fetchProducts : function (ids) {
+                let resolve = () => {}, reject = () => {};
+                let prom = new Promise((s, e) => {
+                    resolve = s; reject = e;
+                });
+
+                let filters = [];
+                for (let id of ids)
+                    filters.push(new Filter('ProductID', FilterOperator.EQ, parseInt(id)));
+
+                let model = this.comp.getModel('service');
+                model.read('/Products', {
+                    filters : [new Filter({filters, and : false})],
+                    success : (data) => {
+                        if (data && data.results)
+                            resolve(data.results);
+                        else
+                            reject({message : 'results property not found in fetched data', data});
+                    },
+                    error : reject
+                });
+
                 return prom;
             },
 

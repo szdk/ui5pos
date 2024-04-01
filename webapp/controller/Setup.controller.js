@@ -17,14 +17,18 @@ sap.ui.define([
                     this.comp.getModel('nav').setProperty('/sideNav/visible', false);
                 });
                 
+                const settings = {...this.comp.getModel('settings').getData()};
+
                 let localModel = new JSONModel({
-                    odataType : "1",
-                    odataUrl : "",
-                    odataDelay : 100,
+                    odataType : settings.odata.useMock ? "1" : "2",
+                    odataUrl : settings.odata.serviceUrl,
+                    odataDelay : settings.odata.delay,
+                    generateID: settings.odata.generateID,
+                    updateQuantity : settings.odata.updateQuantity,
+                    updateMethod: settings.odata.updateMethod,
+
                     inputEnabled : true,
                     ServiceCreated : false,
-                    generateID: false,
-                    updateMethod: "MERGE",
                 });
                 this.getView().setModel(localModel, 'local');
             },
@@ -47,16 +51,21 @@ sap.ui.define([
                 loadingIndicator.setVisible(true);
 
                 //fetch global settings from settings model which is assigned to root component
-                let settings = this.comp.getModel('settings').getData();
+                let settings = {...this.comp.getModel('settings').getData()};
+                settings.odata = {...settings.odata};
+
                 settings.odata.useMock = localModel.getProperty("/odataType") === "1";
                 settings.odata.serviceUrl = settings.odata.useMock ? "/ui5pos/szdk/mockService.svc/" : localModel.getProperty("/odataUrl");
+
                 let responseDelay = parseInt(localModel.getProperty("/odataDelay"));
                 if (!responseDelay) responseDelay = 0;
                 localModel.setProperty("/odataDelay", responseDelay);
                 settings.odata.delay = responseDelay;
+
                 settings.odata.generateID = settings.odata.useMock ? true : localModel.getProperty("/generateID");
+                settings.odata.updateQuantity = settings.odata.useMock ? true : localModel.getProperty("/updateQuantity");
                 settings.odata.updateMethod = localModel.getProperty("/updateMethod");
-                //set the modified global settings back to root component
+                //set the modified global settings back to the model
                 this.comp.getModel('settings').setData(settings);
 
                 //create main Service

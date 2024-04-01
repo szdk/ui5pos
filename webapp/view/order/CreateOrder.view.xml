@@ -389,7 +389,10 @@
 									<CustomListItem>
 										<VBox renderType="Bare" class="p-lr-2 p-b-1">
 											<HBox renderType="Bare" justifyContent="SpaceBetween" alignItems="Center">
-												<Title text="{order>name}" title="{order>name}"/>
+												<!-- <Title text="{order>name}" title="{order>name}"/> -->
+												<Link text="{order>name}" press=".onPressViewProduct">
+													<customData><core:CustomData key="id" value="{order>id}"></core:CustomData></customData>
+												</Link>
 												<HBox renderType="Bare" alignItems="Center">
 													<Button icon="sap-icon://edit" type="Transparent" press=".onEditItem"></Button>
 													<Button icon="sap-icon://delete" type="Transparent" press=".onDeleteItem"></Button>

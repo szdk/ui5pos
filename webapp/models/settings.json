@@ -1,9 +1,0 @@
-{
-    "odata" : {
-        "serviceUrl" : "",
-        "useMock" : true,
-        "delay" : 100,
-        "generateID" : false,
-        "updateMethod" : "MERGE"
-    }
-}
