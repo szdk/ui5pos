@@ -31,7 +31,7 @@ sap.ui.define([
                             router.navTo(key.substring(15));
                         });
                 } else {
-                    for (let routeName in [
+                    for (let routeName of [
                         "create_order",
                         "orders",
                         // "home",
