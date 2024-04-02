@@ -110,7 +110,11 @@ sap.ui.define([
                                 });
     
                                 if (updateQuantity && products[od.ProductID]) {
-                                    service.setProperty(`/Products(${od.ProductID})/UnitsInStock`, Math.max(0, (parseInt(products[od.ProductID].UnitsInStock) || 0) - od.Quantity));
+                                    service.update(
+                                        `/Products(${od.ProductID})`,
+                                        {UnitsInStock : Math.max(0, (parseInt(products[od.ProductID].UnitsInStock) || 0) - od.Quantity)},
+                                        {groupId : 'co_updt_prod'}
+                                    );
                                 }
                             }
                             service.submitChanges({
@@ -223,6 +227,7 @@ sap.ui.define([
                     delete : [],
                 };
                 let products_data = {}
+                let updateQuantity = this.comp.getModel('settings').getProperty('/odata/useMock') || this.comp.getModel('settings').getProperty('/odata/updateQuantity');
                 this.fetchOrder(order.OrderID)
                     .then((prev_order) => {
                         return prev_order.Order_Details && prev_order.Order_Details.results || [];
@@ -244,27 +249,111 @@ sap.ui.define([
                             else
                                 items_changes.update.push(id);
                         }
+                        if (!updateQuantity) {
+                            return
+                        }
                         //fetch products details
                         return this.fetchProducts([
                             ...items_changes.create,
                             ...items_changes.update,
                             ...items_changes.delete
-                        ]).then((tmp_data) => temp_data || []);
-                    }).then((tmp_prods) => {
-                        for (let prod of tmp_prods)
-                            products_data[prod.ProductID] = prod;
+                        ])
+                        .then((tmp_data) => tmp_data || [])
+                        .then((tmp_prods) => {
+                            for (let prod of tmp_prods)
+                                products_data[prod.ProductID] = prod;
+                        });
+                    }).then(() => {
                         //delete items
-                        for (let item of items_changes.delete) {
-                            // service.
+                        for (let id of items_changes.delete) {
+                            service.remove(`/Order_Details(OrderID=${order.OrderID},ProductID=${id})`, {groupId : 'co_del_itm'});
+                            if (updateQuantity && products_data[id] && map_prev[id])
+                                service.update(
+                                    `/Products(${id})`,
+                                    {UnitsInStock : Math.max(0, (parseInt(products_data[id].UnitsInStock) || 0) + (map_prev[id].Quantity || 0))},
+                                    {groupId : 'co_updt_prod'}
+                                );
                         }
-                    });
+                        //create items
+                        for (let id of items_changes.create) {
+                            service.createEntry('/Order_Details', {
+                                properties : {...map_cur[id]},
+                                groupId : 'co_crt_itm'
+                            });
+                            if (updateQuantity && products_data[id])
+                                service.update(
+                                    `/Products(${id})`,
+                                    {UnitsInStock : Math.max(0, (parseInt(products_data[id].UnitsInStock) || 0) - (map_cur[id].Quantity || 0))},
+                                    {groupId : 'co_updt_prod'}
+                                );
+                        }
+                        //update items
+                        for (let id of items_changes.update) {
+                            service.update(`/Order_Details(OrderID=${order.OrderID},ProductID=${id})`,
+                                {...map_cur[id]},
+                                {groupId : 'co_updt_itm'}
+                            );
+                            if (updateQuantity && products_data[id])
+                                service.update(
+                                    `/Products(${id})`,
+                                    {UnitsInStock : Math.max(0, (parseInt(products_data[id].UnitsInStock) || 0) - (map_cur[id].Quantity || 0) + (map_prev[id].Quantity || 0))},
+                                    {groupId : 'co_updt_prod'}
+                                );
+                        }
+                        service.submitChanges({
+                            success : (data) => {
+                                //update order
+                                service.update(
+                                    `/Orders(${order.OrderID})`,
+                                    {...order},
+                                    {
+                                        success : (tmp) => {
+                                            resolve(order);
+                                        },
+                                        error : reject
+                                    }
+                                )
+                            },
+                            error : reject
+                        });
 
-                //todo
+                    }).catch(reject);
+                return prom;
+            },
 
-
+            /**
+             * 
+             * @param {object} data {
+                    model,
+                    orderId
+             * }
+             */
+            delete : function (data) {
+                let resolve = () => {}, reject = () => {};
+                let prom = new Promise((res, rej) => {
+                    resolve = res; reject = rej;
+                });
+                let model = data.model;
+                model.read(`/Orders(${data.orderId})`, {
+                    success : (order) => {
+                        //delete order details
+                        for (let item of ((order.Order_Details && order.Order_Details.results) || []))
+                            model.remove(`/Order_Details(OrderID=${data.orderId},ProductID=${item.ProductID})`, {groupId : 'co_del_itm'});
+                        //delete order
+                        model.remove(`/Orders(${data.orderId})`, {groupId : 'co_del_itm'});
+                        model.submitChanges({
+                            success : resolve,
+                            error :reject,
+                        });
+                    },
+                    error : reject,
+                    urlParameters : {
+                        '$expand' : 'Customer,Order_Details,Order_Details/Product'
+                    },
+                });
+                return prom;
             }
         };
         return obj;
     }
 );
-            // s.create(`/Customers('ASDFX')`, {Phone : '612345983434', ContactName : '2Sajid'}, {success : console.log, error : console.error});

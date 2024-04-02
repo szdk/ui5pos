@@ -111,7 +111,11 @@ sap.ui.define([
                         };
 
                         if (this.comp.getModel('settings').getProperty('/odata/useMock') || this.comp.getModel('settings').getProperty('/odata/generateID')) {
-                            c
+                            this.getMaxValue('/Products', 'ProductID').then((maxID) => {
+                                createProduct(maxID + 1);
+                            }).catch(() => {
+                                this.showErrorDialog();
+                            });
                         } else {
                             createProduct();
                         }

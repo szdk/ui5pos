@@ -145,8 +145,10 @@ sap.ui.define([
 
                         this.comp.getModel('service').update(path, data, {
                             success: () => {
+                                // this.showSuccessDialog({message: this.i18n.getText('data_saved_description')})
+                                this.byId('product_view_page').setHeaderExpanded(true);
+                                this.mainModel.setProperty('/editting', false);
                                 this.refreshBinding();
-                                this.showSuccessDialog({message: this.i18n.getText('data_saved_description')})
                             },
                             error : (err) => this.showErrorDialog({message : err.message})
                         });
@@ -291,7 +293,8 @@ sap.ui.define([
                             this.showSuccessDialog({
                                 message : this.i18n.getText('product_has_been_deleted'),
                                 onClose : () => {
-                                    this.comp.getRouter().navTo('products');
+                                    // this.comp.getRouter().navTo('products');
+                                    this.goBack("products");
                                 }
                             });
                         },

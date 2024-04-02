@@ -38,7 +38,7 @@ sap.ui.define([
                         lock_discount : false,
                     },
                     editable : true,
-                    auto_print : false,
+                    auto_print : true,
                 });
                 this.getView().setModel(this.configModel, 'config');
 
@@ -156,7 +156,31 @@ sap.ui.define([
                             this.showErrorDialog({message : err.message});
                         });
                 } else {
-                    alert('todo: update order');
+                    this.getView().setBusy(true);
+                    delete order.OrderDate;
+                    order.OrderID = orderModel.order_id;
+                    (Helper.update.bind(this))(order, order_details, customer)
+                        .then((order_data) => {
+                            this.getView().setBusy(false);
+                            MessageToast.show(this.i18n.getText('create_order_updated_num', [order_data.OrderID]), {
+                                duration : 15000,
+                                animationDuration : 1,
+                            });
+                            let previous_orders = this.dataModel.getProperty('/previous_orders') || [];
+                            let idx = previous_orders.findIndex((v) => parseInt(v.order_id) == parseInt(order_data.OrderID));
+                            if (idx >= 0)
+                                previous_orders.splice(idx, 1);
+                            previous_orders.unshift({order_id : order_data.OrderID, phone : orderModel.customer.phone, order_total : Math.round(order_data.Freight * 100) / 100});
+                            if (previous_orders.length > 20)
+                                previous_orders.pop();
+                            this.dataModel.setProperty('/previous_orders', previous_orders);
+                            this.onClearOrder();
+
+                        }).catch((err) => {
+                            this.getView().setBusy(false);
+                            console.error(err);
+                            this.showErrorDialog({message : err.message});
+                        });
                 }                
             },
 
@@ -281,6 +305,39 @@ sap.ui.define([
                 let ctx = source && source.getBindingContext('data');
                 let id = parseInt(ctx && ctx.getProperty && ctx.getProperty('order_id'));
                 this.comp.getRouter().navTo("view_order", {id : id});
+            },
+
+            onPressDeleteOrder : function (evt) {
+                let source = evt.getSource();
+                let ctx = source && source.getBindingContext('data');
+                let id = parseInt(ctx && ctx.getProperty && ctx.getProperty('order_id'));
+                if (id) {
+                    this.showErrorDialog({
+                        title: this.i18n.getText('confirm_delete'),
+                        message: this.i18n.getText('order_view_confirm_delete', [id]),
+                        onConfirm: () => {
+                            Helper.delete({
+                                model : this.comp.getModel('service'),
+                                orderId : id
+                            }).then(() => {
+                                MessageToast.show(this.i18n.getText('create_order_deleted_num', [id]), {
+                                    duration : 15000,
+                                    animationDuration : 1,
+                                });
+                                let previous_orders = this.dataModel.getProperty('/previous_orders') || [];
+                                let idx = previous_orders.findIndex((v) => parseInt(v.order_id) == id);
+                                if (idx >= 0)
+                                    previous_orders.splice(idx, 1);
+                                this.dataModel.setProperty('/previous_orders', previous_orders);
+                            })
+                            .catch(() => {
+                                this.showErrorDialog();
+                            });
+                        }
+                    });
+                } else {
+                    this.showErrorDialog();
+                }
             },
 
             onPressViewProduct : function (evt) {

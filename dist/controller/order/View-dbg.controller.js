@@ -1,6 +1,7 @@
 sap.ui.define([
     "ui5pos/szdk/controller/BaseController",
     "ui5pos/szdk/controller/util/Table",
+    "ui5pos/szdk/controller/order/Helper",
     "sap/ui/model/json/JSONModel",
     "sap/m/ObjectNumber",
     "sap/m/Text",
@@ -11,6 +12,7 @@ sap.ui.define([
     function (
         Controller,
         TableGenerator,
+        Helper,
         JSONModel,
         ObjectNumber,
         Text,
@@ -169,6 +171,25 @@ sap.ui.define([
             },
             onOpenAction : function (evt) {
                 this.byId('view_order_actionSheet').openBy(evt.getSource());
+            },
+            onDelete : function (evt) {
+                this.showErrorDialog({
+                    title: this.i18n.getText('confirm_delete'),
+                    message: this.i18n.getText('order_view_confirm_delete', [this.orderID]),
+                    onConfirm: () => {
+                        Helper.delete({
+                            model : this.comp.getModel('service'),
+                            orderId : this.orderID
+                        }).then(() => {
+                            // this.comp.getRouter().navTo("orders");
+                            this.goBack("orders");
+                        })
+                        .catch(() => {
+                            this.showErrorDialog();
+                        });
+                    }
+                });
+                
             }
         });
     }

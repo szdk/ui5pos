@@ -79,6 +79,9 @@ sap.ui.define([
                         if (!settings.odata.useMock)
                             props.defaultUpdateMethod = settings.odata.updateMethod == "MERGE" ? sap.ui.model.odata.UpdateMethod.Merge : sap.ui.model.odata.UpdateMethod.Put;
                         this._services[settings.odata.serviceUrl] = new ODataModel(settings.odata.serviceUrl, props);
+                        this._services[settings.odata.serviceUrl].setDeferredGroups([
+                            'co_del_itm', 'co_updt_itm', 'co_crt_itm', 'co_updt_prod'
+                        ]);
                         console.log(`Created new Service "${settings.odata.serviceUrl}"`);
                     } else {
                         console.log(`Service "${settings.odata.serviceUrl}" alread exists`);
