@@ -1,0 +1,104 @@
+<mvc:View 
+		controllerName="ui5pos.szdk.controller.order.View"
+		xmlns:mvc="sap.ui.core.mvc"
+		xmlns="sap.m"
+		xmlns:f="sap.f"
+		xmlns:layout="sap.ui.layout"
+		xmlns:core="sap.ui.core"
+		xmlns:form="sap.ui.layout.form"
+
+		core:require="{formatMessage: 'sap/base/strings/formatMessage'}"
+
+		height="100%">
+		<f:DynamicPage id="order_view_page" headerExpanded="true">
+			<f:title>
+				<f:DynamicPageTitle>
+					<f:heading>
+						<Title text="{parts : [{path : 'lang>order_view_title'}, {path : 'service>OrderID'}], formatter : 'formatMessage' }"/>
+					</f:heading>
+
+					<f:expandedContent>
+						<Label text="{parts : [{path: 'lang>order_view_sold_to_des'}, {path: 'service>Customer/Phone'}], formatter : 'formatMessage' }"/>
+					</f:expandedContent>
+					<f:snappedContent>
+						<Label text="{parts : [{path: 'lang>order_view_sold_to_des'}, {path: 'service>Customer/Phone'}], formatter : 'formatMessage' }"/>
+					</f:snappedContent>
+					<f:snappedTitleOnMobile>
+						<Title text="{parts : [{path : 'lang>order_view_title'}, {path : 'service>OrderID'}], formatter : 'formatMessage' }"/>
+					</f:snappedTitleOnMobile>
+					
+					<f:content>
+                        <GenericTag visible="{= ${device>/resize/width} > 599 }" text="{lang>order_total}" design="StatusIconHidden" status="Success"  class="sapUiSmallMarginBottom">
+                            <ObjectNumber state="Success" emphasized="true" number="{
+								parts : [
+									{path : 'service>Freight' },
+									{value : 'USD'}
+								],
+								type: 'sap.ui.model.type.Currency',
+								formatOptions: {showMeasure:false}
+							}" unit="USD"/>
+                        </GenericTag>
+					</f:content>
+					
+					<f:actions>
+						<Button type="Ghost" press=".onOpenAction" text="{lang>action}">
+							<dependents>
+								<ActionSheet id="view_order_actionSheet" title="{lang>action}" placement="Bottom">
+									<Button
+										icon="sap-icon://edit"
+										text="{lang>edit}"
+										press=".onEdit"
+										type="Ghost"
+									/>
+									<Button
+										icon="sap-icon://delete"
+										text="{lang>delete}"
+										press=".onDelete"
+										type="Ghost"
+									/>
+								</ActionSheet>
+							</dependents>
+						</Button>
+						<Button text="{lang>print}" icon="sap-icon://print" type="Accept" press="onPrint"></Button>
+					</f:actions>
+
+				</f:DynamicPageTitle>
+			</f:title>
+			<!-- DynamicPage Header -->
+			<f:header>
+				<f:DynamicPageHeader pinnable="true">
+					<!-- =========== VIEW MODE ============== -->
+					<layout:HorizontalLayout allowWrapping="true">
+						<layout:VerticalLayout class="sapUiMediumMarginEnd">
+							<ObjectAttribute title="{lang>order_id}" text="{service>OrderID}"/>
+							<ObjectAttribute title="{lang>order_date}" text="{path : 'service>OrderDate', type : 'sap.ui.model.type.Date'}"/>
+							<ObjectAttribute title="{lang>order_time}" text="{path : 'service>OrderDate', type : '.inputCheck.other.dateToTime'}"/>
+						</layout:VerticalLayout>
+
+						<layout:VerticalLayout>
+							<layout:HorizontalLayout allowWrapping="false">
+								<ObjectAttribute title="{lang>order_total}"/>
+								<ObjectNumber class="m-l-1" number="{
+									parts:[
+										{path:'service>Freight'},
+										{value: 'USD'}
+									],
+									type: 'sap.ui.model.type.Currency',
+									formatOptions: {showMeasure:false}
+								}" unit="USD" ></ObjectNumber>
+							</layout:HorizontalLayout>
+							<ObjectAttribute title="{lang>customer_name}" text="{service>Customer/ContactName}"/>
+							<ObjectAttribute title="{lang>customer_phone}" text="{service>Customer/Phone}"/>
+							
+						</layout:VerticalLayout>
+					</layout:HorizontalLayout>
+					
+				</f:DynamicPageHeader>
+			</f:header>
+			<f:content>
+				<layout:VerticalLayout width="100%" id="table_container">
+				</layout:VerticalLayout>
+			</f:content>
+			
+		</f:DynamicPage>
+</mvc:View>

@@ -1,0 +1,449 @@
+<mvc:View xmlns:cards="sap.f.cards" xmlns:widgets="sap.ui.integration.widgets" 
+		controllerName="ui5pos.szdk.controller.order.CreateOrder"
+		xmlns:mvc="sap.ui.core.mvc"
+		xmlns="sap.m"
+		xmlns:f="sap.f"
+		xmlns:layout="sap.ui.layout"
+		xmlns:core="sap.ui.core"
+		xmlns:form="sap.ui.layout.form"
+
+		core:require="{formatMessage: 'sap/base/strings/formatMessage'}"
+
+		busyIndicatorDelay="0"
+		height="100%">
+
+		<Page backgroundDesign="Transparent" title="{= ${order>/order_id} > 0 ? ${
+			parts : [
+				{path : 'lang>edit_order_num'},
+				{path : 'order>/order_id'}
+			],
+			formatter : 'formatMessage'
+		} : ${lang>create_order_title} }">
+			<customHeader>
+				<OverflowToolbar>
+					<core:Icon src="sap-icon://cart-approval"></core:Icon>
+					<Title text="{= ${order>/order_id} > 0 ? ${
+							parts : [
+								{path : 'lang>edit_order_num'},
+								{path : 'order>/order_id'}
+							],
+							formatter : 'formatMessage'
+						} : ${lang>create_order_title} }"></Title>
+					<ToolbarSpacer></ToolbarSpacer>
+					<Button icon="sap-icon://clear-all" text="{lang>clear}" press=".onClearOrder"></Button>
+					<ToggleButton text="{lang>auto_print}" icon="sap-icon://print" pressed="{config>/auto_print}"></ToggleButton>
+				</OverflowToolbar>
+			</customHeader>
+			<footer>
+				<OverflowToolbar>
+					<ToolbarSpacer ></ToolbarSpacer>
+					<Button
+						text="{= ${order>/order_id} > 0 ? ${
+							parts : [
+								{path : 'lang>update_order_num'},
+								{path : 'order>/order_id'}
+							],
+							formatter : 'formatMessage'
+						} : ${lang>create_order} }"
+						enabled="{= (${order>/items}).length > 0 }"
+						type="Emphasized"
+						icon="sap-icon://sales-order-item"
+						press=".onPressCreateOrder"
+					></Button>
+				</OverflowToolbar>
+			</footer>
+			<content>
+				<HBox height="100%" class="p-1" renderType="Bare" width="100%" wrap="Wrap" justifyContent="SpaceAround" id="cnt-main">
+					<!-- <HBox renderType="Bare" wrap="Wrap" id="cnt-left-pane"> -->
+					<VBox renderType="Bare" id="cnt-left-pane">
+						<HBox renderType="Bare" wrap="Wrap">
+							<!-- input -->
+							<VBox renderType="Bare" class="p-1" id="cnt-left-tp-1">
+								<f:Card height="100%">
+									<f:header>
+										<cards:Header title="{lang>create_order_input_item}" iconSrc="sap-icon://cart-2" iconSize="{= ${device>/resize/height} > 800 ? 'S' : 'XS' }"></cards:Header>
+									</f:header>
+									<f:content>
+										<VBox renderType="Bare" id="cnt-card-inpt">
+											<!-- product id input -->
+											<HBox renderType="Bare" wrap="Wrap" class="p-1">
+												<VBox renderType="Bare" class="p-1" id="cnt-mode">
+													<Label labelFor="select_input_mode" text="{lang>create_order_input_mode}"></Label>
+													<Select id="select_input_mode" selectedKey="{config>/input/mode}" editable="{config>/editable}">
+														<core:ListItem key="scan" text="{lang>create_order_mode_scan}" icon="sap-icon://bar-code"></core:ListItem>
+														<core:ListItem key="input" text="{lang>create_order_mode_input}" icon="sap-icon://value-help"></core:ListItem>
+													</Select>
+												</VBox>
+												<VBox renderType="Bare" class="p-1" id="cnt-item-id">
+													<Label labelFor="input_product_id" text="{lang>product_id}"></Label>
+													<Input id="input_product_id" type="Number" submit=".onSubmitProductID" showValueHelp="true" valueHelpRequest=".onValueHelpProductID" editable="{config>/editable}"></Input>
+												</VBox>
+											</HBox>
+											
+											<HBox renderType="Bare" wrap="Wrap" class="p-1" justifyContent="End">
+												<!-- discount input -->
+												<VBox renderType="Bare" class="p-1" id="cnt-disc">
+													<Label labelFor="inpt-disc" text="{lang>order_discount}"></Label>
+													<HBox id="cnt-disc-inpt" renderType="Bare" class="custom h-sep-child">
+														<Select id="sel-disc-type" selectedKey="per" editable="{= ${config>/editable} &amp;&amp; ${config>/input/lock_discount} === false }">
+															<core:ListItem key="per" text="%"></core:ListItem>
+															<core:ListItem key="usd" text="$"></core:ListItem>
+														</Select>
+														<Input
+															id="inpt-disc"
+															editable="{= ${config>/editable} &amp;&amp; ${config>/input/lock_discount} === false }"
+															type="Number"
+															submit=".onSubmitDisc"
+															valueStateText="{lang>input_discount_unmatched}"
+															value="0"
+														/>
+														<!-- show discount of already existing item in card -->
+														<Select id="sel-disc-type-existing" selectedKey="per" editable="false" visible="false">
+															<core:ListItem key="per" text="%"></core:ListItem>
+														</Select>
+														<Input
+															id="inpt-disc-existing"
+															editable="false"
+															type="Number"
+															visible="false"
+														/>
+														<ToggleButton id="tgl-disc-lock" type="Default" icon="sap-icon://locked" pressed="{config>/input/lock_discount}" enabled="{config>/editable}"></ToggleButton>
+													</HBox>
+												</VBox>
+												<!-- quantity input -->
+												<VBox renderType="Bare" class="p-1" id="cnt-quan">
+													<Label labelFor="inpt-quan" text="{lang>create_order_label_quantity}"></Label>
+													<HBox id="cnt-quan-inpt" renderType="Bare" class="custom h-sep-child">
+														<Input
+															id="inpt-quan"
+															editable="{= ${config>/editable} &amp;&amp; ${config>/input/lock_quantity} === false }"
+															type="Number"
+															submit=".onSubmitQuan"
+															valueStateText="{lang>input_invalid}"
+															value="1"
+														/>
+														<ToggleButton id="tgl-quan-lock" type="Default" icon="sap-icon://locked" pressed="{config>/input/lock_quantity}" enabled="{config>/editable}"></ToggleButton>
+													</HBox>
+												</VBox>
+												<!-- add item button -->
+												<VBox id="cnt-btn-additm" renderType="Bare" class="p-1" justifyContent="End">
+													<Button id="btn-additm" type="Emphasized" text="{lang>create_order_btn_add_item}" press=".onAddItem" enabled="{config>/editable}"></Button>
+												</VBox>
+											</HBox>
+										</VBox>
+									</f:content>
+								</f:Card>
+							</VBox>
+							<!-- order total  -->
+							<VBox renderType="Bare" class="p-1" id="cnt-left-tp-2">
+								<f:Card height="100%">
+									<f:header>
+										<cards:Header title="{lang>order_total}" iconSrc="sap-icon://sum" iconSize="{= ${device>/resize/height} > 800 ? 'S' : 'XS' }"></cards:Header>
+									</f:header>
+									<f:content>
+										<VBox renderType="Bare" width="100%" id="cnt-card-ordtotal">
+											<HBox renderType="Bare" width="100%" class="p-2" justifyContent="End">
+												<Text id="txt-total-symb" text="$" class="m-r-1"/>
+												<Text
+													text="{= (${order>/total}).toFixed(2) }"
+													id="txt-total-amnt"
+												></Text>
+											</HBox>
+											<HBox renderType="Bare" alignItems="End" class="p-1">
+												<VBox renderType="Bare" class="p-1">
+													<Table class="no-border">
+														<columns>
+															<Column></Column><Column hAlign="End"></Column>
+														</columns>
+														<items>
+															<ColumnListItem>
+																<Text text="{lang>create_order_total_price}:"></Text>
+																<ObjectNumber number="{
+																	parts:[{path:'order>/total_price'},{value:'USD'}],
+																	type: 'sap.ui.model.type.Currency',
+																	formatOptions: {showMeasure:false}
+																}" unit="USD"></ObjectNumber>
+															</ColumnListItem>
+															<ColumnListItem>
+																<Text text="{lang>create_order_total_discount}:"></Text>
+																<ObjectNumber number="{
+																	parts:[{path:'order>/total_discount'},{value:'USD'}],
+																	type: 'sap.ui.model.type.Currency',
+																	formatOptions: {showMeasure:false}
+																}" unit="USD"></ObjectNumber>
+															</ColumnListItem>
+															<ColumnListItem>
+																<Text text="{lang>order_total}:"></Text>
+																<ObjectNumber number="{
+																	parts:[{path:'order>/total'},{value:'USD'}],
+																	type: 'sap.ui.model.type.Currency',
+																	formatOptions: {showMeasure:false}
+																}" unit="USD"></ObjectNumber>
+															</ColumnListItem>
+														</items>
+													</Table>
+												</VBox>
+												<!-- <VBox renderType="Bare" class="p-1">
+													<Button text="{lang>create_order}" type="Emphasized"></Button>
+												</VBox> -->
+											</HBox>
+										</VBox>
+									</f:content>
+								</f:Card>
+							</VBox>
+						</HBox>
+						<HBox renderType="Bare" wrap="Wrap">
+							<!-- customer -->
+							<VBox renderType="Bare" class="p-1" id="cnt-cust">
+								<f:Card height="100%">
+									<f:header>
+										<cards:Header title="{lang>customer_details}" iconSrc="sap-icon://person-placeholder" iconSize="{= ${device>/resize/height} > 800 ? 'S' : 'XS' }"></cards:Header>
+									</f:header>
+									<f:content>
+										<VBox renderType="Bare" class="p-2" width="100%" id="cnt-card-cust">
+											<HBox renderType="Bare" justifyContent="SpaceBetween">
+												<Button
+													icon="sap-icon://hint"
+													type="Transparent"
+													visible="{= (${order>/customer/phone}).trim().length > 0 &amp;&amp; ${order>/customer/editable} }"
+													press=".onPressCustInfo"
+												>
+													<dependents>
+														<Popover
+															id="ppp-customer-exist-des"
+															title="{lang>information}"
+														>
+															<Text
+																id="cust-ppp-txt"
+																class="m-2"
+																text="{
+																	parts : [
+																		{path : 'lang>create_order_customer_no_exist_des' },
+																		{path : 'order>/customer/phone' }
+																	],
+																	formatter : 'formatMessage'
+																}"/>
+														</Popover>
+													</dependents>
+												</Button>
+												<ToolbarSpacer ></ToolbarSpacer>
+												<Button type="Transparent" text="{lang>clear}" press=".onClearCust">
+													<layoutData>
+														<FlexItemData alignSelf="End"></FlexItemData>
+													</layoutData>
+												</Button>
+											</HBox>
+											<HBox renderType="Bare" alignItems="Center" justifyContent="SpaceBetween">
+												<Label width="30%" wrapping="true" labelFor="inpt-cst-phn" text="{lang>create_order_prev_phone}:"></Label>
+												<Input
+													width="70%"
+													id="inpt-cst-phn"
+													value="{
+														path : 'order>/customer/phone',
+														type : 'ui5pos.szdk.inputCheck.customer.phone'
+													}"
+													change=".onChangePhone"
+													showSuggestion="true"
+													suggestionRows="{service>/Customers}"
+													valueStateText="{lang>customer_provide_phone}"
+													showTableSuggestionValueHelp="false"
+													enableTableAutoPopinMode="true"
+													required="true"
+												>
+													<suggestionColumns>
+														<Column><Label text="{lang>create_order_prev_phone}"/></Column>
+														<Column><Label text="{lang>create_order_customer_name}"/></Column>
+													</suggestionColumns>
+													<suggestionRows>
+														<ColumnListItem>
+															<Label text="{service>Phone}" />
+															<Label text="{service>ContactName}" />
+														</ColumnListItem>
+													</suggestionRows>
+												</Input>
+											</HBox>
+											<HBox renderType="Bare" alignItems="Center" justifyContent="SpaceBetween">
+												<Label width="30%" wrapping="true" labelFor="inpt-cus-name" text="{lang>create_order_customer_name}:"></Label>
+												<Input width="70%" id="inpt-cus-name" editable="{order>/customer/editable}" value="{
+													path : 'order>/customer/name',
+													type : 'ui5pos.szdk.inputCheck.customer.name'
+												}"></Input>
+											</HBox>
+											<HBox renderType="Bare">
+												<VBox renderType="Bare" width="70%" class="p-r-2">
+													<Label labelFor="inpt-cust-adr" text="{lang>customer_address}:"></Label>
+													<Input id="inpt-cust-adr" editable="{order>/customer/editable}" value="{
+														path : 'order>/customer/address',
+														type : 'ui5pos.szdk.inputCheck.customer.address'
+													}"></Input>
+												</VBox>
+												<VBox renderType="Bare" width="30%">
+													<Label labelFor="inpt-cust-city" text="{lang>customer_city}:"></Label>
+													<Input id="inpt-cust-city" editable="{order>/customer/editable}" value="{
+														path : 'order>/customer/city',
+														type : 'ui5pos.szdk.inputCheck.customer.city'
+													}"></Input>
+												</VBox>
+											</HBox>
+											<HBox renderType="Bare">
+												<VBox renderType="Bare" width="50%" class="p-r-2">
+													<Label labelFor="inpt-cust-post" text="{lang>customer_postal_code}:"></Label>
+													<Input id="inpt-cust-post" editable="{order>/customer/editable}" value="{
+														path : 'order>/customer/postal_code',
+														type : 'ui5pos.szdk.inputCheck.customer.postal'
+													}"></Input>
+												</VBox>
+												<VBox renderType="Bare" width="50%">
+													<Label labelFor="inpt-cust-cnt" text="{lang>customer_country}:"></Label>
+													<Input id="inpt-cust-cnt" editable="{order>/customer/editable}" value="{
+														path : 'order>/customer/country',
+														type : 'ui5pos.szdk.inputCheck.customer.country'
+													}"></Input>
+												</VBox>
+											</HBox>
+											<!-- <MessageStrip
+												class="m-t-2"
+												visible="{= (${order>/customer/phone}).trim().length > 0 }"
+												text="{= ${order>/customer/editable} ?
+													${
+														parts : [
+															{path : 'lang>create_order_customer_no_exist_des' },
+															{path : 'order>/customer/phone' }
+														],
+														formatter : 'formatMessage'
+													} :
+													${
+														parts : [
+															{path : 'lang>create_order_customer_exists_des' },
+															{path : 'order>/customer/phone' }
+														],
+														formatter : 'formatMessage'
+													}
+												}"
+												type="Information"
+												showIcon="true"
+												enableFormattedText="true"
+											/> -->
+										</VBox>
+									</f:content>
+								</f:Card>
+							</VBox>
+							<!-- past orders -->
+							<VBox renderType="Bare" class="p-1" id="cnt-prev-ord">
+								<f:Card height="100%">
+									<f:header>
+										<cards:Header title="{lang>create_order_previous}" iconSrc="sap-icon://sales-order-item" iconSize="{= ${device>/resize/height} > 800 ? 'S' : 'XS' }"></cards:Header>
+									</f:header>
+									<f:content>
+										<List items="{data>/previous_orders}">
+											<noData>
+												<IllustratedMessage illustrationType="sapIllus-SimpleEmptyList"></IllustratedMessage>
+											</noData>
+											<CustomListItem>
+												<VBox renderType="Bare" class="p-lr-2 p-b-1">
+													<HBox renderType="Bare" alignItems="Center" justifyContent="SpaceBetween">
+														<Title text="{data>order_id}" titleStyle="H3"></Title>
+														<HBox renderType="Bare">
+															<Button type="Transparent" icon="sap-icon://delete" tooltip="{lang>delete}"></Button>
+															<Button type="Transparent" icon="sap-icon://show" tooltip="{lang>view}" press=".onPressViewOrder"></Button>
+															<Button type="Transparent" icon="sap-icon://edit" tooltip="{lang>edit}" press=".onPressEditOrder"></Button>
+															<Button type="Transparent" icon="sap-icon://print" tooltip="{lang>print}"></Button>
+														</HBox>
+													</HBox>
+													<HBox renderType="Bare" alignItems="Center">
+															<ObjectAttribute
+																class="p-r-3"
+																title="{lang>order_total}" text="${= (${data>order_total}).toFixed(2) }"></ObjectAttribute>
+															<ObjectAttribute
+																title="{lang>create_order_prev_phone}"
+																text="{data>phone}"
+															></ObjectAttribute>
+													</HBox>
+												</VBox>
+											</CustomListItem>
+										</List>
+									</f:content>
+								</f:Card>
+							</VBox>
+							<layoutData>
+								<FlexItemData growFactor="1"></FlexItemData>
+							</layoutData>
+						</HBox>
+					</VBox>
+					<!-- </HBox> -->
+					<!-- order items -->
+					<VBox renderType="Bare" id="cnt-right-pane" class="p-1">
+						<f:Card height="100%">
+							<f:header>
+								<cards:Header title="{lang>order_view_items_header}" iconSrc="sap-icon://product" iconSize="{= ${device>/resize/height} > 800 ? 'S' : 'XS' }"></cards:Header>
+							</f:header>
+							<f:content>
+								<List items="{order>/items}">
+									<noData>
+										<IllustratedMessage
+											illustrationType="sapIllus-EmptyList"
+											title="{lang>create_order_no_item_title}"
+				    						description="{lang>create_order_no_item_desc}"
+										></IllustratedMessage>
+									</noData>
+									<CustomListItem>
+										<VBox renderType="Bare" class="p-lr-2 p-b-1">
+											<HBox renderType="Bare" justifyContent="SpaceBetween" alignItems="Center">
+												<!-- <Title text="{order>name}" title="{order>name}"/> -->
+												<Link text="{order>name}" press=".onPressViewProduct">
+													<customData><core:CustomData key="id" value="{order>id}"></core:CustomData></customData>
+												</Link>
+												<HBox renderType="Bare" alignItems="Center">
+													<Button icon="sap-icon://edit" type="Transparent" press=".onEditItem"></Button>
+													<Button icon="sap-icon://delete" type="Transparent" press=".onDeleteItem"></Button>
+												</HBox>
+											</HBox>
+											<HBox renderType="Bare" alignItems="Center">
+												<!-- <ToolbarSpacer></ToolbarSpacer> -->
+												<ObjectAttribute title="{lang>create_order_price}" text="${= (${order>price}).toFixed(2) }"></ObjectAttribute>
+												<ObjectAttribute title="{lang>order_discount}" text="{= (${order>discount} * 100).toFixed(1) + '%' }" class="p-l-3"></ObjectAttribute>
+												<ObjectAttribute title="{lang>order_quantity}" text="{order>quantity}" class="p-l-3"></ObjectAttribute>
+												<ObjectAttribute title="{lang>create_order_total}" text="${= (${order>total}).toFixed(2) }" class="p-l-3"></ObjectAttribute>
+											</HBox>
+										</VBox>
+									</CustomListItem>
+									<dependents>
+										<Dialog id="edit-item-dialog" title="{lang>create_order_edit_item}">
+											<beginButton>
+												<Button text="{lang>update}" press=".onUpdateItem" type="Emphasized"></Button>
+											</beginButton>
+											<endButton>
+												<Button text="{lang>cancel}" press=".onCancelItemUpdate"></Button>
+											</endButton>
+											<content>
+												<VBox renderType="Bare" class="p-tb-1 p-lr-2">
+													<!-- <Title id="item-name-edit" titleStyle="H2"></Title> -->
+													<ObjectAttribute id="item-name-edit" title="{lang>create_order_item_name}" class="m-tb-2"></ObjectAttribute>
+													<GenericTag  text="{lang>product_unitPrice}:"  design="StatusIconHidden" status="Success">
+														<ObjectNumber id="item-price-edit" state="Success" emphasized="false" unit="USD"/>
+													</GenericTag>
+													<Label labelFor="inpt-disc-edit" text="{lang>order_discount}" class="m-t-2"></Label>
+													<HBox renderType="Bare">
+														<VBox class="m-r-1">
+															<Select id="sel-disc-type-edit" selectedKey="per">
+																<core:ListItem key="per" text="%"></core:ListItem>
+																<core:ListItem key="usd" text="$"></core:ListItem>
+															</Select>
+														</VBox>
+														<Input id="inpt-disc-edit" type="Number"></Input>
+													</HBox>
+													<Label labelFor="inpt-quan-edit" text="{lang>create_order_label_quantity}" class="m-t-2"/>
+													<Input id="inpt-quan-edit" type="Number"></Input>
+												</VBox>
+											</content>
+										</Dialog>
+									</dependents>
+								</List>
+							</f:content>
+						</f:Card>
+					</VBox>
+				</HBox>
+			</content>
+		</Page>
+
+</mvc:View>
