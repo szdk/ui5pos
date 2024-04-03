@@ -5,6 +5,29 @@ sap.ui.define([
         "use strict";
 
         let obj = {
+            print : function ({model, order_id}) {
+                let resolve = () => {}, reject = () => {};
+                let prom = new Promise((res, rej) => {
+                    resolve = res; reject = rej;
+                });
+                model.read(`/Orders(${order_id})`, {
+                    success : (order) => {
+                        let template = this.generatePrintTemplate(order);
+                        // //delete order details
+                        // for (let item of ((order.Order_Details && order.Order_Details.results) || []))
+                        //     model.remove(`/Order_Details(OrderID=${order_id},ProductID=${item.ProductID})`, {groupId : 'co_del_itm'});
+                        
+                    },
+                    error : reject,
+                    urlParameters : {
+                        '$expand' : 'Customer,Order_Details,Order_Details/Product'
+                    },
+                });
+                return prom;
+            },
+            generatePrintTemplate : function (order_data) {
+                let main_cnt = document.createElement('div');
+            },
             
             /**
                 order = {
