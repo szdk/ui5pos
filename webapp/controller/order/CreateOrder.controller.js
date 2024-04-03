@@ -175,7 +175,8 @@ sap.ui.define([
                                 previous_orders.pop();
                             this.dataModel.setProperty('/previous_orders', previous_orders);
                             this.onClearOrder();
-
+                            if (this.navBackAfterUpdate)
+                                this.goBack("create_order");
                         }).catch((err) => {
                             this.getView().setBusy(false);
                             console.error(err);
@@ -224,7 +225,7 @@ sap.ui.define([
                 }).catch(err => {
                     this.getView().setBusy(false);
                     console.error(err);
-                    this.showErrorDialog();
+                    this.showErrorDialog({message : this.i18n.getText('create_order_error_while_edit', [order_id])});
                 });
             },
 
@@ -760,11 +761,32 @@ sap.ui.define([
             },
 
             patternMatched : function (evt) {
+                // window.e = evt;
+                // console.log(evt);
                 if (!this.defaultPatternMatched(evt)) return;
                 this.comp.getModel('nav').setProperty('/sideNav/selectedKey', `nav_item_route_create_order`);
                 this.comp.getModel('nav').setProperty('/sideNav/expandableMin', 1401);
-                // if (sap.ui.Device.resize.width >= 1260 && sap.ui.Device.resize.width <= 1400)
-                //     this.comp.getModel('nav').setProperty('/sideNav/expanded', false);
+
+                //check if edit order query passed
+                let args = evt.getParameter('arguments');
+                this.navBackAfterUpdate = false;
+                if (args && args['edit'] && args['edit'] && parseInt(args['edit'])) {
+                    let order_id = parseInt(args['edit']);
+                    this.navBackAfterUpdate = true;
+                    let curItems = this.orderModel.getProperty('/items');
+                    if (curItems && curItems.length > 0)
+                        this.showInfoDialog({
+                            title : this.i18n.getText('edit_order_num', [order_id]),
+                            buttonConfirm : this.i18n.getText('continue'),
+                            buttonType : sap.m.ButtonType.Reject,
+                            onConfirm : () => {
+                                this.editOrderMode(order_id);
+                            },
+                            message : this.i18n.getText('create_order_cnf_edit')
+                        });
+                    else
+                        this.editOrderMode(order_id);
+                }
                 setTimeout(() => this.focus(this.byId('input_product_id')), 500)
             },
 

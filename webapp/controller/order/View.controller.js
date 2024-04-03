@@ -172,6 +172,9 @@ sap.ui.define([
             onOpenAction : function (evt) {
                 this.byId('view_order_actionSheet').openBy(evt.getSource());
             },
+            onEdit : function (evt) {
+                this.comp.getRouter().navTo("create_order", {edit : this.orderID});
+            },
             onDelete : function (evt) {
                 this.showErrorDialog({
                     title: this.i18n.getText('confirm_delete'),

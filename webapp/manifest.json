@@ -87,7 +87,7 @@
                 },
                 {
                     "name" : "create_order",
-                    "pattern" : "order/create",
+                    "pattern" : "order/create/:edit:",
                     "target" : [
                         "create_order"
                     ]
