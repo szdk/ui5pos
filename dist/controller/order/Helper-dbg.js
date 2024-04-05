@@ -1,22 +1,24 @@
 sap.ui.define([
-    "ui5pos/szdk/controller/customer/CustomerHelper"
+    "ui5pos/szdk/controller/customer/CustomerHelper",
+    "ui5pos/szdk/controller/order/PrintTemplate"
 ],
-    function (CustomerHelper) {
+    function (CustomerHelper, PrintTemplate) {
         "use strict";
 
         let obj = {
-            print : function ({model, order_id}) {
+            print : function (data) {
+                let model = data.model;
+                let order_id = data.order_id;
+                let i18n = data.i18n;
+
                 let resolve = () => {}, reject = () => {};
                 let prom = new Promise((res, rej) => {
                     resolve = res; reject = rej;
                 });
                 model.read(`/Orders(${order_id})`, {
                     success : (order) => {
-                        let template = this.generatePrintTemplate(order);
-                        // //delete order details
-                        // for (let item of ((order.Order_Details && order.Order_Details.results) || []))
-                        //     model.remove(`/Order_Details(OrderID=${order_id},ProductID=${item.ProductID})`, {groupId : 'co_del_itm'});
-                        
+                        PrintTemplate.template1(order, i18n);
+                        resolve();
                     },
                     error : reject,
                     urlParameters : {
@@ -25,9 +27,7 @@ sap.ui.define([
                 });
                 return prom;
             },
-            generatePrintTemplate : function (order_data) {
-                let main_cnt = document.createElement('div');
-            },
+
             
             /**
                 order = {

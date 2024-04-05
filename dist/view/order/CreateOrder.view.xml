@@ -347,7 +347,7 @@
 															<Button type="Transparent" icon="sap-icon://delete" tooltip="{lang>delete}" press=".onPressDeleteOrder"></Button>
 															<Button type="Transparent" icon="sap-icon://show" tooltip="{lang>view}" press=".onPressViewOrder"></Button>
 															<Button type="Transparent" icon="sap-icon://edit" tooltip="{lang>edit}" press=".onPressEditOrder"></Button>
-															<Button type="Transparent" icon="sap-icon://print" tooltip="{lang>print}"></Button>
+															<Button type="Transparent" icon="sap-icon://print" tooltip="{lang>print}" press=".onPressPrintOrder"></Button>
 														</HBox>
 													</HBox>
 													<HBox renderType="Bare" alignItems="Center">

@@ -193,6 +193,9 @@ sap.ui.define([
                     }
                 });
                 
+            },
+            onPrint : function () {
+                Helper.print({model : this.comp.getModel('service'), order_id : this.orderID, i18n : this.i18n});
             }
         });
     }

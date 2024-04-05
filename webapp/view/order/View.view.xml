@@ -59,7 +59,7 @@
 								</ActionSheet>
 							</dependents>
 						</Button>
-						<Button text="{lang>print}" icon="sap-icon://print" type="Accept" press="onPrint"></Button>
+						<Button text="{lang>print}" icon="sap-icon://print" type="Accept" press=".onPrint"></Button>
 					</f:actions>
 
 				</f:DynamicPageTitle>

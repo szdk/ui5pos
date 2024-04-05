@@ -149,6 +149,11 @@ sap.ui.define([
                                 previous_orders.pop();
                             this.dataModel.setProperty('/previous_orders', previous_orders);
                             this.onClearOrder();
+                            if (this.configModel.getProperty('/auto_print')) {
+                                this.getView().setBusy(true);
+                                Helper.print({model : this.comp.getModel('service'), order_id : order_data.OrderID, i18n : this.i18n})
+                                    .finally(() => {this.getView().setBusy(false)});
+                            }
                         })
                         .catch((err) => {
                             this.getView().setBusy(false);
@@ -177,6 +182,11 @@ sap.ui.define([
                             this.onClearOrder();
                             if (this.navBackAfterUpdate)
                                 this.goBack("create_order");
+                            else if (this.configModel.getProperty('/auto_print')) {
+                                this.getView().setBusy(true);
+                                Helper.print({model : this.comp.getModel('service'), order_id : order_data.OrderID, i18n : this.i18n})
+                                    .finally(() => {this.getView().setBusy(false)});
+                            }
                         }).catch((err) => {
                             this.getView().setBusy(false);
                             console.error(err);
@@ -206,9 +216,13 @@ sap.ui.define([
                     });
                     this.byId('inpt-cst-phn').setValueState(sap.ui.core.ValueState.None);
 
+                    //to calculate quantity of products in stock (including the quantity in current order)
+                    this.orderEditProdQuan = {[order_id] : {}};
+
                     let items = [];
                     let ref = (Array.isArray(data.Order_Details) ? data.Order_Details : (data.Order_Details && data.Order_Details.results)) || [];
                     for (let el of ref) {
+                        this.orderEditProdQuan[order_id][el.ProductID] = el.Quantity;
                         items.push({
                             id : el.ProductID,
                             name : el.Product.ProductName,
@@ -306,6 +320,17 @@ sap.ui.define([
                 let ctx = source && source.getBindingContext('data');
                 let id = parseInt(ctx && ctx.getProperty && ctx.getProperty('order_id'));
                 this.comp.getRouter().navTo("view_order", {id : id});
+            },
+
+            onPressPrintOrder : function (evt) {
+                let source = evt.getSource();
+                let ctx = source && source.getBindingContext('data');
+                let id = parseInt(ctx && ctx.getProperty && ctx.getProperty('order_id'));
+                if (id) {
+                    this.getView().setBusy(true);
+                    Helper.print({model : this.comp.getModel('service'), order_id : id, i18n : this.i18n})
+                        .finally(() => {this.getView().setBusy(false)});
+                }
             },
 
             onPressDeleteOrder : function (evt) {
@@ -735,6 +760,11 @@ sap.ui.define([
                 });
             },
             checkInputProduct : function (data, input, quan = 1) {
+                let instock = parseInt(data.UnitsInStock) || 0;
+                let cur_order_id = this.orderModel.getProperty('/order_id');
+                if (cur_order_id && this.orderEditProdQuan && this.orderEditProdQuan[cur_order_id] && this.orderEditProdQuan[cur_order_id][data.ProductID]) {
+                    instock += (parseInt(this.orderEditProdQuan[cur_order_id][data.ProductID]) || 0);
+                }
                 if (!data) {
                     input.setValueStateText(this.i18n.getText('input_invalid_product_id'));
                     input.setValueState(sap.ui.core.ValueState.Error);
@@ -745,13 +775,13 @@ sap.ui.define([
                     input.setValueState(sap.ui.core.ValueState.Error);
                     this.focus(input);
                     return false;
-                } else if (!parseInt(data.UnitsInStock) || parseInt(data.UnitsInStock) == 0) {
+                } else if (instock == 0) {
                     input.setValueStateText(this.i18n.getText('out_of_stock'));
                     input.setValueState(sap.ui.core.ValueState.Error);
                     this.focus(input);
                     return false;
-                } else if (parseInt(data.UnitsInStock) < quan) {
-                    input.setValueStateText(this.i18n.getText('only_num_left', [data.UnitsInStock]));
+                } else if (instock < quan) {
+                    input.setValueStateText(this.i18n.getText('only_num_left', [instock]));
                     input.setValueState(sap.ui.core.ValueState.Error);
                     this.focus(input);
                     return false;
