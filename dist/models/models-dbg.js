@@ -4,17 +4,13 @@ sap.ui.define([
     "ui5pos/szdk/localService/MockServer",
     "sap/ui/model/odata/v2/ODataModel",
 ], 
-    /**
-     * provide app-view type models (as in the first "V" in MVVC)
-     * 
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     * 
-     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
-     */
-    function (JSONModel, Device, MockServer, ODataModel) {
+    function (
+        JSONModel,
+        Device,
+        MockServer,
+        ODataModel,
+    ) {
         "use strict";
-
         return {
             //Device Model
             createDeviceModel: function () {
@@ -34,12 +30,11 @@ sap.ui.define([
                         generateID : false,
                         updateQuantity : false,
                         updateMethod : "MERGE"
-                    }
+                    },
+                    theme : 'auto',
+                    lang : 'auto',
+                    density : 'cozy',
                 };
-                //todo load properties from localStorage if present
-                //todo update localStorage whenever settings model changes
-                
-                // let model = new JSONModel(sap.ui.require.toUrl('ui5pos/szdk/models/settings.json'));
                 let model = new JSONModel(settings);
                 model.setDefaultBindingMode("OneWay");
                 return model;

@@ -1,5 +1,5 @@
 @use "sass:string";
-// @use 'sass:math';
+@use 'sass:math';
 
 //margins, paddings
 @mixin build-mp ($pref : null) {
@@ -47,6 +47,13 @@
         }
         #{$pref}p-r-#{$i}, #{$pref}p-lr-#{$i}, #{$pref}p-#{$i} {
             padding-right : $size;
+        }
+
+        //width
+        @if ($i > 0) {
+            #{$pref}w-#{$i} {
+                width : math.percentage( math.floor(math.div(100, $i)) * 0.01 );
+            }
         }
     }
 }

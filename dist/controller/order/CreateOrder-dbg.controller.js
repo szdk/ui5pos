@@ -152,6 +152,7 @@ sap.ui.define([
                             if (this.configModel.getProperty('/auto_print')) {
                                 this.getView().setBusy(true);
                                 Helper.print({model : this.comp.getModel('service'), order_id : order_data.OrderID, i18n : this.i18n})
+                                    .catch(() => this.showErrorDialog())
                                     .finally(() => {this.getView().setBusy(false)});
                             }
                         })
@@ -185,6 +186,7 @@ sap.ui.define([
                             else if (this.configModel.getProperty('/auto_print')) {
                                 this.getView().setBusy(true);
                                 Helper.print({model : this.comp.getModel('service'), order_id : order_data.OrderID, i18n : this.i18n})
+                                    .catch(() => this.showErrorDialog())
                                     .finally(() => {this.getView().setBusy(false)});
                             }
                         }).catch((err) => {
@@ -257,6 +259,7 @@ sap.ui.define([
                 this.orderModel.setProperty('/customer/name', '');
                 this.byId('inpt-cst-phn').setValueState(sap.ui.core.ValueState.None);
                 this.byId('inpt-cus-name').setValueState(sap.ui.core.ValueState.None);
+                this.byId('input_product_id').setValueState(sap.ui.core.ValueState.None);
                 this.focus(this.byId('input_product_id'));
             },
 
@@ -329,6 +332,7 @@ sap.ui.define([
                 if (id) {
                     this.getView().setBusy(true);
                     Helper.print({model : this.comp.getModel('service'), order_id : id, i18n : this.i18n})
+                        .catch(() => this.showErrorDialog())
                         .finally(() => {this.getView().setBusy(false)});
                 }
             },

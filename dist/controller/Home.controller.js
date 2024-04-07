@@ -1,2 +1,2 @@
-sap.ui.define(["ui5pos/szdk/controller/BaseController"],function(t){"use strict";return t.extend("ui5pos.szdk.controller.Home",{onInit:function(){t.prototype.onInit.apply(this,arguments);this.comp.getRouter().getRoute("home").attachPatternMatched(this.defaultPatternMatched.bind(this))}})});
+sap.ui.define(["ui5pos/szdk/controller/BaseController"],function(t){"use strict";return t.extend("ui5pos.szdk.controller.Home",{onInit:function(){t.prototype.onInit.apply(this,arguments);this.comp.getRouter().getRoute("home").attachPatternMatched(()=>{this.comp.getRouter().navTo("create_order")})}})});
 //# sourceMappingURL=Home.controller.js.map

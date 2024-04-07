@@ -1,4 +1,4 @@
-<mvc:View xmlns:layout="sap.ui.layout"
+<mvc:View xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout"
     controllerName="ui5pos.szdk.controller.App"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
@@ -27,7 +27,8 @@
                             <Text text="szdk/" class="logo_part_1 m-r-1"></Text>
                             <Title text="Ui5POS" class="logo_part_2" />
                         </HBox>
-
+                        <ToolbarSpacer></ToolbarSpacer>
+                        <OverflowToolbarButton icon="sap-icon://action-settings" text="{lang>settings}" press=".onPressSettings"></OverflowToolbarButton>
                     </t:ToolHeader>
                 </t:header>
                 <t:sideContent>
@@ -51,7 +52,8 @@
                         </t:NavigationList>
                         <t:fixedItem>
                             <t:NavigationList>
-                                <t:NavigationListItem selectable="false" text="{lang>about}" icon="sap-icon://message-information"/>
+                                <t:NavigationListItem text="{lang>settings}" icon="sap-icon://action-settings" select=".onPressSettings"/>
+                                <t:NavigationListItem text="{lang>about}" icon="sap-icon://message-information"/>
                             </t:NavigationList>
                         </t:fixedItem>
                     </t:SideNavigation>
@@ -59,6 +61,69 @@
                 <t:mainContents>
                 </t:mainContents>
             </t:ToolPage>
+            <dependents>
+                <Dialog icon="sap-icon://action-settings" stretch="{device>/system/phone}" closeOnNavigation="true" id="settings-dialog" title="{lang>settings}">
+                    <content>
+                        <VBox renderType="Bare" class="p-5 s-p-3">
+                            <HBox wrap="Wrap" renderType="Bare">
+                                <VBox renderType="Bare" class="w-2 s-w-1 p-r-3 s-p-r-0">
+                                    <HBox renderType="Bare">
+                                        <core:Icon src="sap-icon://palette"></core:Icon>
+                                        <Label class="p-l-2" labelFor="stng-theme" text="{lang>appearance}"></Label>
+                                    </HBox>
+                                    <Select id="stng-theme" selectedKey="{tmp_settings>/theme}">
+                                        <core:ListItem key="auto" text="{lang>auto}"></core:ListItem>
+                                        <core:ListItem key="light" text="{lang>light}"></core:ListItem>
+                                        <core:ListItem key="dark" text="{lang>dark}"></core:ListItem>
+                                        <core:ListItem key="high_cont_light" text="{lang>high_cont_light}"></core:ListItem>
+                                        <core:ListItem key="high_cont_dark" text="{lang>high_cont_dark}"></core:ListItem>
+                                    </Select>
+                                </VBox>
+
+                                <VBox renderType="Bare" class="w-2 s-w-1 p-t-0 s-p-t-3">
+                                    <HBox renderType="Bare">
+                                        <core:Icon src="sap-icon://dimension"></core:Icon>
+                                        <Label class="p-l-2" labelFor="stng-dens" text="{lang>cont_density}"></Label>
+                                    </HBox>
+                                    <Select id="stng-dens" selectedKey="{tmp_settings>/density}">
+                                        <core:ListItem key="auto" text="{lang>auto}"></core:ListItem>
+                                        <core:ListItem key="cozy" text="{lang>cozy}"></core:ListItem>
+                                        <core:ListItem key="compact" text="{lang>compact}"></core:ListItem>
+                                    </Select>
+                                </VBox>
+                            </HBox>
+
+                            <VBox renderType="Bare" class="w-2 s-w-1 p-t-3 p-r-3 s-p-r-0">
+                                <HBox renderType="Bare">
+                                    <core:Icon src="sap-icon://hello-world"></core:Icon>
+                                    <Label class="p-l-2" labelFor="stng-lang" text="{lang>language}"></Label>
+                                </HBox>
+                                <Select id="stng-lang" selectedKey="{tmp_settings>/lang}">
+                                    <core:ListItem key="auto" text="{lang>auto}"></core:ListItem>
+                                    <core:ListItem key="en_US" text="{lang>en_US_full}"></core:ListItem>
+                                    <core:ListItem key="hi" text="{lang>hi_full}"></core:ListItem>
+                                </Select>
+                            </VBox>
+                            <MessageStrip showIcon="true" visible="{= ${tmp_settings>/lang} !== 'en_US' }" text="{lang>language_ai_des}" class="m-t-2"></MessageStrip>
+
+                            <VBox renderType="Bare" visible="{tmp_settings>/serviceCreated}">
+                                <Label labelFor="chk-gen-id" text="{lang>setup_generate_id_label}" class="m-t-4" wrapping="true"></Label>
+                                <CheckBox id="chk-gen-id" editable="{= ${tmp_settings>/serviceIsMock} === false }" selected="{tmp_settings>/generateID}" text="{lang>setup_generate_id_input}"></CheckBox>
+
+                                <Label labelFor="chk-updt-quan" text="{lang>setup_update_quan_label}" class="m-t-3" wrapping="true"></Label>
+                                <CheckBox id="chk-updt-quan" editable="{= ${tmp_settings>/serviceIsMock} === false }" selected="{tmp_settings>/updateQuantity}" text="{lang>setup_update_quan_input}"></CheckBox>
+                            </VBox>
+
+                        </VBox>
+                    </content>
+                    <beginButton>
+                        <Button text="{lang>save}" press=".onPressSaveSettings" type="Emphasized"></Button>
+                    </beginButton>
+                    <endButton>
+                        <Button text="{lang>cancel}" press=".onCloseSettings"></Button>
+                    </endButton>
+                </Dialog>
+            </dependents>
         </App>
     </Shell>
 </mvc:View>

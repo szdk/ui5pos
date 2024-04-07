@@ -342,7 +342,7 @@
 											<CustomListItem>
 												<VBox renderType="Bare" class="p-lr-2 p-b-1">
 													<HBox renderType="Bare" alignItems="Center" justifyContent="SpaceBetween">
-														<Title text="{data>order_id}" titleStyle="H3"></Title>
+														<Title text="{data>order_id}"></Title>
 														<HBox renderType="Bare">
 															<Button type="Transparent" icon="sap-icon://delete" tooltip="{lang>delete}" press=".onPressDeleteOrder"></Button>
 															<Button type="Transparent" icon="sap-icon://show" tooltip="{lang>view}" press=".onPressViewOrder"></Button>

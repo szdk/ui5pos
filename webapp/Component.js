@@ -1,8 +1,9 @@
 sap.ui.define([
     "sap/ui/core/UIComponent",
     "ui5pos/szdk/models/models",
+    "ui5pos/szdk/controller/util/Settings"
 ],
-function (UIComponent, models) {
+function (UIComponent, models, Settings) {
     "use strict";
 
     return UIComponent.extend("ui5pos.szdk.Component", {
@@ -26,11 +27,24 @@ function (UIComponent, models) {
 
             // ======================================== MODELS  ======================================== 
             this.setModel(models.createDeviceModel(), "device");
-            this.setModel(models.createSettingsModel(), "settings");
             
             this.setModel(models.createNavModel(), "nav");
             this.getModel('nav').setDefaultBindingMode("OneWay");
 
+            let settingsModel = models.createSettingsModel();
+            this.setModel(settingsModel, "settings");
+            Settings.loadFromLocal(settingsModel);
+
+            // update theme when os theme changes
+            if (window.matchMedia) {
+                const onMediaQueryChange = () => {
+                    if (settingsModel.getProperty('/theme') != 'auto') return;
+                    Settings.updateTheme('auto');
+                };
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', onMediaQueryChange);
+                window.matchMedia('(prefers-contrast: more)').addEventListener('change', onMediaQueryChange);
+            }
+            
             // change app title
             this.getRouter().attachTitleChanged(function(oEvent) {
                 var title = oEvent.getParameter("title");
