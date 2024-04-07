@@ -6,6 +6,7 @@ sap.ui.define([
         "sap/m/Text",
         "ui5pos/szdk/controller/util/InputCheck",
         "sap/ui/model/Sorter",
+        "sap/base/i18n/Localization",
     ],
     function (
             Controller,
@@ -14,7 +15,8 @@ sap.ui.define([
             Button,
             Text,
             InputCheck,
-            Sorter
+            Sorter,
+            Localization,
         ) {
         "use strict";
 
@@ -24,8 +26,20 @@ sap.ui.define([
             onInit: function () {
                 // methods/properties which are used too often can be defined here, so that all child controllers will inherit the same by default
                 this.comp = this.getOwnerComponent();
+
+                /**
+                 * using this.i18n doesn't seem to be better idea if language of app can be changed dynamically. because each time language/localization of app is changed,
+                 * we need to update the this.i18n so that it uses resource from updated language model.
+                 * Being dependent on just this.i18n should be prevented. Instead of caching this.i18n, the language model itself should be cached.
+                 * todo : call this.langModel.getResourceBundel().getText() each time to fetch text through all of the app
+                 *          for now, a workaround using Localization.attachChange has been done
+                 */
                 this.i18n = this.comp.getModel('lang').getResourceBundle();
                 this.inputCheck.setResourceBundel(this.i18n);
+                Localization.attachChange((evt) => {
+                    this.i18n = this.comp.getModel('lang').getResourceBundle();
+                    this.inputCheck.setResourceBundel(this.i18n);
+                });
             },
 
             defaultPatternMatched: function (evt) {

@@ -81,6 +81,9 @@
 									/>
 								</ActionSheet>
 							</dependents>
+							<layoutData>
+								<OverflowToolbarLayoutData closeOverflowOnInteraction="false"></OverflowToolbarLayoutData>
+							</layoutData>
 						</Button>
 						
 					</f:actions>

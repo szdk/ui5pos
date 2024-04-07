@@ -418,55 +418,57 @@ sap.ui.define([
                 this.filterDialog = new FilterDialog({
                     i18n : this.i18n,
                     dialog : true,
-                    title : this.i18n.getText('add_filters'),
+                    title : '{lang>add_filters}',
                     onFilter : (filters) => {
                         this.orders_table.applyFilter(filters);
                     },
                     fields : [
                         {
                             path : 'OrderID',
-                            label : this.i18n.getText('order_id'),
+                            label : '{lang>order_id}',
                             type : sap.m.InputType.Number,
                             operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
                         },
                         {
                             path : 'UnitPrice',
-                            label : this.i18n.getText('product_unitPrice'),
+                            label : '{lang>product_unitPrice}',
                             type : sap.m.InputType.Number,
                             operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
                         },
                         {
                             path : 'Quantity',
-                            label : this.i18n.getText('order_quantity'),
+                            label : '{lang>order_quantity}',
                             type : sap.m.InputType.Number,
                             operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
                         },
                         {
                             path : 'Discount',
-                            label : this.i18n.getText('order_discount'),
+                            label : '{lang>order_discount}',
                             type : sap.m.InputType.Number,
                             operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
                         },
                     ]
                 });
+                this.filterDialog.container.setModel(this.comp.getModel('lang'), 'lang');
+                
                 let filterButton = new Button({
                     icon : 'sap-icon://filter',
-                    text : this.i18n.getText('filter'),
+                    text : '{lang>filter}', //this.i18n.getText('filter'),
                     press : () => this.filterDialog.container.open()
                 });
 
                 let columns = [
-                    {id : 'OrderID', label : this.i18n.getText('order_id'), path : 'OrderID', header: {/*minScreenWidth:"XXLarge", width:"5em"*/}},
-                    {id : 'UnitPrice', label : this.i18n.getText('product_unitPrice'), path : 'UnitPrice', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                    {id : 'Quantity', label : this.i18n.getText('order_quantity'), path : 'Quantity', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},
-                    {id : 'Discount', label : this.i18n.getText('order_discount'), path : 'Discount', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                    {id : 'NetPrice', label : this.i18n.getText('order_net_price'), path : 'UnitPrice', header: {hAlign : "End"}},
+                    {id : 'OrderID', label : 'order_id', path : 'OrderID', header: {/*minScreenWidth:"XXLarge", width:"5em"*/}},
+                    {id : 'UnitPrice', label : 'product_unitPrice', path : 'UnitPrice', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                    {id : 'Quantity', label : 'order_quantity', path : 'Quantity', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},
+                    {id : 'Discount', label : 'order_discount', path : 'Discount', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                    {id : 'NetPrice', label : 'order_net_price', path : 'UnitPrice', header: {hAlign : "End"}},
                 ].map((v) => ({
                     id : this.getView().createId(v.id),
                     cell: {bindingPath : v.path},
-                    header : {header : v.label, ...v.header},
-                    p13n : {key : v.id, label: v.label, path : v.path},
-                    excel : {label : v.label, property : v.path}
+                    header : {header : `{lang>${v.label}}`, ...v.header},
+                    p13n : {key : v.id, label: this.i18n.getText(v.label), path : v.path},
+                    excel : {label : this.i18n.getText(v.label), property : v.path}
                 }));
                 columns[0].cell.control = new Link({text:"{OrderID}", wrapping : true, press: (evt) => {
                     this.comp.getRouter().navTo("view_order", {id : parseInt(evt.getSource().getText())});
@@ -506,7 +508,7 @@ sap.ui.define([
                         path : `/Products(${id})/Order_Details`
                     },
                     customToolbar : {
-                        start : [new Title({text : this.i18n.getText('product_order_details_header')})],
+                        start : [new Title({text : '{lang>product_order_details_header}'})],
                         end : [filterButton]
                     },
                     toolbar : {

@@ -80,18 +80,18 @@ sap.ui.define([
                 this.order_details_table_id = order_id;
                 this.byId('order_view_page').setHeaderExpanded(true);
                 let columns = [
-                    {id : 'ProductID', label : this.i18n.getText('product_id'), path : 'ProductID', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"/*, width:"5em"*/}},
-                    {id : 'ProductName', label : this.i18n.getText('product_name'), path : 'Product/ProductName', header: {/*minScreenWidth:"XXLarge", width:"5em"*/}},
-                    {id : 'UnitPrice', label : this.i18n.getText('product_unitPrice'), path : 'UnitPrice', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                    {id : 'Quantity', label : this.i18n.getText('order_quantity'), path : 'Quantity', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},
-                    {id : 'Discount', label : this.i18n.getText('order_discount'), path : 'Discount', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                    {id : 'NetPrice', label : this.i18n.getText('order_net_price'), path : 'UnitPrice', header: {hAlign : "End"}},
+                    {id : 'ProductID', label : 'product_id', path : 'ProductID', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"/*, width:"5em"*/}},
+                    {id : 'ProductName', label : 'product_name', path : 'Product/ProductName', header: {/*minScreenWidth:"XXLarge", width:"5em"*/}},
+                    {id : 'UnitPrice', label : 'product_unitPrice', path : 'UnitPrice', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                    {id : 'Quantity', label : 'order_quantity', path : 'Quantity', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},
+                    {id : 'Discount', label : 'order_discount', path : 'Discount', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                    {id : 'NetPrice', label : 'order_net_price', path : 'UnitPrice', header: {hAlign : "End"}},
                 ].map((v) => ({
                     id : this.getView().createId(v.id),
                     cell: {bindingPath : v.path},
-                    header : {header : v.label, ...v.header},
-                    p13n : {key : v.id, label: v.label, path : v.path},
-                    excel : {label : v.label, property : v.path}
+                    header : {header : `{lang>${v.label}}`, ...v.header},
+                    p13n : {key : v.id, label: this.i18n.getText(v.label), path : v.path},
+                    excel : {label : this.i18n.getText(v.label), property : v.path}
                 }));
 
                 columns[1].cell.control = new Link({
@@ -143,7 +143,7 @@ sap.ui.define([
                         }
                     },
                     customToolbar : {
-                        start : [new Title({text : this.i18n.getText('order_view_items_header')})],
+                        start : [new Title({text : '{lang>order_view_items_header}'})],
                         // end : [filterButton]
                     },
                     toolbar : {

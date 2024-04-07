@@ -58,6 +58,9 @@
 									/>
 								</ActionSheet>
 							</dependents>
+							<layoutData>
+								<OverflowToolbarLayoutData closeOverflowOnInteraction="false"></OverflowToolbarLayoutData>
+							</layoutData>
 						</Button>
 						<Button text="{lang>print}" icon="sap-icon://print" type="Accept" press=".onPrint"></Button>
 					</f:actions>

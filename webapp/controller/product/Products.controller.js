@@ -50,26 +50,26 @@ sap.ui.define([
                     let inputOpenProduct = new Input({
                         type : sap.m.InputType.Number,
                         showValueHelp:true,
-                        placeholder: this.i18n.getText('product_id'),
+                        placeholder: '{lang>product_id}', //this.i18n.getText('product_id'),
                         width : '9em'
                     });
                     inputOpenProduct.attachValueHelpRequest(() => (this.onValueHelpProduct.bind(this))(inputOpenProduct));
                     
-                    let buttonOpenProduct = new Button({type: sap.m.ButtonType.Transparent ,text: this.i18n.getText('open')});
+                    let buttonOpenProduct = new Button({type: sap.m.ButtonType.Transparent ,text: '{lang>open}' /**this.i18n.getText('open') */});
                     buttonOpenProduct.attachPress(() => (this.openProduct.bind(this))(inputOpenProduct));
 
                     //Table Filters Toolbar 
                     this.filterDialog = new FilterDialog({
                         i18n : this.i18n,
                         dialog : true,
-                        title : this.i18n.getText('add_filters', undefined, true) || 'Add Filters',
+                        title : '{lang>add_filters}',//this.i18n.getText('add_filters', undefined, true) || 'Add Filters',
                         onFilter : (filters) => {
                             tableGenerator.applyFilter(filters);
                         },
                         fields : [
                             {
                                 path : 'ProductID',
-                                label : this.i18n.getText('product_id'),
+                                label : '{lang>product_id}',//this.i18n.getText('product_id'),
                                 type : sap.m.InputType.Number,
                                 operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LT, sap.ui.model.FilterOperator.GT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
                                 onValueHelp : (input) => {
@@ -95,17 +95,17 @@ sap.ui.define([
                             },
                             {
                                 path : 'ProductName',
-                                label : this.i18n.getText('product_name'),
+                                label : '{lang>product_name}', //this.i18n.getText('product_name'),
                             },
                             {
                                 path : 'UnitPrice',
-                                label : this.i18n.getText('product_unitPrice'),
+                                label : '{lang>product_unitPrice}', //this.i18n.getText('product_unitPrice'),
                                 type : sap.m.InputType.Number,
                                 operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LT, sap.ui.model.FilterOperator.GT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
                             },
                             {
                                 path : 'CategoryID',
-                                label : this.i18n.getText('category_id'),
+                                label : '{lang>category_id}', //this.i18n.getText('category_id'),
                                 type : sap.m.InputType.Number,
                                 operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LT, sap.ui.model.FilterOperator.GT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
                                 onValueHelp : (input) => {
@@ -131,11 +131,11 @@ sap.ui.define([
                             },
                             {
                                 path : 'Category/CategoryName',
-                                label : this.i18n.getText('category')
+                                label : '{lang>category}', //this.i18n.getText('category')
                             },
                             {
                                 path : 'SupplierID',
-                                label : this.i18n.getText('supplier_id'),
+                                label : '{lang>supplier_id}',//this.i18n.getText('supplier_id'),
                                 type : sap.m.InputType.Number,
                                 operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LT, sap.ui.model.FilterOperator.GT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
                                 onValueHelp : (input) => {
@@ -161,29 +161,30 @@ sap.ui.define([
                             }
                         ]
                     });
-                    let filterButton = new Button({icon: 'sap-icon://filter', type: sap.m.ButtonType.Transparent, tooltip : this.i18n.getText('filter')});
+                    this.filterDialog.container.setModel(this.comp.getModel('lang'), 'lang');
+                    let filterButton = new Button({icon: 'sap-icon://filter', type: sap.m.ButtonType.Transparent, tooltip : '{lang>filter}'});
                     filterButton.attachPress(() => {
                         this.filterDialog.container.open();
                     });
 
                     //Table Columns
                     let columns = [
-                        {id : 'ProductID', label : this.i18n.getText('id'), path : 'ProductID', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline", width:"5em"}},
-                        {id : 'ProductName', label : this.i18n.getText('product'), path : 'ProductName', header: {}},
-                        {id : 'CategoryName', label : this.i18n.getText('category'), path : 'Category/CategoryName', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},
-                        {id : 'UnitsInStock', label : this.i18n.getText('product_instock'), path : 'UnitsInStock', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                        {id : 'QuantityPerUnit', label : this.i18n.getText('product_quantityPerUnit'), path : 'QuantityPerUnit', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                        {id : 'UnitPrice', label : this.i18n.getText('product_unitPrice'), path : 'UnitPrice', header: {hAlign : "End"}},
-                        {id : 'SupplierID', label : this.i18n.getText('supplier_id'), path : 'SupplierID', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                        {id : 'CategoryID', label : this.i18n.getText('category_id'), path : 'CategoryID', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                        {id : 'ReorderLevel', label : this.i18n.getText('product_reorder_level'), path : 'ReorderLevel', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                        {id : 'Discontinued', label : this.i18n.getText('discontinued'), path : 'Discontinued', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'ProductID', label : 'id', path : 'ProductID', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline", width:"5em"}},
+                        {id : 'ProductName', label : 'product', path : 'ProductName', header: {}},
+                        {id : 'CategoryName', label : 'category', path : 'Category/CategoryName', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'UnitsInStock', label : 'product_instock', path : 'UnitsInStock', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'QuantityPerUnit', label : 'product_quantityPerUnit', path : 'QuantityPerUnit', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'UnitPrice', label : 'product_unitPrice', path : 'UnitPrice', header: {hAlign : "End"}},
+                        {id : 'SupplierID', label : 'supplier_id', path : 'SupplierID', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'CategoryID', label : 'category_id', path : 'CategoryID', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'ReorderLevel', label : 'product_reorder_level', path : 'ReorderLevel', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'Discontinued', label : 'discontinued', path : 'Discontinued', header: {visible:false,minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
                     ].map((v) => ({
                         id : this.getView().createId(v.id),
                         cell: {bindingPath : v.path},
-                        header : {header : v.label, ...v.header},
-                        p13n : {key : v.id, label: v.label, path : v.path},
-                        excel : {label : v.label, property : v.path}
+                        header : {header : `{lang>${v.label}}`, ...v.header},
+                        p13n : {key : v.id, label: this.i18n.getText(v.label), path : v.path},
+                        excel : {label : this.i18n.getText(v.label), property : v.path}
                     }));
 
                     columns[0].cell.control = new ObjectIdentifier({title: "{ProductID}"});

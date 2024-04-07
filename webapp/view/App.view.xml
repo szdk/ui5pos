@@ -104,6 +104,7 @@
                                     <core:ListItem key="hi" text="{lang>hi_full}"></core:ListItem>
                                 </Select>
                             </VBox>
+                            <MessageStrip type="Warning" text="{lang>language_update_des}" class="m-t-2"></MessageStrip>
                             <MessageStrip showIcon="true" visible="{= ${tmp_settings>/lang} !== 'en_US' }" text="{lang>language_ai_des}" class="m-t-2"></MessageStrip>
 
                             <VBox renderType="Bare" visible="{tmp_settings>/serviceCreated}">

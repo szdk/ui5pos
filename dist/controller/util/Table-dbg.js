@@ -171,7 +171,7 @@ sap.ui.define([
             if (data.toolbar.p13n) {
                 let p13nbutton = new Button({
                     icon : 'sap-icon://provision',
-                    text : this.i18n.getText('layout'),
+                    text : '{lang>layout}',//this.i18n.getText('layout'),
                     type : sap.m.ButtonType.Transparent,
                     busyIndicatorDelay : 0,
                     press : (e) => {
@@ -187,8 +187,8 @@ sap.ui.define([
             }
             if (data.toolbar.excel) {
                 let button = new Button({
-                    text : this.i18n.getText('export_excel'),
-                    tooltip : this.i18n.getText('export_excel'),
+                    text : '{lang>export_excel}', //this.i18n.getText('export_excel'),
+                    tooltip : '{lang>export_excel}', //this.i18n.getText('export_excel'),
                     type : sap.m.ButtonType.Transparent,
                     icon : 'sap-icon://excel-attachment',
                     press : () => {
@@ -205,10 +205,10 @@ sap.ui.define([
                 for (let key of ['20', '50', '100', '1000'])
                     menus.push(new MenuItem({
                         key,
-                        text : this.i18n.getText(key)
+                        text : `{lang>${key}}`//this.i18n.getText(key)
                     }));
                 let menuButton = new MenuButton({
-                    tooltip : this.i18n.getText('items_count'),
+                    tooltip : '{lang>items_count}',//this.i18n.getText('items_count'),
                     text : this.table.getGrowing() ? this.table.getGrowingThreshold() : null,
                     icon : 'sap-icon://documents',
                     type : sap.m.ButtonType.Transparent,
@@ -228,19 +228,19 @@ sap.ui.define([
             if (data.toolbar.pin) {
                 let curSticky = this.table.getSticky() || [];
                 let menuButton = new MenuButton({
-                    tooltip : this.i18n.getText('pin'),
-                    text : this.i18n.getText('pin'),
+                    tooltip : '{lang>pin}', //this.i18n.getText('pin'),
+                    text : '{lang>pin}', //this.i18n.getText('pin'),
                     icon : 'sap-icon://pushpin-on',
                     type : sap.m.ButtonType.Transparent,
                     menu : new Menu({
                         items : [
                             new MenuItem({
-                                text: this.i18n.getText('toolbar'),
+                                text: '{lang>toolbar}', //this.i18n.getText('toolbar'),
                                 key : 'HeaderToolbar',
                                 icon : curSticky.indexOf('HeaderToolbar') > -1 ? 'sap-icon://complete' : 'sap-icon://border'
                             }),
                             new MenuItem({
-                                text: this.i18n.getText('column_header'),
+                                text: '{lang>column_header}', //this.i18n.getText('column_header'),
                                 key : 'ColumnHeaders',
                                 icon : curSticky.indexOf('ColumnHeaders') > -1 ? 'sap-icon://complete' : 'sap-icon://border'
                             }),

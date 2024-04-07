@@ -66,7 +66,7 @@ sap.ui.define([
                     try {
                         let binding = el.getBinding('value');
                         let type = binding ? binding.getType() : null;
-                        if (type)//TODO
+                        if (type)
                             type.validateValue(el.getValue());
                     } catch (e) {
                         el.setValueState(sap.ui.core.ValueState.Error);

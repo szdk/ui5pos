@@ -109,7 +109,7 @@ function (
                 this.fields[fieldData.path] = fieldData;
 
             this.applyFilterButton = new Button({
-                text : this.i18n.getText('apply', undefined, true) || 'Apply',
+                text : '{lang>apply}',//this.i18n.getText('apply', undefined, true) || 'Apply',
                 icon : 'sap-icon://accept',
                 type : sap.m.ButtonType.Emphasized,
                 press : () => {
@@ -130,7 +130,7 @@ function (
                         contentLeft : new Title({text : data.title}),
                         contentRight : new Button({
                             icon : 'sap-icon://delete',
-                            tooltip : this.i18n.getText('clear_filters'),
+                            tooltip : '{lang>clear_filters}', //this.i18n.getText('clear_filters'),
                             press : () => {
                                 this.clearFilters();
                                 this.applyFilters();
@@ -139,7 +139,7 @@ function (
                     content : [this.innerContainer],
                     beginButton : this.applyFilterButton,
                     endButton : new Button({
-                        text : this.i18n.getText('cancel', undefined, true) || 'Cancel',
+                        text : '{lang>cancel}',//this.i18n.getText('cancel', undefined, true) || 'Cancel',
                         type : sap.m.ButtonType.Transparent,
                         press : () => {
                             this.restoreFilters();
@@ -305,7 +305,7 @@ function (
 
                 let addButton = new Button({
                     icon : 'sap-icon://add',
-                    text : this.i18n.getText('add', undefined, true) || 'Add',
+                    text : '{lang>add}',//this.i18n.getText('add', undefined, true) || 'Add',
                     press : () => {
                         container.addItem(this.createFilterBar(field.path, container));
                     }
@@ -326,7 +326,7 @@ function (
                             contentRight : [
                                 new Button({
                                     icon : 'sap-icon://accept',
-                                    text : this.i18n.getText('confirm', undefined, true) || 'Confirm',
+                                    text : '{lang>confirm}',//this.i18n.getText('confirm', undefined, true) || 'Confirm',
                                     press : () => {
                                         //apply filters to multiinput
                                         let mi = this.multiInputs[field.path];
@@ -359,7 +359,7 @@ function (
                                     }
                                 }),
                                 new Button({
-                                    text : this.i18n.getText('cancel', undefined, true) || "Cancel",
+                                    text : '{lang>cancel}', //this.i18n.getText('cancel', undefined, true) || "Cancel",
                                     press : () => {
                                         this.restoreFilters();
                                         this.navigateInnerContainer(this.mainPage);
@@ -382,7 +382,7 @@ function (
                 if (!this.operators[operator]) return null;
                 return new ListItem({
                     key : operator,
-                    text : this.i18n.getText(operator)
+                    text : `{lang>${operator}}`,//this.i18n.getText(operator)
                 })
             }).filter(v => v)});
             selectOperator.setSelectedKey(filter.operator || selectOperator.getItemAt(0).getKey());
@@ -427,6 +427,7 @@ function (
 
             let deleteButton = new Button({
                 icon : 'sap-icon://delete',
+                tooltip : '{lang>delete}',
                 type : sap.m.ButtonType.Transparent,
                 press : () => {
                     parent.removeItem(barOuter);

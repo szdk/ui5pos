@@ -35,13 +35,13 @@ sap.ui.define([
                 this.comp.szdk_serviceCreated.then((model) => {
                     let inputOpenOrder = new Input({
                         type : sap.m.InputType.Number,
-                        placeholder: this.i18n.getText('order_id'),
+                        placeholder: '{lang>order_id}',//this.i18n.getText('order_id'),
                         width : '9em'
                     });
                     
                     let buttonOpenOrder = new Button({
                         type: sap.m.ButtonType.Transparent ,
-                        text: this.i18n.getText('open'),
+                        text: '{lang>open}',//this.i18n.getText('open'),
                         press : () => {
                             const error = () => {
                                 inputOpenOrder.setValueStateText(this.i18n.getText('input_invalid_order_id'));
@@ -70,20 +70,20 @@ sap.ui.define([
                     this.filterDialog = new FilterDialog({
                         i18n : this.i18n,
                         dialog : true,
-                        title : this.i18n.getText('add_filters', undefined, true) || 'Add Filters',
+                        title : '{lang>add_filters}',//this.i18n.getText('add_filters', undefined, true) || 'Add Filters',
                         onFilter : (filters) => {
                             tableGenerator.applyFilter(filters);
                         },
                         fields : [
                             {
                                 path : 'OrderID',
-                                label : this.i18n.getText('order_id'),
+                                label : '{lang>order_id}',//this.i18n.getText('order_id'),
                                 type : sap.m.InputType.Number,
                                 operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LT, sap.ui.model.FilterOperator.GT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
                             },
                             {
                                 path : 'CustomerID',
-                                label : this.i18n.getText('customer_id'),
+                                label : '{lang>customer_id}',// this.i18n.getText('customer_id'),
                                 onValueHelp : (input) => {
                                     F4Help.f4Table({
                                         i18n : this.i18n,
@@ -112,45 +112,46 @@ sap.ui.define([
                             },
                             {
                                 path : 'Customer/ContactName',
-                                label : this.i18n.getText('customer_name'),
+                                label : '{lang>customer_name}',//this.i18n.getText('customer_name'),
                             },
                             {
                                 path : 'Customer/Phone',
-                                label : this.i18n.getText('customer_phone')
+                                label : '{lang>customer_phone}',//this.i18n.getText('customer_phone'),
                             },
                             {
                                 path : 'OrderDate',
-                                label : this.i18n.getText('order_date'),
+                                label : '{lang>order_date}',//this.i18n.getText('order_date'),
                                 type : "Datetime",
                                 operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LT, sap.ui.model.FilterOperator.GT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
                             },
                             {
                                 path : 'Freight',
-                                label : this.i18n.getText('order_total'),
+                                label : '{lang>order_total}',//this.i18n.getText('order_total'),
                                 type : sap.m.InputType.Number,
                                 operators : [sap.ui.model.FilterOperator.EQ, sap.ui.model.FilterOperator.BT, sap.ui.model.FilterOperator.LT, sap.ui.model.FilterOperator.GT, sap.ui.model.FilterOperator.LE, sap.ui.model.FilterOperator.GE],
                             }
                         ],
                     });
+                    this.filterDialog.container.setModel(this.comp.getModel('lang'), 'lang');
 
-                    let filterButton = new Button({icon: 'sap-icon://filter', type: sap.m.ButtonType.Transparent, tooltip : this.i18n.getText('filter')});
+                    let filterButton = new Button({icon: 'sap-icon://filter', type: sap.m.ButtonType.Transparent, tooltip : '{lang>filter}'/**this.i18n.getText('filter') */});
                     filterButton.attachPress(() => {
                         this.filterDialog.container.open();
                     });
 
                     let columns = [
-                        {id : 'OrderID', label : this.i18n.getText('order_id'), path : 'OrderID', header: {/*minScreenWidth:"XXLarge", width:"5em"*/}},
-                        {id : 'ContactName', label : this.i18n.getText('customer_name'), path : 'Customer/ContactName', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                        {id : 'Phone', label : this.i18n.getText('customer_phone'), path : 'Customer/Phone', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
-                        {id : 'OrderDate', label : this.i18n.getText('order_date'), path : 'OrderDate', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},
-                        {id : 'OrderTime', label : this.i18n.getText('order_time'), path : 'OrderDate', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},
-                        {id : 'Freight', label : this.i18n.getText('order_total'), path : 'Freight', header: {hAlign : "End"}},
+                        {id : 'OrderID', label : 'order_id'/**this.i18n.getText('order_id') */, path : 'OrderID', header: {/*minScreenWidth:"XXLarge", width:"5em"*/}},
+                        {id : 'ContactName', label : 'customer_name'/**this.i18n.getText('customer_name') */, path : 'Customer/ContactName', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'Phone', label : 'customer_phone'/**this.i18n.getText('customer_phone') */, path : 'Customer/Phone', header: {minScreenWidth:"XXLarge", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'OrderDate', label : 'order_date'/**this.i18n.getText('order_date') */, path : 'OrderDate', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'OrderTime', label : 'order_time'/**this.i18n.getText('order_time') */, path : 'OrderDate', header: {minScreenWidth:"Tablet", demandPopin:true, popinDisplay:"Inline"}},
+                        {id : 'Freight', label : 'order_total'/**this.i18n.getText('order_total') */, path : 'Freight', header: {hAlign : "End"}},
                     ].map((v) => ({
                         id : this.getView().createId(v.id),
                         cell: {bindingPath : v.path},
-                        header : {header : v.label, ...v.header},
-                        p13n : {key : v.id, label: v.label, path : v.path},
-                        excel : {label : v.label, property : v.path}
+                        header : {header : `{lang>${v.label}}`, ...v.header},
+                        p13n : {key : v.id, label: this.i18n.getText(v.label), path : v.path},
+                        excel : {label : this.i18n.getText(v.label), property : v.path}
                     }));
                     columns[0].cell.control = new ObjectIdentifier({title : "{OrderID}"});
                     columns[1].cell.control = new Link({text : "{Customer/ContactName}", wrapping : true});
