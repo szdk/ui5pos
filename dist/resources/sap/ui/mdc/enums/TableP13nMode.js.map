@@ -1,1 +1,0 @@
-{"version":3,"file":"TableP13nMode.js","names":["sap","ui","define","DataType","TableP13nMode","Column","Sort","Filter","Group","Aggregate","registerEnum"],"sources":["TableP13nMode-dbg.js"],"mappings":";;;;;AAMAA,IAAIC,GAAGC,OAAO,CAAC,wBAAyB,SAASC,GAC7C,aAWA,MAAMC,EAAgB,CAMlBC,OAAQ,SAMRC,KAAM,OAMNC,OAAQ,SAMRC,MAAO,QAMPC,UAAW,aAGfN,EAASO,aAAa,iCAAkCN,GAExD,OAAOA,CAEX,EAAkB"}

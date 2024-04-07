@@ -1,1 +1,0 @@
-{"version":3,"file":"TableType.js","names":["sap","ui","define","DataType","TableType","Table","TreeTable","ResponsiveTable","registerEnum"],"sources":["TableType-dbg.js"],"mappings":";;;;;AAMAA,IAAIC,GAAGC,OAAO,CAAC,wBAAyB,SAASC,GAC7C,aAWA,MAAMC,EAAY,CAMdC,MAAO,QAOPC,UAAW,YAMXC,gBAAiB,mBAGrBJ,EAASK,aAAa,6BAA8BJ,GAEpD,OAAOA,CAEX,EAAkB"}

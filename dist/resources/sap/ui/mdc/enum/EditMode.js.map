@@ -1,1 +1,0 @@
-{"version":3,"file":"EditMode.js","names":["sap","ui","define","EditMode","Display","Editable","ReadOnly","Disabled","EditableReadOnly","EditableDisplay"],"sources":["EditMode-dbg.js"],"mappings":";;;;;AAMAA,IAAIC,GAAGC,OAAO,WACb,aAYA,MAAMC,EAAW,CAKhBC,QAAS,UAKTC,SAAU,WAKVC,SAAU,WAKVC,SAAU,WAOVC,iBAAkB,mBAOlBC,gBAAiB,mBAGlB,OAAON,CAER,EAAkB"}

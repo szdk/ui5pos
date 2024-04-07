@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html>
-    <head>
+<!DOCTYPE html><html><head>
         <meta charset="utf-8">
         <title>UI5 POS</title>
         <!-- 
@@ -14,20 +12,13 @@
                                         one example is the data-sap-ui-onInit parameter, which uses the alias name to access index.js file in current directory
 
         -->
-        <script
-            id="sap-ui-bootstrap"
-            src="resources/sap-ui-core.js"
-            data-sap-ui-theme="sap_horizon"
-            data-sap-ui-compatVersion="edge"
-            data-sap-ui-async="true"
-            data-sap-ui-onInit="module:ui5pos/szdk/index"
-            data-sap-ui-resourceroots='{
-                "ui5pos.szdk": "./"
-            }'>
+        <script id="sap-ui-bootstrap" src="resources/sap-ui-custom.js" data-sap-ui-theme="sap_horizon" data-sap-ui-compatversion="edge" data-sap-ui-async="true" data-sap-ui-oninit="module:ui5pos/szdk/index" data-sap-ui-resourceroots="{
+                &quot;ui5pos.szdk&quot;: &quot;./&quot;
+            }">
 
         </script>
     </head>
-    <body class="sapUiBody szdk-loading" id = "content">
+    <body class="sapUiBody szdk-loading" id="content">
         
-    </body>
-</html>
+    
+</body></html>
