@@ -2,13 +2,11 @@ sap.ui.define([
     "ui5pos/szdk/controller/BaseController",
     "ui5pos/szdk/controller/util/Settings",
     "sap/ui/model/json/JSONModel",
-    "sap/base/i18n/Localization",
     ],
     function (
         Controller,
         Settings,
         JSONModel,
-        Localization
     ) {
         "use strict";
 
@@ -16,8 +14,6 @@ sap.ui.define([
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
 
-                window.l = Localization;
-                window.v = this;
                 // ======================== remove loading text from body =====================
                 document.body.classList.remove('szdk-loading')
 
@@ -42,6 +38,18 @@ sap.ui.define([
                 
                 this.bindSideNavTarget();
                 
+            },
+
+            onPressAvatar : function (evt) {
+                this.byId("avatar-popover").openBy(evt.getSource());
+            },
+
+            onPressAbout : function () {
+                this.byId('about-dialog').open();
+            },
+
+            onPressCloseAbout : function () {
+                this.byId('about-dialog').close();
             },
 
             onPressSettings : function () {

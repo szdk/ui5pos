@@ -29,6 +29,48 @@
                         </HBox>
                         <ToolbarSpacer></ToolbarSpacer>
                         <OverflowToolbarButton icon="sap-icon://action-settings" text="{lang>settings}" press=".onPressSettings"></OverflowToolbarButton>
+                        <OverflowToolbarButton icon="sap-icon://message-information" text="{lang>about}" press=".onPressAbout"></OverflowToolbarButton>
+                        <Avatar id="profile-avatar" showBorder="true" active="true" displaySize="XS" press=".onPressAvatar"
+                            src="./assets/github-mark/github-mark.svg"
+                        >
+                            <layoutData>
+                                <OverflowToolbarLayoutData priority="NeverOverflow" />
+                            </layoutData>
+                            <dependents>
+                                <QuickView placement="Auto" id="avatar-popover">
+                                    <QuickViewPage title="{lang>avatar_name}" description="{lang>avatar_des}">
+                                        <avatar>
+                                            <Avatar class="custom avatar-popover-pic" showBorder="true" src="./assets/github-mark/github-mark.svg"></Avatar>
+                                        </avatar>
+                                        <QuickViewGroup>
+                                            <QuickViewGroupElement
+                                                label="GitHub"
+                                                value="github.com/szdk"
+                                                url="https://github.com/szdk"
+                                                type="link"
+                                            />
+                                            <QuickViewGroupElement
+                                                label="LinkedIn"
+                                                value="linkedin.com/in/sajid-k"
+                                                url="https://linkedin.com/in/sajid-k"
+                                                type="link"
+                                            />
+                                            <QuickViewGroupElement
+                                                label="Website"
+                                                value="khansajid.com"
+                                                url="https://khansajid.com"
+                                                type="link"
+                                            />
+                                            <QuickViewGroupElement
+                                                value="{lang>avatar_see_on_git}"
+                                                url="https://github.com/szdk/ui5pos"
+                                                type="link"
+                                            />
+                                        </QuickViewGroup>
+                                    </QuickViewPage>
+                                </QuickView>
+                            </dependents>
+                        </Avatar>
                     </t:ToolHeader>
                 </t:header>
                 <t:sideContent>
@@ -53,7 +95,7 @@
                         <t:fixedItem>
                             <t:NavigationList>
                                 <t:NavigationListItem text="{lang>settings}" icon="sap-icon://action-settings" select=".onPressSettings"/>
-                                <t:NavigationListItem text="{lang>about}" icon="sap-icon://message-information"/>
+                                <t:NavigationListItem text="{lang>about}" icon="sap-icon://message-information" select=".onPressAbout"/>
                             </t:NavigationList>
                         </t:fixedItem>
                     </t:SideNavigation>
@@ -123,6 +165,23 @@
                     <endButton>
                         <Button text="{lang>cancel}" press=".onCloseSettings"></Button>
                     </endButton>
+                </Dialog>
+                <Dialog contentWidth="40em" title="{lang>about}" stretch="{device>/system/phone}" id="about-dialog">
+                    <content>
+                        <VBox renderType="Bare">
+                            <!-- <Image src="./assets/logo-cover.png"></Image> -->
+                            <VBox class="p-lr-4 p-tb-2" renderType="Bare">
+                                <Text class="sapMTitleStyleH2" text="{lang>about_heading}"></Text>
+                                <FormattedText htmlText="{lang>about_created_by}" class="m-t-1"></FormattedText>
+                                <Text text="{lang>about_dist_ver}" class="sapMTitleStyleH4 m-t-3"></Text>
+                                <FormattedText class="m-t-2" htmlText="{lang>about_see_doc_at}"></FormattedText>
+                                <Label class="m-t-4" text="{lang>about_lib_used}:"></Label>
+                                <Text text="sap.f, sap.m, sap.tnt, sap.ui.core, sap.ui.export, sap.ui.fl, sap.ui.layout, themelib_sap_horizon"></Text>
+                                <Link class="m-t-2" href="https://github.com/szdk/ui5pos" text="{lang>about_source_on_git}"></Link>
+                            </VBox>
+                        </VBox>
+                    </content>
+                    <endButton><Button text="{lang>close}" press=".onPressCloseAbout"></Button></endButton>
                 </Dialog>
             </dependents>
         </App>
