@@ -8,6 +8,7 @@
     "build": "(npm run build-sass -- --no-source-map --style=compressed) && (ui5 build)",
     "build-sass" : "sass sass/index.scss webapp/css/style.css",
     "build-fresh" : "(npm run build-sass -- --no-source-map --style=compressed) && (ui5 build --all)",
+    "build-final" : "(npm run build-sass -- --no-source-map --style=compressed) && (ui5 build self-contained --all --clean-dest)",
     "test" : "sass --help"
   },
   "author": "",

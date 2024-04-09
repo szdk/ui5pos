@@ -29,7 +29,7 @@
                         </HBox>
                         <ToolbarSpacer></ToolbarSpacer>
                         <OverflowToolbarButton icon="sap-icon://action-settings" text="{lang>settings}" press=".onPressSettings"></OverflowToolbarButton>
-                        <OverflowToolbarButton icon="sap-icon://message-information" text="{lang>about}" press=".onPressAbout"></OverflowToolbarButton>
+                        <OverflowToolbarButton id="nav-info-button" icon="sap-icon://message-information" text="{lang>about}" press=".onPressAbout"></OverflowToolbarButton>
                         <Avatar id="profile-avatar" showBorder="true" active="true" displaySize="XS" press=".onPressAvatar"
                             src="./assets/github-mark/github-mark.svg"
                         >
