@@ -8,9 +8,9 @@ sap.ui.define([
             onInit: function () {
                 Controller.prototype.onInit.apply(this, arguments);
 
-                this.comp.getRouter().getRoute('home').attachPatternMatched(() => {
-                    this.comp.getRouter().navTo('create_order');
-                });
+                // this.comp.getRouter().getRoute('home').attachPatternMatched(() => {
+                //     this.comp.getRouter().navTo('create_order');
+                // });
                 
             }
         });

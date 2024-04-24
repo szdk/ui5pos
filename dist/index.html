@@ -17,6 +17,18 @@
             }">
 
         </script>
+        <style>
+            body.szdk-loading::before {
+                content: "Loading...";
+                display: flex;
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                background: white;
+                align-items: center;
+                justify-content: center;
+            }
+        </style>
     </head>
     <body class="sapUiBody szdk-loading" id="content">
         

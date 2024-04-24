@@ -29,6 +29,7 @@ sap.ui.define([
                 window.crt = this;
                 
                 this.comp.getRouter().getRoute('create_order').attachPatternMatched(this.patternMatched.bind(this));
+                this.comp.getRouter().getRoute('home').attachPatternMatched(this.patternMatched.bind(this));
 
                 // ========= models ============================
                 this.configModel = new JSONModel({
@@ -181,7 +182,7 @@ sap.ui.define([
                                 previous_orders.pop();
                             this.dataModel.setProperty('/previous_orders', previous_orders);
                             this.onClearOrder();
-                            if (this.navBackAfterUpdate)
+                            if (this.navBackAfterUpdate == order.OrderID)
                                 this.goBack("create_order");
                             else if (this.configModel.getProperty('/auto_print')) {
                                 this.getView().setBusy(true);
@@ -806,7 +807,7 @@ sap.ui.define([
                 this.navBackAfterUpdate = false;
                 if (args && args['edit'] && args['edit'] && parseInt(args['edit'])) {
                     let order_id = parseInt(args['edit']);
-                    this.navBackAfterUpdate = true;
+                    this.navBackAfterUpdate = order_id;
                     let curItems = this.orderModel.getProperty('/items');
                     if (curItems && curItems.length > 0)
                         this.showInfoDialog({

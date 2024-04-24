@@ -80,9 +80,8 @@
                 {
                     "name": "home",
                     "pattern": "",
-                    "titleTarget": "home",
                     "target" : [
-                        "home"
+                        "create_order"
                     ]
                 },
                 {
