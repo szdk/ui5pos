@@ -4,7 +4,15 @@ This responsive POS application, built with SAP Ui5, showcases the capabilities 
 
 See it running live at [szdk.github.io/ui5pos](https://szdk.github.io/ui5pos)
 
-![](screenshot.png)
+![pos screen](screenshot.png)
+
+<br>
+<br>
+<br>
+
+![product details](screenshot2.png)
+
+<br>
 
 #### Key Features
 
